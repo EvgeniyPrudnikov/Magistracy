@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
         std::cerr << "timeSimple: " << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
     }
 
-    {
+    if (false) {
         const auto startTime = std::clock();
         MultSimpleBlock(a, b, c, n);
         const auto endTime = std::clock();
@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
         std::cerr << "timeBlock: " << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
     }
     
-    {
+    if (false) {
         const auto startTime = std::clock();
         MultSwappedLoops(a, b, c, n);
         const auto endTime = std::clock();

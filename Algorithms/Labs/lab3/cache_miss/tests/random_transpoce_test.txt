@@ -1,0 +1,35 @@
+n = 1023
+algorithm: random
+task: Transpose
+timeTranspose: 0.503594
+# of checks: 2093058 # of hits: 1959938 # of misses: 133120 Miss Rate: 0.0636007
+n = 1024
+algorithm: random
+task: Transpose
+timeTranspose: 0.580676
+# of checks: 2097152 # of hits: 1484371 # of misses: 612781 Miss Rate: 0.292197
+n = 1025
+algorithm: random
+task: Transpose
+timeTranspose: 0.501524
+# of checks: 2101250 # of hits: 1967491 # of misses: 133759 Miss Rate: 0.0636569
+n = 1040
+algorithm: random
+task: Transpose
+timeTranspose: 0.505787
+# of checks: 2163200 # of hits: 2025699 # of misses: 137501 Miss Rate: 0.0635637
+n = 1041
+algorithm: random
+task: Transpose
+timeTranspose: 0.515716
+# of checks: 2167362 # of hits: 2029689 # of misses: 137673 Miss Rate: 0.063521
+n = 1050
+algorithm: random
+task: Transpose
+timeTranspose: 0.526019
+# of checks: 2205000 # of hits: 2064889 # of misses: 140111 Miss Rate: 0.0635424
+n = 1100
+algorithm: random
+task: Transpose
+timeTranspose: 0.57571
+# of checks: 2420000 # of hits: 2266286 # of misses: 153714 Miss Rate: 0.0635182

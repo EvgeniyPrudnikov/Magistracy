@@ -1,0 +1,5 @@
+/home/jonscat/Study/Algorithms/Labs/lab2/GraphGenerator/GraphGenerator/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/home/jonscat/Study/Algorithms/Labs/lab2/GraphGenerator/GraphGenerator/bin/Debug/GraphGenerator.exe.mdb
+/home/jonscat/Study/Algorithms/Labs/lab2/GraphGenerator/GraphGenerator/bin/Debug/GraphGenerator.exe
+/home/jonscat/Study/Algorithms/Labs/lab2/GraphGenerator/GraphGenerator/obj/x86/Debug/GraphGenerator.exe
+/home/jonscat/Study/Algorithms/Labs/lab2/GraphGenerator/GraphGenerator/obj/x86/Debug/GraphGenerator.exe.mdb

@@ -1,0 +1,50 @@
+20:20:37 **** Incremental Build of configuration Debug for project test2 ****
+make all 
+make: Nothing to be done for 'all'.
+20:20:44 **** Incremental Build of configuration Debug for project test2 ****
+make all 
+Building file: ../src/test2.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/test2.d" -MT"src/test2.d" -o "src/test2.o" "../src/test2.c"
+Finished building: ../src/test2.c
+ 
+Building target: test2
+Invoking: GCC C Linker
+gcc  -o "test2"  ./src/test2.o   
+Finished building target: test2
+ 
+20:22:47 **** Incremental Build of configuration Debug for project test2 ****
+make all 
+Building file: ../src/test2.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/test2.d" -MT"src/test2.d" -o "src/test2.o" "../src/test2.c"
+../src/test2.c: In function ‘main’:
+../src/test2.c:24:9: warning: passing argument 1 of ‘printf’ makes pointer from integer without a cast [-Wint-conversion]
+  printf(c);
+         ^
+In file included from ../src/test2.c:11:0:
+/usr/include/stdio.h:362:12: note: expected ‘const char * restrict’ but argument is of type ‘int’
+ extern int printf (const char *__restrict __format, ...);
+            ^
+../src/test2.c:24:2: warning: format not a string literal and no format arguments [-Wformat-security]
+  printf(c);
+  ^
+Finished building: ../src/test2.c
+ 
+Building target: test2
+Invoking: GCC C Linker
+gcc  -o "test2"  ./src/test2.o   
+Finished building target: test2
+ 
+20:23:26 **** Incremental Build of configuration Debug for project test2 ****
+make all 
+Building file: ../src/test2.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/test2.d" -MT"src/test2.d" -o "src/test2.o" "../src/test2.c"
+Finished building: ../src/test2.c
+ 
+Building target: test2
+Invoking: GCC C Linker
+gcc  -o "test2"  ./src/test2.o   
+Finished building target: test2
+ 
