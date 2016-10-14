@@ -5,4 +5,4 @@ def prime_numbers(n):
     return pr
 
 
-print prime_numbers(100);
+print prime_numbers(100)

@@ -1,110 +1,132 @@
-// graphGen.cpp : Defines the entry point for the console application.
+// graphgen.cpp : Defines the entry point for the console application.
 //
 
 #include <vector>
 #include <random>
 #include <iostream>
 #include <queue>
+#include <ctime>
+#include <math.h>
 
 using namespace std;
 
 const int M = 12;
-const int N = 12;
+const int N = 1200;
 const int NM = N*M;
 
 void GenerateRandomGraph(vector<int> &g, vector<int> &v);
 void GenerateWebGraph(vector<int> &g, vector<int> &v, vector<vector<int>> &wg, vector<int> &wv);
-void FindAvgDistsConnCompnts(vector<vector<int>> & wg, vector<double> & avgDists);
-int BFS(vector<vector<int>> graph );
+int FindConnCompnts(vector<vector<int>> & wg, vector<int> & connectedComponents);
+void FloydWarshallAlgorithm(vector<vector<int>> & wg, vector<vector<int>> & dists);
+int FindDiamAvgDistsComponents(vector<int> & connectedComponents, int componentsCount,vector<vector<int>> & dists, vector<double> & avgDists);
 
 int main()
 {
 	vector<int> verticesOfRandomGraph(NM);
 	vector<int> randomGraph(NM);
-	vector<int> verticesOfWebGraph(N);
-	vector<vector<int>> webGraph (N, vector<int> (N, 0));
-	double diam = 0;
-	vector<double> avgDists;
+	vector<int> verticesOfWebGraph(N); // for #(n,d) histogramm
+	vector<vector<int>> webGraph(N, vector<int>(N, 0));
+	vector<int> connectedComponents(N, -1);
+	int componentsCount;
+	vector<vector<int>> dists(N, vector<int>(N, 0));
+	int webGraphDiam;
 
-	randomGraph[0] = 1; // first vertice with loop
+
+	randomGraph[0] = 0; // first vertice with loop
 	verticesOfRandomGraph[0] = 2; // # of edges in first vertice
 
-	GenerateRandomGraph(randomGraph, verticesOfRandomGraph);
-
-	GenerateWebGraph(randomGraph, verticesOfRandomGraph, webGraph, verticesOfWebGraph);
-
-	FindAvgDistsConnCompnts(webGraph, avgDists);
-
-	cout<< avgDists.size()<<endl;
-
-	for (int i = 0; i <avgDists.size() ; ++i)
 	{
-		cout<< avgDists[i]<<endl;
+		GenerateRandomGraph(randomGraph, verticesOfRandomGraph);
+
+		GenerateWebGraph(randomGraph, verticesOfRandomGraph, webGraph, verticesOfWebGraph);
 	}
 
-	int lol = 0;
 
-	lol = BFS(webGraph);
+	componentsCount = FindConnCompnts(webGraph, connectedComponents);
 
+	vector<double> avgDists(componentsCount);
 
-	cout << "done"<<endl;
+	FloydWarshallAlgorithm(webGraph, dists);
 
-	//getchar();
+	webGraphDiam = FindDiamAvgDistsComponents(connectedComponents, componentsCount, dists, avgDists);
+
+	{
+		cout << "n = " << N << endl;
+		cout << "m = " << M << endl;
+		cout << "Connected Components Count: " << componentsCount << endl;
+
+		for (int i = 0; i < avgDists.size(); i++)
+			cout << "Component " << i << " avg dist: " << avgDists[i];
+
+		cout << endl << "webGraph Diam: " << webGraphDiam << endl;
+		cout << "web Graph estimated diam range: " << log(N) / log(log(N))<< endl;
+		cout << endl << "done." << endl;
+	}
+	getchar();
 
 	return 0;
 }
 
-int BFS(vector<vector<int>> graph )
+void FloydWarshallAlgorithm(vector<vector<int>> & wg , vector<vector<int>> & dists)
 {
-	vector<bool> visited (N);
-	vector <int> components(N);
-	vector<int> dist(N,0);
-
-	int components_n = 0;
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < N; i++)
 	{
-		if (visited[i])
+		for (int j = 0; j < N; j++)
 		{
-			continue;
+			dists[i][j] = wg[i][j] > 0 ? 1 : N*N;
 		}
-		++components_n;
-		std::queue<int> queuev;
-		queuev.push(i);
-		components[i] = components_n;
-		visited[i] = true;
-		while (!queuev.empty())
+	}
+
+	for (int i = 0; i < N; i++)
+	{
+		dists[i][i] = 0;
+	}
+
+	cout << endl;
+
+	for (int k = 0; k<N; ++k)
+		for (int i = 0; i<N; ++i)
+			for (int j = 0; j<N; ++j)
+				dists[i][j] = min(dists[i][j], dists[i][k] + dists[k][j]);
+
+	wg.clear();
+}
+
+int FindDiamAvgDistsComponents(vector<int> & connectedComponents, int componentsCount, vector<vector<int>> & dists,vector<double> & avgDists)
+{
+	int d = 0;
+	for (int i = 0; i < componentsCount; i++)
+	{
+		int comp_dist = 0;
+		int comp_dist_n = 0;
+		for (int j = 0; j < N; j++)
 		{
-			int v = queuev.front();
-			queuev.pop();
-			for (int j = 0; j < N; ++j)
+			if (connectedComponents[j] != i)
 			{
-				if (!visited[j] && graph[v][j] > 0)
+				continue;
+			}
+			for (int k = j + 1; k < N; k++)
+			{
+				if (connectedComponents[k] != i) {
+					continue;
+				}
+				comp_dist += dists[j][k];
+				++comp_dist_n;
+				if (d < dists[j][k])
 				{
-					queuev.push(j);
-					components[j] = components_n;
-					visited[j] = true;
-					dist[graph[v][j]] = dist[v] + 1;
+					d = dists[j][k];
 				}
 			}
 		}
+		avgDists[i] = comp_dist / static_cast<double>(comp_dist_n);
 	}
-
-	cout<<"BFS dist:" << endl;
-
-	for (int k = 0; k < N; ++k)
-	{
-		cout<<dist[k]<< " ";
-	}
-
-	return components_n;
+	return d;
 }
 
-
-void FindAvgDistsConnCompnts(vector<vector<int>> & wg, vector<double> & avgDists)
+int FindConnCompnts(vector<vector<int>> & wg, vector<int> & connectedComponents)
 {
 	int componentsCount = 0;
-	vector<int> connectedComponents(N, -1);
-	vector<int> dist(N, 0);
+
 	queue <int> q;
 	for (int i = 0; i < N; i++)
 	{
@@ -123,48 +145,25 @@ void FindAvgDistsConnCompnts(vector<vector<int>> & wg, vector<double> & avgDists
 
 			for (int j = 0; j < N; j++)
 			{
-				if (wg[j][v] > 0  && connectedComponents[j] == -1)
+				if (wg[j][v] > 0 && connectedComponents[j] == -1)
 				{
-					int to = wg[j][v];
 					q.push(j);
-					dist[to] = dist[v] + 1;
 				}
 			}
 		}
 		componentsCount++;
 	}
-
-	for (int k = 0; k < N; ++k)
-	{
-		cout<< dist[k]<<" ";
-	}
-
-	avgDists.resize(componentsCount);
-
-	for (int i = 0; i < componentsCount; i++)
-	{
-		double vecCount = 0;
-		for (int j = 0; j < N; j++)
-		{
-			if (connectedComponents[j] == i)
-			{
-				vecCount++;
-				avgDists[i] += dist[j];
-			}
-		}
-		vecCount - 1 != 0 ? avgDists[i] /= vecCount - 1 : avgDists[i] = 0;
-	}
+	return componentsCount;
 }
-
 
 void GenerateRandomGraph(vector<int> &g, vector<int> &v)
 {
 
-	srand((unsigned int) time(NULL));
+	srand((unsigned int)time(NULL));
 
 	for (int i = 1; i < NM; i++)
 	{
-		double r = (double) rand() / RAND_MAX;
+		double r = (double)rand() / RAND_MAX;
 		double ni = i + 1;
 		double probabilityInN = 1 / (2 * ni - 1);
 
@@ -172,7 +171,8 @@ void GenerateRandomGraph(vector<int> &g, vector<int> &v)
 		{
 			g[i] = i;
 			v[i] = 2;
-		} else
+		}
+		else
 		{
 			double probabilityInV = probabilityInN;
 
@@ -198,6 +198,7 @@ void GenerateWebGraph(vector<int> &g, vector<int> &v, vector<vector<int>> &wg, v
 	for (int i = 0; i < NM; i++)
 	{
 		wg[i / M][g[i] / M] += 1;
+		wg[g[i] / M][i / M] += 1;
 		wv[i / M] += v[i];
 	}
 
