@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)http://compress.ru/article.aspx?id=23541 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+    <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+		<meta name="description" content="Зачем процессору нужен кэш и чем один кэш отличается от другого — на эти вопросы сможет ответить далеко не каждый пользователь ПК">
+  		<meta name="keywords" content="">
+  		<title>Что такое кэш процессора, и как он работает | КомпьютерПресс</title>
+  		<link rel="shortcut icon" href="http://compress.ru/favicon.ico">
+		<link rel="stylesheet" href="http://compress.ru/skins/css/style.css">
+    <script src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/cb=gapi.loaded_1" async=""></script><script src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/cb=gapi.loaded_0" async=""></script><script type="text/javascript" async="" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/plusone.js" gapi_processed="true"></script><script id="facebook-jssdk" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/all.js"></script><script async="" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/analytics.js"></script><script type="text/javascript" async="" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/watch.js"></script><script src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/jquery.min.js"></script>
+    <link href="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/css" rel="stylesheet" type="text/css">
+    <link href="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/css(1)" rel="stylesheet" type="text/css"> <!-- font-family: 'Fira Sans', sans-serif; -->
+    <link href="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/css(2)" rel="stylesheet" type="text/css">
+    <!-- font-family: 'Roboto', sans-serif; -->
+      <!-- vkontakte -->
+      <!-- script type="text/javascript" src="http://userapi.com/js/api/openapi.js?47"></script>-->
+      <script type="text/javascript">VK.init({apiId:2792824,onlyWidgets:true});</script>
+      <!-- vkontakte -->
+      <meta property="fb:admins" content="100001831498135">
+      <script type="text/javascript" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/api_min.js"></script><style type="text/css">#flash-transport-container {height: 0; font-size: 0;}.mrc__translayer {filter: progid:DXImageTransform.Microsoft.Alpha(opacity=70); -moz-opacity: 0.7; -khtml-opacity: 0.7; opacity: 0.7; background: #FFF url(//my1.imgsmail.ru/r/my/preloader_circle_32.gif) no-repeat center center; position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 999999; display: none}
+.mrc__translayer_on iframe {visibility: hidden;}.mrc__translayer_on {background-image:none;}</style><style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow-x:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}.fb_link img{border:none}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_reset .fb_dialog_legacy{overflow:visible}.fb_dialog_advanced{padding:10px;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}.fb_dialog_content{background:#fff;color:#333}.fb_dialog_close_icon{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;_background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif);cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{top:5px;left:5px;right:auto}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent;_background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_close_icon:active{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent;_background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_loader{background-color:#f6f7f8;border:1px solid #606060;font-size:24px;padding:20px}.fb_dialog_top_left,.fb_dialog_top_right,.fb_dialog_bottom_left,.fb_dialog_bottom_right{height:10px;width:10px;overflow:hidden;position:absolute}.fb_dialog_top_left{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 0;left:-10px;top:-10px}.fb_dialog_top_right{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -10px;right:-10px;top:-10px}.fb_dialog_bottom_left{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -20px;bottom:-10px;left:-10px}.fb_dialog_bottom_right{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -30px;right:-10px;bottom:-10px}.fb_dialog_vert_left,.fb_dialog_vert_right,.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{position:absolute;background:#525252;filter:alpha(opacity=70);opacity:.7}.fb_dialog_vert_left,.fb_dialog_vert_right{width:10px;height:100%}.fb_dialog_vert_left{margin-left:-10px}.fb_dialog_vert_right{right:0;margin-right:-10px}.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{width:100%;height:10px}.fb_dialog_horiz_top{margin-top:-10px}.fb_dialog_horiz_bottom{bottom:0;margin-bottom:-10px}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #3a5795;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{-webkit-transform:none;height:100%;margin:0;overflow:visible;position:absolute;top:-10000px;left:0;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{width:auto;height:auto;min-height:initial;min-width:initial;background:none}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{color:#fff;display:block;padding-top:20px;clear:both;font-size:18px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .45);position:absolute;left:0;top:0;width:100%;min-height:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_content .dialog_header{-webkit-box-shadow:white 0 1px 1px -1px inset;background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#738ABA), to(#2C4987));border-bottom:1px solid;border-color:#1d4088;color:#fff;font:14px Helvetica, sans-serif;font-weight:bold;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{-webkit-font-smoothing:subpixel-antialiased;height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4966A6), color-stop(.5, #355492), to(#2A4887));border:1px solid #2f477a;-webkit-background-clip:padding-box;-webkit-border-radius:3px;-webkit-box-shadow:rgba(0, 0, 0, .117188) 0 1px 1px inset, rgba(255, 255, 255, .167969) 0 1px 0;display:inline-block;margin-top:3px;max-width:85px;line-height:18px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{border:none;background:none;color:#fff;font:12px Helvetica, sans-serif;font-weight:bold;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #555;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f6f7f8;border:1px solid #555;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/yD/r/t-wz8gw1xG1.png);background-repeat:no-repeat;background-position:50% 50%;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_hide_iframes iframe{position:relative;left:-10000px}.fb_iframe_widget_loader{position:relative;display:inline-block}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}.fb_iframe_widget_loader iframe{min-height:32px;z-index:2;zoom:1}.fb_iframe_widget_loader .FB_Loader{background:url(https://fbstatic-a.akamaihd.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat;height:32px;width:32px;margin-left:-16px;position:absolute;left:50%;z-index:4}</style></head><body><div id="count"><noindex>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">(function(d,w,c){(w[c]=w[c]||[]).push(function(){try{w.yaCounter23720305=new Ya.Metrika({id:23720305,webvisor:true,clickmap:true,trackLinks:true,accurateTrackBounce:true});}catch(e){}});var n=d.getElementsByTagName("script")[0],s=d.createElement("script"),f=function(){n.parentNode.insertBefore(s,n);};s.type="text/javascript";s.async=true;s.src=(d.location.protocol=="https:"?"https:":"http:")+"//mc.yandex.ru/metrika/watch.js";if(w.opera=="[object Opera]"){d.addEventListener("DOMContentLoaded",f,false);}else{f();}})(document,window,"yandex_metrika_callbacks");</script>
+<noscript>&lt;div&gt;&lt;img src="//mc.yandex.ru/watch/23720305" style="position:absolute; left:-9999px;" alt=""/&gt;&lt;/div&gt;</noscript>
+<!-- /Yandex.Metrika counter -->
+
+<!-- google -->
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-588764-1','auto');ga('send','pageview');</script>
+<!-- google -->
+
+
+
+
+
+<!-- Top100 -->
+<a href="http://top100.rambler.ru/top100/" rel="nofollow"><img height="1" alt="" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/top100.cnt" width="1" border="0"></a> 
+<!-- Top100 -->
+
+</noindex></div>
+
+
+
+      <script>$(function(){$('#push').click(function(){$('#archive').slideToggle(250);return false;});});$(document).on("mousedown",".bannercount",function(){var bannerdata=$(this).attr("data");$.ajax({type:"POST",url:"http://compress.ru/libs/bannercount.php",data:"bannerdata="+bannerdata,success:success});});function success(data)
+{console.log(data);}
+$(document).ready(function(){$(document).on("mousedown",".bannercount2",function(){var bannerdata2=$(this).data();var data='checks='+JSON.stringify(bannerdata2);$.ajax({type:"POST",url:"http://compress.ru/libs/bannercount2.php",dataType:'json',cache:false,data:data,});});});</script>
+      
+	
+	
+  
+
+
+
+
+<div class="wrapper">
+
+  <header class="header">
+    <!--
+<div class="baner-top1">
+	<a href="http://3logic.ru/?A=C" target="_blank" rel="nofollow" style="display:block;width:100%;height:90px;"><img src="/img/lol/3logic.jpg" border="0" /></a>
+</div>
+-->
+<!--
+<div class="baner-top3">
+	<a href="http://buyprinter.ru" target="_blank" rel="nofollow" style="display:block;width:100%;height:90px;"><img src="/img/lol/random_baner.jpg" border="0" /></a>
+</div>
+-->    
+  </header><!-- .header-->
+
+
+  <div class="middle">
+
+    <div class="container">
+      <main class="content">
+         <div class="baner-top2">
+
+
+
+
+<div class="bannercount" data="name=hp-com###link=http://www.xcom.ru/about/pressroom/news/B2B_XCOM_RU__noutbuk_HP_ProBook_650/###first_time=1440419991">
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="728" height="90">
+    <param name="movie" value="/img/lol/xcom-hp.swf">
+    <param name="quality" value="high">
+    <embed src="/img/lol/xcom-hp.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="728" height="90">
+    </object>
+  </div>
+  
+  
+
+  
+
+
+
+  <div class="bannercount" data="name=kingston###link=http://www.kingston.com/ru/flash/cf_cards###first_time=1428323883">
+<a href="http://www.kingston.com/ru/landing/yandexcloud" target="_blank" rel="nofollow"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/kingston-728-183.jpg" border="0" style="border:1px solid gray;"></a>
+</div>
+
+<!--
+  <div class="bannercount" data="name=xcomhp###link=http://www.xcom.ru/about/pressroom/news/X_Com___Sistemnyy_integrator_predstavlyaet_noutbuki_HP_Probook_470_G6_na_operatsionnykh_sistemakh_Wi/###first_time=1434351609">
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="728" height="120">
+    <param name="movie" value="/img/lol/xcomhp.swf">
+    <param name="quality" value="high">
+    <embed src="/img/lol/xcomhp.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="728" height="120"></embed>
+    </object>
+  </div>
+
+<div class="bannercount" data="name=oldi-pc###link=http://www.oldi.ru/catalog/6491/###1438239164">
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="728" height="90">
+    <param name="movie" value="/img/lol/oldi-pc-728-90.swf">
+    <param name="quality" value="high">
+    <embed src="/img/lol/oldi-pc-728-90.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="728" height="90"></embed>
+    </object>
+  </div>
+
+-->
+
+<!--
+  <div class="bannercount" data="name=arbyte###link=http://www.arbyte.ru/Аппаратные-решения/grid-2.html###first_time=1433839188">
+  <a href="http://www.arbyte.ru/Аппаратные-решения/grid-2.html" target="_blank"><img src="/img/lol/arbyte.gif"></a>
+  </div>
+  -->
+  
+  
+  
+  
+<!--
+<div class="bannercount" data="name=trinity###link=http://intelserver.trinitygroup.ru/###first_time=1434624863">
+  <a href="http://intelserver.trinitygroup.ru/" target="_blank"><img src="/img/lol/trinity_webbanner_2015.jpg"></a>
+  </div>
+-->
+
+<!--
+  <div class="bannercount" data="name=oldi_intel###link=http://www.oldi.ru/catalog/6491/###first_time=1425993014">
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="728" height="90">
+    <param name="movie" value="/img/lol/oldi_intel.swf">
+    <param name="quality" value="high">
+    <embed src="/img/lol/oldi_intel.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="728" height="90"></embed>
+    </object>
+  </div>
+
+
+-->
+
+</div>         <!--
+<div class="baner-top2">
+	
+<div class="bannercount" data="name=kingston###link=http://www.kingston.com/ru/flash/cf_cards###first_time=1428323883">
+<a href="http://www.kingston.com/ru/landing/yandexcloud" target="_blank" rel="nofollow"><img src="/img/lol/kingston-728-183.jpg" border="0" style="border:1px solid gray;" /></a>
+</div>
+
+	
+	
+	
+</div>
+-->         <div class="type"><ul>			<li><a href="http://compress.ru/news">Новости</a></li>
+		
+			<li><a href="http://compress.ru/tests">Тесты</a></li>
+		
+			<li><a href="http://compress.ru/review">Обзоры</a></li>
+		
+			<li><a href="http://compress.ru/technology">Технологии</a></li>
+		
+			<li><a href="http://compress.ru/buyers-guide">Гид покупателя</a></li>
+		
+			<li><a href="http://compress.ru/reports">Репортажи</a></li>
+		
+			<li><a href="http://compress.ru/interview">Интервью</a></li>
+		
+			<li><a href="http://compress.ru/lessons">Уроки</a></li>
+		
+</ul></div><div class="clear"></div>
+ 
+         <div class="mainContent">
+<a name="begin"></a>
+<h1>Что такое кэш процессора, и как он работает</h1>
+<p class="author">Сергей Пахомов</p>
+<p><a href="http://compress.ru/article.aspx?id=23541#01" title="Назначение кэш памяти" onmouseover="status=&#39;Назначение кэш памяти&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Назначение кэш памяти</a></p>
+<p><a href="http://compress.ru/article.aspx?id=23541#02" title="Принцип работы кэша процессора" onmouseover="status=&#39;Принцип работы кэша процессора&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Принцип работы кэша процессора</a></p>
+<p class="C_1"><a href="http://compress.ru/article.aspx?id=23541#03" title="Политики замещения данных в кэш­памяти" onmouseover="status=&#39;Политики замещения данных в кэш­памяти&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Политики замещения данных в кэш­памяти</a></p>
+<p class="C_1"><a href="http://compress.ru/article.aspx?id=23541#04" title="Стратегии кэширования" onmouseover="status=&#39;Стратегии кэширования&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Стратегии кэширования</a></p>
+<p><a href="http://compress.ru/article.aspx?id=23541#05" title="Организация кэша" onmouseover="status=&#39;Организация кэша&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Организация кэша</a></p>
+<p><a href="http://compress.ru/article.aspx?id=23541#06" title="Понятие ассоциативности кэша" onmouseover="status=&#39;Понятие ассоциативности кэша&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Понятие ассоциативности кэша</a></p>
+<p class="C_1"><a href="http://compress.ru/article.aspx?id=23541#07" title="Полностью ассоциативная кэш­память" onmouseover="status=&#39;Полностью ассоциативная кэш­память&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Полностью ассоциативная кэш­память</a></p>
+<p class="C_1"><a href="http://compress.ru/article.aspx?id=23541#08" title="Кэш­память с прямым отображением" onmouseover="status=&#39;Кэш­память с прямым отображением&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Кэш­память с прямым отображением</a></p>
+<p class="C_1"><a href="http://compress.ru/article.aspx?id=23541#09" title="Наборно-ассоциативный кэш" onmouseover="status=&#39;Наборно-ассоциативный кэш&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Наборно-ассоциативный кэш</a></p>
+<p class="C_1"><a href="http://compress.ru/article.aspx?id=23541#10" title="Когерентность кэша" onmouseover="status=&#39;Когерентность кэша&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Когерентность кэша</a></p>
+<p><a href="http://compress.ru/article.aspx?id=23541#11" title="Многоуровневая организация кэша" onmouseover="status=&#39;Многоуровневая организация кэша&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Многоуровневая организация кэша</a></p>
+<p><a href="http://compress.ru/article.aspx?id=23541#12" title="Иерархия кэш­памяти в микроархитектуре Intel Core" onmouseover="status=&#39;Иерархия кэш­памяти в микроархитектуре Intel Core&#39;; return true" onmouseout="status=&#39;Что такое кэш процессора, и как он работает&#39;; return true" class="contents">Иерархия кэш­памяти в микроархитектуре Intel Core</a></p>
+
+<p>&nbsp;</p>
+
+<p class="extension">О наличии у любого процессора кэш-памяти знают, наверное, все, кто вообще представляет, что такое процессор. Причем современные х86-совместимые процессоры для ноутбуков и настольных ПК имеют не просто кэш, а целую систему иерархии кэш-памяти, включающей кэш-память первого, второго и даже третьего уровней, которые расположены на кристалле процессора. Но вот зачем процессору нужен кэш и чем один кэш отличается от другого&nbsp;— на эти вопросы сможет ответить уже далеко не каждый пользователь ПК. А вопрос, почему делается несколько кэшей разных уровней и не проще ли создать один большой, может поставить в тупик даже многих опытных пользователей, разбирающихся в «железе». Итак, если вы не знаете, как ответить на перечисленные вопросы, то эта статья будет для вас небезынтересна..</p>
+
+<h2><a name="01"></a>Назначение кэш памяти</h2>
+<p>Проще всего ответить на вопрос, зачем нужна кэш­память. Как известно, процессор работает с данными, хранящимися в оперативной памяти. Однако скорость работы оперативной памяти и процессора существенно различаются: если бы процессор напрямую общался с оперативной памятью (читал или записывал данные), то б<em>о</em>льшую часть времени попросту простаивал бы. Именно для сокращения задержек доступа к оперативной памяти и применяется кэш­память, которая значительно более скоростная в сравнении с оперативной. Фактически если оперативная память используется для того, чтобы сгладить задержки доступа к данным на накопителе (HDD-диске, SSD-накопителе или флэш­памяти), то кэш­память процессора применяется для нивелирования задержек доступа к самой оперативной памяти. В этом смысле оперативную память можно рассматривать как кэш накопителя. Однако между оперативной памятью и кэшем процессора есть одно очень серьезное различие: кэш процессора полностью прозрачен для программиста, то есть нельзя адресовать программным образом находящиеся в нем данные.</p>
+<p>Понятно, что для того, чтобы кэш процессора мог выполнять свою основную задачу, то есть сглаживать доступ к оперативной памяти, он должен работать гораздо быстрее, чем она. Так, если оперативная память представляет собой динамическую память с произвольным доступом (Dynamic Random Access Memory, DRAM), то кэш процессора выполняется на базе статической оперативной памяти (Static Random Access Memory, SRAM).</p>
+<p>Статическая память SRAM без проблем работает на частотах в несколько гигагерц, то есть кэш на основе такой памяти может работать на тактовой частоте процессора. Динамическая память DRAM функционирует на частотах существенно более низких. К примеру, эффективная частота наиболее распространенной сегодня DRAM-памяти DDR3 составляет 1600&nbsp;МГц. Однако это именно эффективная частота памяти, то есть частота, с которой данные поступают на внешнюю шину в пакетном режиме доступа, а реальная частота ядра памяти составляет всего 200&nbsp;МГц. Конечно же, нас интересует в первую очередь именно эффективная частота памяти, то есть 1600&nbsp;МГц, или 1,6&nbsp;ГГц. Казалось бы, это немало, но нужно учитывать и тайминги памяти, которые характеризуют ее латентность. Причем тайминги памяти определяются в тактах работы ядра памяти, а не в тактах эффективной частоты, то есть для памяти DDR3-1600 c частотой работы ядра памяти 200&nbsp;МГц каждый такт составляет 1/200 МГц = 5&nbsp;нс. В то же время такт процессора с частотой, к примеру, 3&nbsp;ГГц длится всего 0,3 нс, то есть в 17 раз меньше.</p>
+<p>Напомним, что тайминги памяти&nbsp;— это задержки, измеряемые в тактах работы ядра памяти, между отдельными командами. Выделяют несколько таймингов памяти, соответствующих задержкам между различными командами. Наиболее важными являются тайминги RAS-to-CAS Delay (tRCD), CAS Latency (tCL), Active-to-precharge delay (tRAS) и RAS Precharge (tRP).</p>
+<p>Тайминг tRCD определяет задержку командой активации (ACTIVE) нужной строки памяти и командой записи (WRITE) или чтения (READ) данных.</p>
+<p>От команды чтения (записи) данных и до выдачи первого элемента данных на шину (записи данных в ячейку памяти) проходит промежуток времени tCL. Каждый последующий элемент данных появляется на шине данных в очередном такте (при пакетном доступе).</p>
+<p>Завершение цикла обращения к банку памяти осуществляется подачей команды PRECHARGE, приводящей к закрытию строки памяти. От команды PRECHARGE и до поступления новой команды активации строки памяти должен пройти промежуток времени tRP.</p>
+<p>А минимальный промежуток времени, длящийся с момента подачи команды активации строки до команды PRECHARGE, которая приводит к закрытию строки памяти, называется tRAS. Основные тайминги памяти обычно записываются в виде такой последовательности: tCL-tRCD-tRP-tRAS.</p>
+<p>Теперь рассмотрим в качестве примера память DDR3-1600 c таймингами 9-9-9-27. Предположим, что процессор напрямую обращается к данным оперативной памяти, которые нужно загрузить в его регистры для дальнейшей обработки. С момента активации нужной строки памяти и до появления данных на шине пройдет промежуток времени, равный tRCD+tCL, то есть 18 тактов. С учетом того что частота работы ядра памяти DDR3-1600 составляет 200 МГц, это время равно 90 нс. Если частота работы процессора составляет 3&nbsp;ГГц, то это означает, что процессор должен будет дожидаться нужных данных (по сути простаивать) минимум 270 тактов! Понятно, что если бы современные процессоры общались с оперативной памятью напрямую, то есть без кэша, то были бы крайне медлительны и в их гигагерцах не было бы никакого смысла.</p>
+<p>Есть и другая причина, по которой необходимо использовать кэш­память как промежуточное звено между процессором и оперативной памятью. Дело в том, что процесс чтения и записи данных в оперативную память происходит не отдельными байтами, а пакетами, состоящими как минимум из четырех 64-разрядных ячеек (из четырех четверных слов). Это позволяет повысить эффективность работы памяти. Однако процессор загружает данные в свои регистры в виде байт, слов, двойных слов или даже четверных слов. В любом случае он не работает с пакетами данных. То есть минимальная единица информации, считываемая из оперативной памяти, всегда больше той минимальной единицы информации, с которой работает процессор.</p>
+<p>Естественно, возникает вопрос: если из памяти считывается целый пакет данных, а требуется, к примеру, только одно двухбайтовое слово, то куда девать все остальные байты? Отбрасывать их было бы крайне нерентабельно, поскольку велика вероятность, что если сейчас процессору требуются данные, расположенные по одному адресу в оперативной памяти, то в следующий момент он запросит данные, находящиеся по соседнему адресу. А потому считанный пакет данных из оперативной памяти нужно где­то временно сохранить, то есть требуется промежуточная память для временного хранения считываемых данных. Аналогично запись в оперативную память происходит пакетами данных, но эти пакеты нужно где­то предварительно сформировать, то есть опять-таки нужна временная память или кэш.</p>
+<p>Итак, кэш процессора используется для временного хранения данных, которые записываются в оперативную память или считываются из нее, и позволяет нивелировать задержки доступа к оперативной памяти. Прежде чем перейти к рассмотрению принципов работы кэша, попытаемся ответить еще на один вопрос. Как мы уже отмечали, кэш процессора делается на основе очень быстрой статической SRAM-памяти, а оперативная память выполняется на базе достаточно медленной динамической DRAM-памяти. А почему бы не делать оперативную память на базе быстрой SRAM-памяти? Как правило, отвечают на этот вопрос следующим образом: SRAM-память дороже и делать на ее основе оперативную память экономически невыгодно. Это действительно так, однако дело не только в этом&nbsp;— стоимость в данном случае отнюдь не первостепенный фактор.</p>
+<p>SRAM-память на самом деле более быстродействующая в сравнении с DRAM-памятью, однако если каждая ячейка DRAM-памяти состоит из одного полевого транзистора и одного конденсатора, то ячейка SRAM-памяти&nbsp;— как минимум из шести полевых транзисторов (есть варианты с числом транзисторов 8 и 12). Понятно, что при таком количестве транзисторов на одну ячейку микросхема SRAM-памяти просто не может иметь такой же объем, как микросхема DRAM-памяти. То есть модули SRAM-памяти, во-первых, были бы меньшего объема в сравнении с модулями DRAM-памяти, а во-вторых, стоили бы дороже.</p>
+<p>Но и это еще не всё. Даже если создать оперативную память, которая по скорости не будет уступать кэшу на основе SRAM-памяти, то это не избавит от необходимости использования кэша в силу того, что считываемые из памяти (или записываемые в память) блоки данных нужно где­то временно размещать.</p>
+<p>Таким образом, даже при наличии сверхбыстрой оперативной памяти всё равно потребовался бы кэш для промежуточного хранения данных. Конечно, в этом случае кэш был бы устроен совсем по-другому и имел бы иной размер.</p>
+<p>Аналогично при записи модифицированных процессором данных в оперативную память логично было бы первоначально накапливать их во временном хранилище (кэше), а затем, дождавшись освобождения системой шины, выгружать в оперативную память одним махом. Это ликвидировало бы никому не нужные задержки и значительно увеличило бы производительность подсистемы памяти. Попутно отметим, что такой механизм отложенной записи реализован во всех современных процессорах.</p>
+<p>Есть и еще одна причина, по которой нет смысла в применении оперативной памяти на основе сверхбыстрой SRAM-памяти. Дело в том, что в современных процессорах кэш настолько хорошо справляется со своей задачей, что от скорости работы оперативной памяти мало что зависит. То есть, используя высокоскоростной кэш, который по объему существенно (примерно в тысячу раз) меньше оперативной памяти, можно добиться того, что все данные, которые требуются процессору, будут практически всегда находиться в кэше. Так зачем же тогда делать оперативную память на основе сверхбыстрой SRAM-памяти? Более того, нет смысла и в быстрой DRAM-памяти. Но почему тогда производители модулей памяти гордятся присутствием высокоскоростной памяти в линейке своей продукции, ориентируя ее на геймеров, оверклокеров и компьютерных энтузиастов? Действительно, если рассмотреть память DDR3, то, кроме модулей памяти, работающих на стандартизованной эффективной частоте 1066, 1333 и 1600 МГц, имеются модули памяти с частотой 1867, 2100 и 2400 МГц. На самом деле это просто рекламная уловка производителей: между памятью DDR3-1333 и DDR3-2400 никакой разницы нет, то есть, используя более скоростную память, вы не добьетесь ощутимого прироста производительности системы. Весь фокус в данном случае в том, что кэш процессора, основная задача которого заключается в нивелировании задержки обращения к оперативной памяти, отлично справляется со своей задачей.</p>
+
+<h2><a name="02"></a>Принцип работы кэша процессора</h2>
+<p>Итак, мы разобрались с назначением кэша процессора, а теперь рассмотрим базовые принципы работы кэша, которые позволяют ему решать свою основную задачу.</p>
+<p>Кэш состоит из контроллера и собственно кэш­памяти. Кэш­контроллер управляет работой кэш­памяти, то есть загружает в нее нужные данные из оперативной памяти и возвращает, когда нужно, модифицированные процессором данные в оперативную память. Архитектурно кэш­контроллер расположен между процессором и оперативной памятью (рис. 1). Перехватывая запросы к оперативной памяти, кэш­контроллер определяет, имеется ли копия затребованных данных в кэше. Если такая копия там есть, то это называется кэш­попаданием (cache hit)&nbsp;— в таком случае данные очень быстро извлекаются из кэша (существенно быстрее, чем из оперативной памяти). Если же требуемых данных в кэше нет, то говорят о кэш­промахе (cache miss)&nbsp;— тогда запрос данных переадресуется к оперативной памяти.</p>
+<p>&nbsp;</p>
+<p class="pic"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/Pic_1.png" width="500" height="159"></p>
+<p class="pic">Рис. 1. Структура кэш-памяти процессора</p>
+<p>Для достижения наивысшей производительности кэш­промахи должны происходить как можно реже (в идеале&nbsp;— отсутствовать). Учитывая, что по емкости кэш­память намного меньше оперативной памяти, добиться этого не так­то просто. А потому основная задача кэш­контроллера заключается в том, чтобы загружать кэш­память действительно нужными данными и своевременно удалять из нее данные, которые больше не понадобятся. Важно понимать, что кэш всегда «полон», так как оставлять часть кэш­памяти пустой нерационально. Новые данные попадают в кэш только путем вытеснения (замещения) каких­либо старых данных.</p>
+<p>Загрузка кэша данными реализуется на основе так называемой стратегии кэширования, а выгрузка данных&nbsp;— на основе политики замещения.</p>
+
+<h3><a name="03"></a>Политики замещения данных в кэш­памяти</h3>
+<p>Как уже отмечалось, кэш всегда полон и новые данные попадают в него только путем замещения каких­либо старых данных. Алгоритмы, определяющие стратегию замещения данных, различны. Самый простой алгоритм, не наделенный интеллектом,&nbsp;— это алгоритм произвольного выбора, когда замещаемые данные выбираются случайным образом (Random). Понятно, что политика замещения на основе алгоритма произвольного выбора проста в реализации, однако неэффективна, а потому не используется в современных процессорах (мы рассматриваем только x86-совместимые процессоры).</p>
+<p>Решение о замещении данных в кэше может приниматься также на основе частотного анализа обращений к данным (Least Frequently Used, LFU), когда в первую очередь замещаются те данные, у которых самая низкая частота обращений. Политика замещения на основе частотного анализа обращений требует наличия счетчиков в каждой строке кэша (о том, что такое строка кэша, мы расскажем далее), обновляемых при каждом удачном запросе.</p>
+<p>Следующий возможный алгоритм, определяющий политику замещения,&nbsp;— это алгоритм LRU (Least Recently Used), когда замещаются те данные, к которым дольше всего не обращались.</p>
+<p>Возможен также алгоритм FIFO (First Input First Output) или LRR (Least Recently Replaced), когда замещаются те данные, которые были загружены раньше всех.</p>
+<p>Отметим, что алгоритмы LRU и FIFO тоже требуют наличия счетчиков в каждой строке кэша и именно эти два алгоритма применяются во всех современных процессорах.</p>
+
+<h3><a name="04"></a>Стратегии кэширования</h3>
+<p>Мы рассмотрели алгоритмы, на которых основаны политики замещения данных в кэш­памяти, а теперь поговорим об алгоритмах, лежащих в основе стратегии кэширования, то есть об алгоритмах загрузки кэша данными. Напомним, что основная задача кэш­контроллера заключается в том, чтобы наполнить кэш актуальными данными и свести к минимуму количество кэш­промахов.</p>
+<p>Фактически для этого кэш­контроллер должен знать или уметь предсказывать, какие данные потребуются процессору в будущем, и на основе этого заранее загружать их в кэш (упреждающая загрузка данных). Понятно, что «наверняка» кэш­контроллер ничего не знает и никаким сверхъестественным интеллектом не обладает, а потому хоть и редко, но случаются кэш­промахи.</p>
+<p>Существует несколько стратегий помещения данных в кэш­память. Самая простая и неинтеллектуальная стратегия заключается в том, что обращение к оперативной памяти (с последующим помещением копии данных в кэш) происходит только в том случае, если затребованных процессором данных нет в кэше (возникает кэш­промах). Данная стратегия называется кэшированием по требованию (on demand). Однако при такой стратегии кэширования частота кэш­промахов достаточно высока&nbsp;— по этой причине она не используется.</p>
+<p>Значительно более эффективна стратегия упреждающей спекулятивной загрузки данных в кэш, когда кэш­контроллер заранее загружает данные в кэш­память на основе прогнозируемых предположений о том, какие данные понадобятся процессору в ближайшем будущем.</p>
+<p>Существует несколько алгоритмов упреждающей спекулятивной загрузки данных в кэш. Самый простой алгоритм основан на предположении, что данные из оперативной памяти обрабатываются последовательно, в порядке возрастания адресов. То есть кэш­контроллер попросту загружает в кэш из оперативной памяти не только затребованные процессором данные, но и соседние данные в порядке возрастания адресов. Если данные действительно обрабатываются последовательно, то последующие запросы процессора приведут к попаданию в кэш­память.</p>
+<p>Описанный алгоритм упреждающей загрузки является самым простым, но не самым эффективным, поскольку далеко не всегда данные в программе обрабатываются последовательно. Более интеллектуальные алгоритмы упреждающей спекулятивной загрузки данных в кэш предсказывают адрес следующей запрашиваемой ячейки памяти на основе анализа предыдущих обращений.</p>
+<p>Изучая последовательность кэш­промахов, кэш­контроллер пытается установить, когда может произойти следующий кэш­промах и производит упреждающую загрузку данных, чтобы избежать его. Интеллектуальная стратегия упреждающей спекулятивной загрузки данных в кэш имеет высокую эффективность и сводит частоту возникновения кэш­промахов к ничтожно малому значению.</p>
+<p>Отметим, что в современных процессорах используются исключительно интеллектуальные стратегии упреждающей спекулятивной загрузки данных в кэш.</p>
+<p>Загрузка данных из памяти может либо начинаться после фиксации кэш­промаха (стратегия Look Through), либо осуществляться параллельно с проверкой наличия соответствующей копии данных в сверхоперативной памяти и прерываться в случае кэш­попадания (стратегия Look Aside). При реализации алгоритма Look Aside сокращаются задержки доступа к памяти в случае кэш­промахов, однако при этом увеличивается энергопотребление процессора.</p>
+
+<h2><a name="05"></a>Организация кэша</h2>
+<p>Теперь рассмотрим, как структурно устроен кэш. Как мы уже знаем, размер кэша всегда намного меньше размера оперативной памяти, поэтому необходимо, чтобы вместе с каждым блоком информации, сохраняемым в кэше, сохранялся адрес этого блока данных в оперативной памяти.</p>
+<p>Рассмотрим гипотетический пример. Пусть имеется система с 32-разрядной адресацией памяти, то есть для задания адреса каждого байта памяти требуется четырехбайтный адрес. Предположим, что наш гипотетический кэш работает на уровне отдельных байтов, то есть может сохранять в качестве элемента байт оперативной памяти. Тогда каждый структурный элемент кэш­памяти должен сохранять не только байт данных оперативной памяти, но еще и его четырехбайтный адрес в оперативной памяти. Получается уже некое подобие строки, которая называется кэш­строкой (cache-line).</p>
+<p>Адрес сохраняемого байта принято именовать тегом (tag).</p>
+<p>При чтении данных из кэша процессор формирует адрес, который сравнивается с тегом кэш­строки. В случае совпадения кэш выдает требуемый байт данных, если же совпадения адреса с тегом нет (кэш­промах)&nbsp;— производится обращение к оперативной памяти. Понятно, что для реализации данного механизма необходимо дополнить каждую строку кэша еще и устройством сравнения адреса с тегом (рис. 2).</p>
+<p>&nbsp;</p>
+<p class="pic"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/Pic_2.png" width="250" height="186"></p>
+<p class="pic">Рис. 2. Структура гипотетического кэша</p>
+<p>Но и это еще не всё. Как мы уже отмечали, для реализации политики замещения на основе алгоритма FIFO или LRU, необходимо, чтобы каждая строка кэша была дополнена счетчикам возраста. Причем сколько именно байт отводится под счетчик, зависит от того, каков размер кэша. Если, к примеру, описанный нами кэш имеет размер 64 Кбайт, то в нем должно быть 65 536 строк. Тогда необходимо к каждой строке кэша добавить еще двухбайтовое поле (2<sup>16</sup> = 65 536), чтобы реализовать счетчик возраста строк.</p>
+<p>Строка, к которой обращались в последнюю очередь, имеет возраст 0, а строка с самым поздним обращением&nbsp;— возраст 65 535.</p>
+<p>В описанном выше гипотетическом кэше объем полезной сохраняемой информации в шесть раз меньше полного объема кэша, поскольку на каждый байт хранимых данных приходится еще шесть служебных байт. Понятно, что такая структура кэша абсолютно нецелесообразна.</p>
+<p>Для того чтобы повысить объем полезной информации и одновременно уменьшить объем служебных данных, достаточно сохранять информацию в кэше не в виде отдельных байтов, а в виде блоков данных. То есть в каждой строке кэша будем сохранять не один байт данных, а блок данных фиксированного размера, идущих подряд в оперативной памяти,&nbsp;— он называется размером кэш­строки. Тегом строки будет адрес в оперативной памяти первого содержащегося в ней байта. Отметим, что блок сохраняемых данных в кэш­строке (то есть по сути сама кэш­строка) имеет строго фиксированный размер и является минимальной единицей информации, которая может быть считана из кэша или загружена в кэш. Размер кэш­строки может быть равен только степени двойки (2, 4, 8, 16 и т.д.)&nbsp;— рис. 3. Как мы помним, чтение из оперативной памяти (равно как и запись в нее) происходит пакетом данных, а кэш работает только с кэш­строками. Поэтому адрес первого байта кэш­строки всегда кратен размеру пакета данных, то есть начало кэш­строки всегда совпадает с началом пакета данных.</p>
+<p>&nbsp;</p>
+<p class="pic"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/Pic_3.png" width="250" height="145"></p>
+<p class="pic">Рис. 3. Пример кэш-строки размером 16 байт</p>
+<p>Теперь посмотрим, насколько эффективнее сохранять в кэш­строке не один байт, а фиксированный блок данных. Предположим, что размер кэш­строки составляет 32 байта. Возникает вопрос, какова должна быть при этом разрядность поля адреса тега? Если, как и ранее, рассматривается 32-разрядная адресация оперативной памяти, а тег, как мы отмечали, должен сохранять адрес первого байта кэш­строки, то, казалось бы, нужно четырехбайтовое поле адреса. Однако следует учесть, что данные в кэш­строках не могут перекрываться, а значит, теги всех строк должны быть кратны 32. Именно поэтому необходимая для адресации разрядность тега будет ниже. Предположим, к примеру, что в кэше сохраняется последовательная цепочка данных и адрес первого байта в оперативной памяти равен 0000 (в шестнадцатеричной системе). Тогда тег первой строки будет равен 0000, тег второй строки (адрес 32-го байта)&nbsp;— 0020, тег третьей строки&nbsp;— 0040 и т.д. То есть теги будут образовывать последовательность 0000, 0020, 0040, 0060, 0080, 00A0 и т.д. Если записать эту последовательность в двоичном виде, то можно заметить, что последние пять цифр в каждом теге всегда будут равны нулю. Эти пять нулей можно смело откинуть&nbsp;— тогда поле тега будет уже не 32-, а 27-битным.</p>
+<p>Но в этом случае возникает вопрос: если процессору нужно получить доступ к отдельному байту, то как выделить его из кэш­строки? Всё очень просто. Процессор формирует именно 32-битный адрес, который делится на старшие 27 бит и младшие 5&nbsp;бит. Старшие 27 бит используются для поиска нужной кэш­строки, а младшие 5 бит (смещение адреса) определяют конкретное положение нужного байта в строке, то есть по сути задают смещение данных относительно первого байта в кэш­строке. Этих пяти бит как раз достаточно для задания любого из 32 байт в строке кэша (2<sup>5</sup>=32).</p>
+<p>Вообще, правило в данном случае работает такое. Как уже отмечалось, размер кэш­строки всегда равен степени двойки. Тогда размер смещения адреса равен <em>log</em><sub>2</sub> <em>S</em>, где <em>S</em>&nbsp;— размер кэш­строки в байтах. Соответственно размер тега (в битах) равен 32 –<em>log</em><sub>2</sub> <em>S</em>.</p>
+<p>Так, если размер кэш­строки равен 16 байт, то размер смещения адреса&nbsp;— 4 битам, а размер тега адреса&nbsp;— 28 битам (рис. 3). Если размер кэш­строки равен 64 байтам, то размер смещения адреса&nbsp;— 6 битам, а размер тега адреса&nbsp;— 26 битам.</p>
+<p>Понятно, что описанная нами структура кэш­памяти имеет куда лучшее соотношение полезного и полного размеров. Попутно отметим, что под указываемым в документации размером кэш­памяти всегда подразумевается полезный размер.</p>
+<p>Рассмотрим конкретный пример. Пусть имеется кэш размером 32&nbsp;Кбайт и длина строки составляет 128&nbsp;байт. Исходя из предположения, что кэш имеет структуру, описанную выше, определим полный размер кэша.</p>
+<p>Прежде всего, такой кэш будет содержать 256 строк (32&nbsp;Кбайт/128 байт). Каждая строка имеет тег размером 25 бит (32 – <em>log</em><sub>2</sub> 128). Кроме того, нужно добавить еще счетчик старения, содержащий 8 бит (<em>log</em><sub>2</sub> 256). То есть к каждой строке добавляется еще 33 служебных бита. А всего таких служебных бит будет 8448 или 1056 байт. Соответственно полный объем кэша составит чуть более 33 Кбайт. То есть полный объем кэша лишь немного превосходит его полезный объем.</p>
+<p>В рассмотренном нами кэше мы не учитывали так называемые биты модификации, которые также добавляются в каждой строке кэша и необходимы для поддержания когерентности, о которой мы расскажем далее. Однако наличие этих дополнительных служебных бит принципиально не меняет соотношение между полным и полезным размерами кэш­памяти.</p>
+
+<h2><a name="06"></a>Понятие ассоциативности кэша</h2>
+<p>До сих пор мы не рассматривали, каким именно образом происходит отображение оперативной памяти на кэш­память. Поскольку минимальной единицей информации, с которой работает кэш, является кэш­строка, условно разобьем всю оперативную память на блоки (строки), равные по размеру кэш­строкам. Предположим для простоты, что кэш состоит из восьми строк, а объем оперативной памяти равен 24 строкам кэша. Пронумеруем все строки так, чтобы нумерация начиналась с 0. То есть в кэш­памяти номер последней строки равен 7, а в оперативной памяти&nbsp;— 23. Возникает вопрос: как связать строки оперативной памяти со строками кэш­памяти? То есть если, к примеру, требуется загрузить в кэш первую строку оперативной памяти, то в какую именно строку кэш­памяти она будет загружаться? Вот тут­то как раз и возможны различные варианты.</p>
+
+<h3><a name="07"></a>Полностью ассоциативная кэш­память</h3>
+<p>Первый и самый простой вариант заключается в том, что любая строка оперативной памяти может быть записана в любую строку кэш­памяти. То есть каждая строка кэш­памяти может быть связана с любой строкой оперативной памяти и наоборот (рис. 4). Такая кэш­память получила название полностью ассоциативной (fully associative).</p>
+<p>&nbsp;</p>
+<p class="pic"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/Pic_4.png" width="350" height="309"></p>
+<p class="pic">Рис. 4. Структура полностью ассоциативной<br>
+кэш-памяти</p>
+<p>Полностью ассоциативный кэш имеет как свои плюсы, так и минусы. Главный его минус заключается в том, что поиск информации в нем по тегу строки требует сложной аппаратной реализации, а потому довольно дорог. Действительно, для того чтобы определить, имеются ли запрошенные процессором данные в кэш­памяти, нужно перебрать все кэш­строки, то есть сравнить тег кэш­строки со старшими битами адреса (напомним, что младшие биты адреса описывают смещение в самой кэш­строке). Наиболее простой способ&nbsp;— это последовательный перебор всех тегов. Однако при большом их количестве этот способ крайне непроизводителен, и, даже если несколько тегов будут просматриваться за один такт, поиск нужной кэш­строки может растянуться на сотни тактов, что сделает кэш­память низкопроизводительной. Поэтому в случае полностью ассоциативного кэша приходится реализовывать параллельный одновременный просмотр всех тегов, что довольно сложно сделать. Да и с точки зрения энергопотребления параллельный просмотр всех тегов&nbsp;— не самое лучшее решение. Именно поэтому полностью ассоциативные кэши не могут иметь большой размер.</p>
+
+<h3><a name="08"></a>Кэш­память с прямым отображением</h3>
+<p>Другой вариант организации отображения оперативной памяти на кэш­память противоположен рассмотренному полностью ассоциативному кэшу. Это так называемый кэш прямого отображения (Direct mapping), когда каждая строка оперативной памяти соответствует не любой, а только одной, строго определенной строке кэш­памяти. В этом случае каждая строка оперативной памяти связана только с одной строкой кэш­памяти, а каждой строке кэш­памяти соответствует несколько строк оперативной памяти, но опять-таки не любых, а строго определенных.</p>
+<p>В рассмотренном примере кэша из восьми строк и оперативной памяти из 24 строк можно установить следующую жесткую связь между кэш­строками и строками памяти. Строке кэш­памяти с номером 0 соответствуют строки оперативной памяти с номерами 0, 8 и 16; строке с номером 1&nbsp;— строки с номерами 1, 9 и 17, а последней строке с номером 7&nbsp;— строки с номерами 7, 15 и 23 (рис. 5). То есть в нашем примере каждой строке кэш­памяти будут соответствовать три строки оперативной памяти.</p>
+<p>&nbsp;</p>
+<p class="pic"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/Pic_5.png" width="350" height="299"></p>
+<p class="pic">Рис. 5. Структура кэш-памяти с прямым отображением</p>
+<p>Если обозначить через <em>N<sub>cache</sub></em> номер кэш­строки, через <em>N<sub>max_cache</sub></em> количество строк кэш­памяти, а через <em>N<sub>memory</sub></em> номер строки оперативной памяти, то достаточно очевидно, что соотношение между номерами строк оперативной памяти и номерами кэш­строк будет следующим:</p>
+<p align="center"><em>N<sub>cache</sub></em> = (<em>N<sub>memory</sub></em>)mod(<em>N<sub>max_cache</sub></em>),</p>
+<p>где mod&nbsp;— это функция получения остатка от деления <em>N<sub>memory</sub></em> на <em>N<sub>max_cache</sub></em>.</p>
+<p>К примеру, в нашем случае строка оперативной памяти с номером 8 попадет в строку кэш­памяти с номером 0, поскольку 8&nbsp;mod&nbsp;8 = 0, а строка оперативной памяти с номером 22&nbsp;— в строку кэш­памяти с номером 6, поскольку 22&nbsp;mod&nbsp;8&nbsp;= 6. Ну а строка оперативной памяти с номером 23 окажется в строке кэш­памяти с номером 7, поскольку 23&nbsp;mod&nbsp;8 = 7.</p>
+<p>До сих пор мы говорили об отображении условных строк оперативной памяти на строки кэш­памяти. Однако можно рассмотреть и отображение конкретного элемента (байта) оперативной памяти на кэш­память. То есть если нас интересует вопрос, в какой кэш­строке окажется элемент оперативной памяти с заданным адресом ADDR, то ответ следующий.</p>
+<p>Несложно перейти от введенных нами ранее строк оперативной памяти к адресному пространству. Действительно, если элемент оперативной памяти имеет адрес ADDR, то он находится в оперативной памяти в строке с номером:</p>
+<p align="center"><em>N<sub>cache</sub></em> = (<em>ADDR</em>)div(<em>CACHE LINE SISE</em>),</p>
+<p>где div&nbsp;— это функция целочисленного деления адреса элемента на размер кэш­строки CACHE LINE SIZE.</p>
+<p>Аналогично количество строк кэш­памяти можно выразить следующим образом:</p>
+<p align="center"><em>N<sub>max_cache</sub></em> =  (<em>CACHE SIZE</em>)div(<em>CACHE LINE SISE</em>).</p>
+<p>Тогда выражение, определяющее номер строки кэш­памяти, в которую попадет элемент оперативной памяти с адресом ADDR, запишется в виде:</p>
+<p align="center"><em>N<sub>cache</sub></em> = [(<em>ADDR</em>)div(<em>CACHE LINE SISE</em>)]mod[(<em>CACHE SISE</em>)div(<em>CACHE LINE SISE</em>)].</p>
+<p>Несомненный плюс кэш­памяти с прямым отображением заключается в том, что поиск элементов в такой памяти происходит очень быстро, поскольку для этого нужно просмотреть тег только одной кэш­строки.</p>
+<p>Однако у такой кэш­памяти есть и очень существенный недостаток. Представьте ситуацию, когда процессор пытается последовательно обратиться к строкам оперативной памяти с условными номерами 0, 8 и 16 (в рассмотренном ранее примере). Все эти строки оперативной памяти жестко связаны с одной и той же строкой кэш­памяти с номером 0. При каждом таком обращении будет происходить помещение содержимого строк оперативной памяти в одну и ту же строку кэша. Причем помещение данных в кэш будет производиться путем их замещения, то есть процессор будет сначала размещать данные в кэш­строку, а потом эти же данные будут записываться обратно в оперативную память, а на их место в кэш­памяти будут записываться новые данные. И это несмотря на тот факт, что в кэше могут быть пустые кэш­строки (кэш­строки с неактуальными данными). Конечно, такой алгоритм работы памяти крайне неэффективен, а всё из-за того, что у процессора нет свободы выбора: все строки кэш­памяти жестко связаны с элементами оперативной памяти. Поэтому в настоящее время такой тип кэш­памяти в процессорах не встречается.</p>
+
+<h3><a name="09"></a>Наборно-ассоциативный кэш</h3>
+<p>Промежуточным вариантом между полностью ассоциативным кэшем и кэшем с прямым отображением является наборно­ассоциативный кэш (N-way cache&nbsp;— N-канальный кэш).</p>
+<p>Такой кэш состоит из нескольких независимых банков (сегментов), каждый из которых представляет собой кэш с прямым отображением, а сами банки являются полностью ассоциативными по отношению к оперативной памяти. То есть любой элемент оперативной памяти может быть размещен в любом банке кэш­памяти, однако внутри банка ему соответствует строго определенная кэш­строка (рис. 6).</p>
+<p>&nbsp;</p>
+<p class="pic"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/Pic_6.png" width="350" height="303"></p>
+<p class="pic">Рис. 6. Структура наборно-ассоциативного кэша</p>
+<p>Количество банков кэша называется его степенью ассоциативности или канальностью (way). То есть может быть 2-канальный (2-way), 4-канальный (4-way), 8-канальный (8-way) и т.д. кэш. Причем количество каналов кэша&nbsp;— это степень числа 2. Наибольшее распространение получили 4- и 8-канальные кэши. На рис. 6 в качестве примера показан 4-канальный кэш.</p>
+<p>Отметим, что при количестве каналов равном 1 мы получаем кэш прямого отображения, а если число каналов совпадает с числом кэш­строк&nbsp;— то получается полностью ассоциативный кэш.</p>
+<p>Определить, в какую именно строку кэш­памяти попадет элемент оперативной памяти, довольно просто. Поскольку каждый банк кэш­памяти является сегментом памяти с прямым отображением, в нем действует то же правило, что и для кэш­памяти с прямым отображением, то есть:</p>
+<p align="center"><em>N<sub>bank_cache</sub></em> = (<em>N<sub>memory</sub></em>)mod(<em>N<sub>max_bank_cache</sub></em>).</p>
+<p>Только в данном случае <em>N<sub>bank_cache</sub></em>&nbsp;— это номер кэш­строки в банке памяти; <em>N<sub>max_bank_cache</sub></em>&nbsp;— количество строк кэш­памяти в банке; а <em>N<sub>memory</sub></em>&nbsp;— номер строки оперативной памяти. Поскольку количество строк кэш­памяти в банке определяется очевидным соотношением <em>N<sub>max_bank_cache</sub></em> = <em>N<sub>max_cache</sub></em>/<em>N</em>, где&nbsp;<em>N<sub>max_cache</sub></em>&nbsp;— количество строк в кэш­памяти, а <em>N</em>&nbsp;— степень его ассоциативности (количество банков или каналов).</p>
+<p>Рассмотрим, к примеру, 4-канальный кэш с восемью кэш­строками и оперативную память, размер которой соответствует 24 кэш­строкам. Такой кэш делится на четыре банка, причем в каждом банке две кэш­строки.</p>
+<p>Тогда строка оперативной памяти с номером&nbsp;3 может находиться в кэш­строке с номером&nbsp;1 (3 mod 2 = 1) любого из четырех банков (см. рис. 6).</p>
+<p>Наборно-ассоциативный кэш обладает быстродействием, сравнимым с быстродействием кэша с прямым отображением, и в то же время лишен недостатка, присущего этому кэшу.</p>
+<p>Понятно, что наборно­ассоциативный кэш должен иметь несколько иную структуру тега. Напомним, что в случае 32-битной адресации при размере кэш­строки <em>S</em> байт размер тега в битах равен 32 –<em>log</em>2 <em>S</em> в случае полностью ассоциативного кэша. Так, если размер кэш­строки равен 64 байтам, то размер тега адреса&nbsp;— 26 битам.</p>
+<p>Если имеется <em>N</em>-канальный кэш, то потребуется <em>log</em><sub>2</sub> <em>N</em> бит для задания номера банка и размер тега, который нужно записывать в кэш в каждом банке, уменьшится на <em>log</em><sub>2</sub> <em>N</em>. Так, в случае 4-канального кэша с размером строки 64 байта размер тега составит уже 24 бита.</p>
+
+<h3><a name="10"></a>Когерентность кэша</h3>
+<p>Под когерентностью кэш­памяти понимается алгоритм, обеспечивающий согласованность содержимого оперативной памяти и кэш­памяти. Обеспечение когерентности кэш­памяти&nbsp;— это очень важная задача, выполняемая кэш­контроллером. Если бы оперативная память была доступна только на чтение, то копия данных в кэш­памяти всегда совпадала бы с оригиналом данных в оперативной памяти. Однако оперативная память доступна и для записи, что ставит задачу своевременной модификации данных в оперативной памяти. Действительно, к оперативной памяти могут обращаться не только процессор, но и периферийные устройства, а во многопроцессорных и многоядерных процессорах разные процессоры или ядра.</p>
+<p>Допустим, к некоторой ячейке памяти, уже модифицированной в кэше, но еще не выгруженной в основную память, обращается периферийное устройство или другой процессор. В этом случае кэш­контроллер должен сначала обновить содержимое соответствующей ячейки оперативной памяти, иначе оттуда будут считаны неактуальные данные. Аналогично, если периферийное устройство или другой процессор изменяет содержимое ячейки оперативной памяти, кэш­контроллер должен выяснить, загружены ли модифицированные ячейки в его кэш­память, и если да, то их необходимо обновить.</p>
+<p>То есть нужно своевременно отслеживать изменение данных в кэше и оперативной памяти и синхронизировать эти изменения&nbsp;— поддерживать когерентность между кэшем и оперативной памятью.</p>
+<p>Поддержка когерентности кэша и оперативной памяти может осуществляться различными способами. Самое простое, но и самое неэффективное решение&nbsp;— это так называемая сквозная запись (Write True). Данный алгоритм предполагает, что оперативная память кэшируется только на чтение, а запись осуществляется напрямую, минуя кэш, сразу в оперативную память. Понятно, что в силу своей неэффективности этот алгоритм поддержания когерентности не используется в современных процессорах. Однако отметим, что именно такой алгоритм применялся в процессоре Intel 80486.</p>
+<p>Более сложный алгоритм поддержания когерентности&nbsp;— это алгоритм обратной записи (Write Back). Он предполагает, что для отслеживания операций модификации данных в кэш­памяти каждая кэш­строка имеет специальный флаг состояния. Если данные кэш­строки подверглись модификации, то флаг устанавливается в состояние «модифицированное» (Dirty). Когда периферийное устройство обращается к памяти, то кэш­контроллер проверяет, имеются ли соответствующие данные в кэше, и если да, то по флагу модификации определяется, были ли они модифицированы, то есть актуальны ли данные в оперативной памяти. Если данные были модифицированы, то в оперативной памяти данные не актуальны и содержимое соответствующей кэш­строки выгружается в оперативную память, а флаг устанавливается в состояние «не модифицировано» (Clear). При замещении кэш­строк кэш­контроллер также проверяет сначала состояние флага, и если строка была модифицирована, то она прежде выгружается в оперативную память.</p>
+<p>В современных процессорах реализация когерентности осуществляется по протоколу MESI, который является вариантом алгоритма Write Back, но с четырьмя возможными значениями флага модификации кэш­строки: M (Modified), E (Exclusive), S (Shared) и I (Invalid) (см. <a href="http://compress.ru/_1.pdf" target="_blank" class="blueLink">таблицу</a>).</p>
+<p>Если кэш­строка имеет флаг Modified (Модифицировано), то она модифицирована и содержит наиболее свежие, корректные данные, а соответствующие этой строке данные в оперативной памяти устарели и недействительны. Кроме того, в случае многопроцессорных систем ни один другой кэш не имеет этой копии данных. Статус Modified автоматически присваивается кэш­строкам при их модификации. Кэш­строка с таким флагом не может быть просто удалена из кэша, и при замещении она обязательно должна выгружаться в кэш­память более высокой иерархии или же в оперативную память. Кроме того, данные такой кэш­строки могут быть повторно модифицированы без каких­либо запросов и изменений состояния. При записи измененных данных в оперативную память состояние может поменяться на Exclusive.</p>
+<p>Если кэш­строка имеет флаг Exclusive (Эксклюзивно), то это означает, что данные этой кэш­строки эксклюзивны и не присутствуют в других кэшах (в случае многоуровневого кэша). Кэш­строка в эксклюзивном состоянии содержит наиболее свежие, корректные данные, а их копия в оперативной памяти&nbsp;— наиболее свежую, корректную копию данных.</p>
+<p>Флаг Exclusive автоматически присваивается кэш­строкам при их загрузке из кэша более высокой иерархии или оперативной памяти. Кэш­строка с флагом Exclusive при ее замещении может быть либо просто удалена, либо обменивается своим содержимым с одной из строк кэш­памяти более высокой иерархии в случае многоуровневого кэша. Состояние Exclusive может измениться на Modified в любой момент для модификации содержимого данной кэш­строки. Также состояние в любой момент может поменяться на Invalid.</p>
+<p>Флаг Shared (Разделяемое) актуален для многопроцессорных систем и означает, что копии данных этой кэш­строки также могут храниться в других кэшах иных процессоров. Кэш­строка в состоянии Shared содержит наиболее свежие, корректные данные, а копия в оперативной памяти&nbsp;— наиболее свежую, корректную копию данных. Запись в данную кэш­линию запрещена и требует перевода ее в состояние Exclusive с одновременным переводом всех остальных разделяемых копий в состояние Invalid. Также состояние Shared может измениться на состояние Invalid в любой момент.</p>
+<p>Если кэш­строка имеет флаг Invalid (Неактуально), то это означает, что кэш­строка не содержит корректных данных. Корректные копии данных могут быть либо в основной памяти, либо в кэше другого процессора.</p>
+<p>Протокол MESI несовершенен, но довольно прост в реализации и хорошо подходит для однопроцессорных конфигураций с одним или двумя уровнями кэш­памяти. Отметим, что существует несколько разновидностей протокола MESI, таких как MSI (Modified, Shared, Invalid), MOSI (Modified, Owned, Shared, Invalid), MOESI (Modified, Owned, Exclusive, Shared, Invalid) и MOWESI (Modified, Owned, Written, Exclusive, Shared, Invalid).</p>
+<p>Протоколы MSI и MOSI неактуальны, а вот протоколы MOESI и MOWESI применяются в современных процессорах.</p>
+<p>Отметим, что протокол MESI требует два бита в кэш­строке для задания ее состояния, а такие протоколы, как MOESI и MOWESI,&nbsp;— уже три бита.</p>
+<p>Протокол MOESI (впервые стал использоваться в процессорах AMD) позволяет избежать главного недостатка протокола MESI&nbsp;— невозможности хранения измененных кэш­строк более чем в одном кэше. Для этого и было введено новое состояние Owned (владелец), которое означает владение правами собственности на данную строку кэш­памяти, ее копии в других кэшах и оперативной памяти.</p>
+<p>Однако протокол MOESI тоже неидеален. Фактически состояние Owned дает преимущества процессору&nbsp;— владельцу кэш­строки, но ставит остальные процессоры в положение «только для чтения». А если кому-нибудь из них необходимо выполнить запись в свою кэш­строку с состоянием Shared, то приходится производить ее и в оперативную память, что приводит к ликвидации состояния Owned у другого процессора. Это несколько неэффективно в многопоточных средах, где различные процессоры или процессорные ядра могут одновременно выполнять разные потоки одного и того же процесса. Для повышения производительности в этом случае и было введено состояние Written, которое привело к созданию протокола MOWESI. При записи в кэш­строку с состоянием Shared ее статус меняется на Written, а остальные процессоры должны ликвидировать или обновить свои устаревшие копии, после чего состояние их кэш­строк меняется на Modified или Owned. Обновления оперативной памяти удается при этом избежать в обоих случаях. Отметим, что поддержка данного протокола впервые появилась в двухъядерном процессоре IBM POWER5.</p>
+
+<h2><a name="11"></a>Многоуровневая организация кэша</h2>
+<p>Все современные процессоры имеют как минимум двухуровневую структуру кэш­памяти, а большинство процессоров Intel&nbsp;— трехуровневую кэш­память. При этом различают кэш первого уровня (обозначается L1), кэш второго уровня (L2) и кэш третьего уровня (L3). Причем в случае процессоров Intel кэши всех уровней размещены на кристалле процессора.</p>
+<p>Казалось бы, зачем нужно делать так много кэшей? Не проще ли создать один большой кэш? Оказывается, не проще. Проблема заключается в том, что чем больше размер кэша, тем ниже его скорость. То есть можно сделать один большой, но медленный кэш, а можно&nbsp;— несколько маленьких, но быстрых кэшей, и второй вариант оказывается более предпочтительным.</p>
+<p>Кроме того, кэши разных уровней в процессоре выполняют различные задачи. Так, самый быстрый и маленький кэш первого уровня L1 всегда делится на кэш данных (L1D) и кэш команд или инструкций (L1I). Это так называемая гарвардская архитектура процессора. Кэш L1 всегда принадлежит только конкретному ядру процессора.</p>
+<p>Кэш второго уровня L2 является уже унифицированным (содержит и данные и команды). Кэш L2 всегда больше, чем кэш L1, но медленнее его. В случае многоядерных процессоров кэш L2 принадлежит конкретному ядру процессора.</p>
+<p>А вот кэш L3 является самым большим и медленным и разделяется между всеми ядрами процессора (в архитектуре процессоров Intel).</p>
+<p>Понятно, что в случае, когда в процессоре имеется многоуровневая система кэш­памяти, необходимо организовать взаимодействие между кэшами разных уровней.</p>
+<p>Для начала рассмотрим двухуровневую систему кэша. Такая кэш­память строится на базе одной из двух архитектур: включающей, которую также называют инклюзивной (inclusive), и исключающей, именуемой эксклюзивной (exclusive). То есть кэш L2 всегда построен либо по включающей, либо по исключающей архитектуре по отношению к кэшу L1 (отметим, что при наличии кэша L3 кэши L2 и L1 могут быть и не включающими, и не исключающими по отношению друг к другу).</p>
+<p>Кэш L2, построенный по включающей архитектуре, всегда дублирует содержимое кэша L1, а потому эффективная емкость кэш­памяти равна емкости кэша L2.</p>
+<p>Кэш L2, построенный по исключающей архитектуре, никогда не дублирует содержимое кэша L1, а потому эффективная емкость кэш­памяти равна суммарной емкости кэшей L1 и L2.</p>
+<p>Пусть кэш имеет включающую архитектуру. Рассмотрим, каким образом происходит запись данных из оперативной памяти в такой кэш. Если в такой системе кэш­памяти при полностью заполненном кэше L2 процессор пытается загрузить еще одну кэш­строку, то произойдет следующее. Обнаружив, что все кэш­строки заняты, кэш L2 избавляется от наименее ценной из них, стремясь при этом найти линейку, которая еще не была модифицирована, поскольку в противном случае ее еще придется выгружать в оперативную память.</p>
+<p>Затем кэш L2 передает полученные из памяти данные кэшу L1. Если кэш первого уровня также заполнен, ему приходится избавляться от одной из кэш­строк по сценарию, описанному выше.</p>
+<p>Таким образом, загруженная порция данных присутствует и в кэше L1, и в кэше L2.</p>
+<p>Отметим, что процессоры Intel Pentium II и Pentium III имели двухуровневый кэш, построенный по включающей архитектуре.</p>
+<p>В случае кэша, построенного по исключающей архитектуре, кэш L1 никогда не уничтожает кэш­строки при нехватке места. Даже если кэш­строки не были модифицированы, они вытесняются в кэш L2 на то место, где находилась только что переданная кэшу L1 кэш­строка. То есть кэши L1 и L2 как бы обмениваются друг с другом своими кэш­строками, благодаря чему кэш­память используется весьма эффективно.</p>
+
+<h2><a name="12"></a>Иерархия кэш­памяти в микроархитектуре Intel Core</h2>
+<p>В заключение рассмотрим конкретный пример организации многоуровневой кэш­памяти в процессорах c микроархитектурой Intel Core.</p>
+<p>Все современные процессоры Intel основаны на базе микроархитектуры Intel Core (которая в плане кэша не отличается от микроархитектуры Nehalem) и имеют трехуровневую подсистему кэш­памяти.</p>
+<p>Кэш­память первого уровня L1 делится на 8-канальный 32-килобайтный кэш данных (L1D) и 4-канальный 32-килобайтный кэш инструкций (L1I).</p>
+<p>Каждое ядро процессора имеет унифицированный (единый для инструкций и данных) кэш второго уровня (L2) размером 256&nbsp;Кбайт. Кэш L2 является также 8-канальным, а размер строки кэша составляет 64 байт.</p>
+<p>Кэш третьего уровня (L3) разделяется между всеми ядрами процессора. Его размер зависит от количества ядер процессора. Кэш L3 является 16-канальным.</p>
+<p>Кэш L3&nbsp;— включающий по своей архитектуре по отношению к кэшам L1 и L2, то есть в кэше L3 всегда дублируется содержимое кэшей L1 и L2. А вот кэши L1 и L2 не являются ни включающими, ни исключающими по отношению друг к другу, то есть кэш L2 может содержать, а может и не содержать копию данных кэша L1.</p>
+<p>Применение именно включающего кэша L3 имеет свои преимущества по сравнению с исключающей архитектурой. Рассмотрим несколько характерных примеров чтения данных из кэша L3 в четырехъядерном процессоре Intel. Предположим сначала, что ядро процессора Core 0, обнаружив, что требуемых ему данных нет ни в кэше L1, ни в кэше L2, обращается к кэшу L3. Если необходимых данных нет также и в кэше L3, то в случае исключающей архитектуры кэша L3 потребовалось бы проверить и наличие требуемых данных в кэшах L1 и L2 каждого из ядер Core&nbsp;1, Core 2 и Core 3. При включающей архитектуре кэша L3 надобность в подобной проверке отпадает, поскольку включающая архитектура кэша L3 гарантирует, что при отсутствии данных в кэше L3 их также не будет в кэшах L1 и L2.</p>
+<p>Если же требуемые ядру Core 0 данные обнаруживаются в кэше L3, то при исключающей архитектуре кэша больше не нужно выполнять никаких действий, поскольку данная архитектура гарантирует их отсутствие в кэшах L1 и L2 ядер Core 1, Core 2 и Core 3. Однако при включающей архитектуре кэша L3 наличие требуемых данных в кэше L3 означает, что они также содержатся в каком­нибудь из кэшей ядер Core 1, Core 2 или Core 3. Но в этом случае не нужна дополнительная проверка кэшей L1 и L2 всех остальных ядер. Достигается это тем, что в теге кэш­строки L3-кэша записывается, к какому из ядер принадлежат данные, поэтому достаточно лишь прочитать содержимое этого тега.</p>
+<p>&nbsp;</p>
+<table border="0" width="100%">
+ <tbody><tr> 
+ <td width="50%"><a href="http://compress.ru/article.aspx?id=23541#begin"><img border="0" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/top.gif" alt="В начало" align="left" width="12" height="12"></a></td>
+ <td width="50%"><a href="http://compress.ru/article.aspx?id=23541#begin"><img border="0" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/top.gif" alt="В начало" align="right" width="12" height="12"></a></td>
+ </tr>
+</tbody></table>
+
+<p class="source"><a href="http://www.cpress.ru/" target="_blank" class="contents" title="КомпьютерПресс 01&#39;2013" onmouseover="status=&#39;КомпьютерПресс 01\&#39;2013&#39;; return true" onmouseout="status=&#39;КомпьютерПресс 01\&#39;2013&#39;; return true">КомпьютерПресс 01'2013</a></p>
+
+</div>         <div class="sp"></div>
+      </main><!-- .content -->
+    </div><!-- .container-->
+
+    <aside class="left-sidebar">
+      <div class="logo"><a href="http://compress.ru/"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/compress.gif"></a></div>
+      <ul class="side-navigation">			<li><a href="http://compress.ru/computers">ПК и комплектующие</a></li>
+		
+			<li><a href="http://compress.ru/periphery">Периферия</a></li>
+		
+			<li><a href="http://compress.ru/digital-home">Цифровой дом</a></li>
+		
+			<li><a href="http://compress.ru/gadgets">Гаджеты</a></li>
+		
+			<li><a href="http://compress.ru/photo-video">Фото и видео</a></li>
+		
+			<li><a href="http://compress.ru/software">Программы и утилиты</a></li>
+		
+			<li><a href="http://compress.ru/internet">Мир интернет</a></li>
+		
+			<li><a href="http://compress.ru/security">Безопасность</a></li>
+		
+			<li><a href="http://compress.ru/networks">Сети и телекоммуникации</a></li>
+		
+			<li><a href="http://compress.ru/corporate">Корпоративные решения</a></li>
+		
+</ul><div class="line2"></div><ul class="side-navigation about">			<li><a href="http://compress.ru/about">О нас</a></li>
+		
+			<li><a href="http://compress.ru/advertising">Размещение рекламы</a></li>
+		
+			<li><a href="http://compress.ru/contacts">Контакты</a></li>
+		
+</ul><div class="line2"></div>
+<div class="bannercount" data="name=avermedia###link=http://avertv.avermedia.com/avertv/ru/Product/ProductList.aspx?IID=7###first_time=1441008194">
+<a href="http://avertv.avermedia.com/avertv/ru/Product/ProductList.aspx?IID=7" target="_blank" rel="nofollow"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/GC550_banner_RU.GIF"></a>
+</div>
+
+
+
+
+<!--
+<div class="bannercount" data="name=xcom###link=http://www.xcom.ru/###first_time=1437989884">
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="175" height="400">
+    <param name="movie" value="/img/lol/xcom_175x400.swf">
+    <param name="quality" value="high">
+    <embed src="/img/lol/xcom_175x400.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="175" height="400"></embed>
+    </object>
+</div>
+
+
+
+
+
+<div class="bannercount" data="name=plustek###link=http://plustek.com/ru/products/escan-series/###first_time=1430380648">
+<a href="http://plustek.com/ru/products/escan-series/" target="_blank" rel="nofollow"><img src="/img/lol/plustek_175_300.gif"></a>
+</div>
+
+
+<div class="bannercount" data="name=distree###link=http://www.distree-russia.com/Home/DistreeRUSSIA.aspx###first_time=1429173027">
+    <a href="http://www.distree-russia.com/Home/DistreeRUSSIA.aspx" target="_blank" rel="nofollow"><img src="/img/lol/drussia175-250.gif"></a>
+</div>
+-->
+
+      <form action="http://compress.ru/search/" class="search-form" method="post">
+          <input type="search" name="search" class="search-text" placeholder="Поиск">
+          <input type="submit" value=" " class="search-submit"><br style="clear:both;">
+      </form>
+      <!-- google search -->
+      <form action="http://www.google.com/search" method="get" class="search-form">
+        <input type="search" name="q" value="" class="search-text" placeholder="Google">
+        <input type="HIDDEN" name="sitesearch" value="compress.ru">
+        <input type="submit" value=" " class="search-submit"><br style="clear:both;">
+      </form>
+	<div class="bannercount" data="name=plextor###link=http://goplextor.com/ru/###first_time=1441190916">
+<a href="http://goplextor.com/ru/" target="_blank" rel="nofollow"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/M6V-banner.gif"></a>
+</div>
+
+      <p class="kerio">КомпьютерПресс использует <img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/kerio.jpg"><br></p>
+      <div class="sp"></div>
+    </aside><!-- .left-sidebar -->
+
+    <aside class="right-sidebar">
+      <div class="bannercount" data="name=asrock###link=http://www.asrock.com/###first_time=1441009163">
+<a href="http://www.asrock.com/" target="_blank" rel="nofollow"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/asrock-175-200.gif"></a>
+</div>
+
+
+<!--
+<div class="bannercount" data="name=plustek###link=http://plustek.com/ru/products/escan-series/###first_time=1430380648">
+<a href="http://plustek.com/ru/products/escan-series/" target="_blank" rel="nofollow"><img src="/img/lol/plustek_175_300.gif"></a>
+</div>
+-->
+
+<!--
+<div style="height:2px";></div>
+<div class="bannercount" data="name=powercom###link=http://www.pcm.ru/catalog/item/1561/###first_time=1434353034" style="border:1px solid gray;">
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="175" height="250">
+    <param name="movie" value="/img/lol/175x250_VRT2000.swf">
+    <param name="quality" value="high">
+    <embed src="/img/lol/175x250_VRT2000.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="175" height="250"></embed>
+    </object>
+</div>
+-->
+         <div style="border-right:1px solid gray;border-left:1px solid gray;border-top:1px solid gray;"><a href="http://compress.ru/article.aspx?id=23541#" id="push">Архив изданий</a></div>
+<div style="border-right:1px solid gray;border-left:1px solid gray;border-bottom:1px solid gray;">
+<table border="0" id="archive" style="display:none;">
+        <tbody>
+          <tr> 
+            <td class="archive"><strong>1999</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=399">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=409">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=416">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=423">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=431">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=437">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=443">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=450">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=456">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=462">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=469">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=400">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2000</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=401">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=410">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=417">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=424">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=432">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=438">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=444">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=451">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=457">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=463">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=470">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=473">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2001</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=402">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=411">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=418">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=425">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=433">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=439">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=445">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=452">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=458">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=464">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=465">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=474">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2002</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=403">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=412">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=419">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=426">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=434">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=440">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=446">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=453">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=459">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=466">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=471">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=475">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2003</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=404">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=413">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=420">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=427">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=428">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=441">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=447">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=454">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=460">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=467">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=406">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=476">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2004</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=405">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=414">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=421">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=429">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=435">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=422">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=448">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=455">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=461">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=468">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=472">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=477">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2005</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=407">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=415">2</a> </td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=408">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=430">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=436">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=442">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=449">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=684">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=687">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=696">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=712">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=713">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2006</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=695">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=703">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=736">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=743">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=750">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=755">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=759">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=767">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=771">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=776">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=781">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=786">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2007</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=792">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=799">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=805">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=810">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=817">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=822">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=827">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=831">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=838">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=842">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=850">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=854">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2008</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=858">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=865">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=871">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=877">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=883">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=889">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=895">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=898">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=901">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=905">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=909">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=911">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2009</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=917">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=921">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=924">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=928">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=931">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=934">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=939">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=942">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=945">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=949">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=952">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=956">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2010</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=960">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=964">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=967">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=971">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=974">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=976">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=981">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=984">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=987">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=991">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=995">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=998">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2011</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1000">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1005">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1009">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1012">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1015">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1018">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1022">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1026">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1029">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1033">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1036">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1040">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2012</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1044">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1047">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1050">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1053">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1056">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1060">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1064">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1067">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1070">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1074">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1077">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1080">12</a></td>
+          </tr>
+          <tr> 
+            <td class="archive"><strong>2013</strong></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1084">1</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1087">2</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1090">3</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1093">4</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1096">5</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1099">6</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1101">7</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1106">8</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1109">9</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1113">10</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1117">11</a></td>
+            <td class="archive"><a href="http://compress.ru/issue.aspx?iid=1121">12</a></td>
+          </tr>
+        </tbody>
+</table>
+</div>      <div id="popular">
+        <div class="popular-header">Популярные статьи</div>
+
+
+
+
+        <div class="popular-block">
+          <div class="popular-title"><a href="http://compress.ru/post/20150707-ups-review-5-online-models">Источники бесперебойного питания для серверов и сетевого оборудования</a></div>
+          <div class="popular-img"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/18.jpg"></div>
+          <div class="popular-annotation">Предлагаем вниманию читателей обзор пяти моделей источников бесперебойного питания (ИБП) мощностью от 1000 до 3000 В•А, которые предназначены для защиты электропитания компьютеров, серверов и коммуникационного оборудования</div>
+        </div>
+        <div style="clear:both;"></div>
+        
+        <div class="popular-block">
+          <div class="popular-title"><a href="http://compress.ru/post/20150717-marshall-london">Анонсирован первый смартфон под брендом Marshall</a></div>
+          <div class="popular-img"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/19.jpg"></div>
+          <div class="popular-annotation">В августе в продажу поступит смартфон Marshall London. Новинка, пополнившая ассортимент продукции бренда Marshall Headphones, адресована в первую очередь меломанам и музыкантам. Помимо оригинального дизайна, выдержанного в стиле классической аппаратуры Marshall, эта модель может похвастаться высококачественной звуковой подсистемой, а также наличием предустановленных фирменных приложений для записи и воспроизведения музыки</div>
+        </div>
+        <div style="clear:both;"></div>
+        
+        <div class="popular-block">
+          <div class="popular-title"><a href="http://compress.ru/post/20150514-win-10-mods">Windows 10 будет доступна в семи вариантах</a></div>
+          <div class="popular-img"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/20.jpg"></div>
+          <div class="popular-annotation">Корпорация Microsoft обнародовала информацию об особенностях различных вариантов операционной системы Windows 10, официальный релиз которой ожидается летом</div>
+        </div>
+        <div style="clear:both;"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="popular-block">
+          <div class="popular-title"><a href="http://compress.ru/post/20150225-bq-w001-w002-w-003">Фитнес-трекеры BQ поступили в продажу</a></div>
+          <div class="popular-img"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/17.jpg"></div>
+          <div class="popular-annotation">Ассортимент мобильных устройств BQ пополнили сразу три модели «умных» браслетов — BQ-W001, BQ-W002 и BQ-W003. Набор функций, реализованных в новинках, включает часы, будильник, планировщик, шагомер, счетчики пройденного расстояния и сожженных калорий</div>
+        </div>
+        <div style="clear:both;"></div>
+        
+        <div class="popular-block">
+          <div class="popular-title"><a href="http://compress.ru/post/20140530-right-color">Правильный цвет ваших фотографий</a></div>
+          <div class="popular-img"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/16.jpg"></div>
+          <div class="popular-annotation">Чтобы добиться правильной цветопередачи при обработке RAW-образов снимков в универсальных программных пакетах, зачастую требуется немало времени и солидный опыт. Однако существует более простой и быстрый способ решить эту задачу. Воспользовавшись специальными инструментами, можно создать уникальный цветовой профиль вашей фотокамеры, который в большинстве ситуаций позволит получить оптимальный результат буквально одним щелчком мыши</div>
+        </div>
+        <div style="clear:both;"></div>
+        
+        <div class="popular-block">
+          <div class="popular-title"><a href="http://compress.ru/post/20150430-hp-jetintelligence">HP JetIntelligence: революция в лазерной печати</a></div>
+          <div class="popular-img"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/15.jpg"></div>
+          <div class="popular-annotation">В этом обзоре мы расскажем о наиболее важных особенностях новейшей технологии лазерной печати HP JetIntelligence, а также о возможностях и преимуществах новых устройств, созданных на базе данного решения</div>
+        </div>
+        <div style="clear:both;"></div>
+
+
+
+
+
+
+
+<!--
+        <div class="popular-block">
+          <div class="popular-title"><a href="/post/20150324-totolink-a2004ns">Тестирование беспроводного маршрутизатора TOTOLINK A2004NS</a></div>
+          <div class="popular-img"><img src="/img/popular/12.jpg"></div>
+          <div class="popular-annotation">Продукцию компании TOTOLINK уже можно встретить на российском рынке сетевых устройств, хотя в широкую продажу попали только некоторые модели. В нашем обзоре мы познакомимся с одним из новых беспроводных маршрутизаторов этой компании — TOTOLINK A2004NS, который, несмотря на свое недавнее появление, должен заинтересовать конечного пользователя</div>
+        </div>
+        <div style="clear:both;"></div>
+        
+        <div class="popular-block">
+          <div class="popular-title"><a href="/post/20140916-catb15q">Смартфон для настоящих мужчин — Caterpillar B15Q</a></div>
+          <div class="popular-img"><img src="/img/popular/13.jpg"></div>
+          <div class="popular-annotation">Компания Caterpillar недавно выпустила обновленную версию своего защищенного смартфона CAT B15Q. Эта модель в значительной степени отличается от традиционных смартфонов и мобильных телефонов, ведь ее основная задача — это работа в суровых условиях. В данной статье мы рассмотрим эту интересную модель, а также попытаемся проверить надежность ее защиты</div>
+        </div>
+        <div style="clear:both;"></div>
+        
+        <div class="popular-block">
+          <div class="popular-title"><a href="/post/20140701-kingston-microsd-sdca10">Скоростная карта памяти microSDHC от Kingston</a></div>
+          <div class="popular-img"><img src="/img/popular/14.jpg"></div>
+          <div class="popular-annotation">Возможности мобильных устройств расширяются год от года. И чтобы воспользоваться ими в полной мере, требуются всё более емкие и скоростные сменные носители. Как мы смогли убедиться, характеристики топовой модели карты памяти формата microSDHC компании Kingston соответствуют потребностям даже самых современных мобильных устройств</div>
+        </div>
+        <div style="clear:both;"></div>
+-->
+
+
+
+
+
+
+
+
+
+
+
+      </div>
+      <p class="kerio">КомпьтерПресс использует оборудование <a href="http://www.etegro.ru/" target="_blank" rel="nofollow"><img src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/etegro.png" style="border:0;"></a></p>
+      <div class="sp"></div>
+      
+    </aside><!-- .right-sidebar -->
+
+  </div>
+
+  <footer class="footer">
+      
+    <div class="social"><!-- vkontekte -->
+<div id="vk_like" style="float:left;width:200px;"></div>
+<script type="text/javascript">VK.Widgets.Like("vk_like",{type:"mini",height:18});</script>
+													
+													
+<!-- facebook -->
+<div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe name="fb_xdm_frame_http" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" id="fb_xdm_frame_http" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/44OwK74u0Ie.html" style="border: none;"></iframe><iframe name="fb_xdm_frame_https" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" id="fb_xdm_frame_https" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/44OwK74u0Ie(1).html" style="border: none;"></iframe></div></div></div>
+<script>(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="//connect.facebook.net/ru_RU/all.js#xfbml=1";fjs.parentNode.insertBefore(js,fjs);}(document,'script','facebook-jssdk'));</script>
+													
+<script type="text/javascript">var link=document.location.href;document.write('<fb:like href="'+link+'" send="false" width="450" show_faces="true" font="tahoma"></fb:like>');</script><fb:like href="http://compress.ru/article.aspx?id=23541" send="false" width="450" show_faces="true" font="tahoma" class=" fb_iframe_widget" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=&amp;container_width=0&amp;font=tahoma&amp;href=http%3A%2F%2Fcompress.ru%2Farticle.aspx%3Fid%3D23541&amp;locale=ru_RU&amp;sdk=joey&amp;send=false&amp;show_faces=true&amp;width=450"><span style="vertical-align: bottom; width: 450px; height: 25px;"><iframe name="ff4aad2e" width="450px" height="1000px" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" title="fb:like Facebook Social Plugin" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/like.html" style="border: none; visibility: visible; width: 450px; height: 25px;" class=""></iframe></span></fb:like>
+
+<!-- google +1. -->
+<div id="___plusone_0" style="text-indent: 0px; margin: 0px; padding: 0px; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; display: inline-block; width: 200px; height: 20px; background: transparent;"><iframe frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: static; top: 0px; width: 200px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 20px;" tabindex="0" vspace="0" width="100%" id="I0_1442038582589" name="I0_1442038582589" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/fastbutton.html" data-gapiattached="true" title="+1"></iframe></div>
+<!-- Поместите этот вызов функции отображения в соответствующее место. -->
+<script type="text/javascript">window.___gcfg={lang:'ru'};(function(){var po=document.createElement('script');po.type='text/javascript';po.async=true;po.src='https://apis.google.com/js/plusone.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(po,s);})();</script>
+													
+
+<!-- mail.ru odnoklassniki -->
+<script type="text/javascript">var link=document.location.href;document.write('<a target="_blank" rel="nofollow" class="mrc__plugin_uber_like_button" href="http://connect.mail.ru/share?share_url=http%3A%2F%2F'+link+'" data-mrc-config="{\'type\' : \'small\', \'caption-mm\' : \'1\', \'caption-ok\' : \'1\', \'counter\' : \'true\', \'text\' : \'true\', \'width\' : \'150\'}">Нравится</a>');</script><span style="position: relative; left: 0; top: 0; margin: 0; padding: 0; visibility: visible;"><iframe frameborder="0" id="2909613" name="2909613" scrolling="no" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/share_button.html" allowtransparency="true" style="width: 150px; height: 21px;"></iframe></span><a target="_blank" rel="nofollow" class="mrc__plugin_uber_like_button" href="http://connect.mail.ru/share?share_url=http%3A%2F%2Fhttp://compress.ru/article.aspx?id=23541" data-mrc-config="{&#39;type&#39; : &#39;small&#39;, &#39;caption-mm&#39; : &#39;1&#39;, &#39;caption-ok&#39; : &#39;1&#39;, &#39;counter&#39; : &#39;true&#39;, &#39;text&#39; : &#39;true&#39;, &#39;width&#39; : &#39;150&#39;}" type="uber_like_button" style="display: none;">Нравится</a>
+<script src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/loader.js" type="text/javascript" charset="UTF-8"></script>
+													
+<!-- twitter -->
+<script type="text/javascript">var link=document.location.href;tweetmeme_style='compact';tweetmeme_url=link;</script>
+<script type="text/javascript" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/button.js"></script></div>
+    <br>
+
+    <ul id="copyright">
+      <li>Copyright © КомпьютерПресс 1999 - 2015</li>
+      <li><a href="mailto:webmaster@compress.ru">webmaster@compress.ru</a></li>
+    </ul>
+
+
+
+  </footer><!-- .footer -->
+
+
+
+</div>
+
+
+<iframe name="oauth2relay481603468" id="oauth2relay481603468" src="./Что такое кэш процессора, и как он работает _ КомпьютерПресс_files/postmessageRelay.html" tabindex="-1" style="width: 1px; height: 1px; position: absolute; top: -100px;"></iframe></body></html>

@@ -1,0 +1,35 @@
+n = 1023
+algorithm: LRU
+task: Multiply
+timeSimple: 743.414
+# of checks: 3211797501 # of hits: 3144752318 # of misses: 67045183 Miss Rate: 0.0208747
+n = 1024
+algorithm: LRU
+task: Multiply
+timeSimple: 966.993
+# of checks: 3221225472 # of hits: 2146319294 # of misses: 1074906178 Miss Rate: 0.333695
+n = 1025
+algorithm: LRU
+task: Multiply
+timeSimple: 748.189
+# of checks: 3230671875 # of hits: 3163232960 # of misses: 67438915 Miss Rate: 0.0208746
+n = 1040
+algorithm: LRU
+task: Multiply
+timeSimple: 767.713
+# of checks: 3374592000 # of hits: 3304150719 # of misses: 70441281 Miss Rate: 0.020874
+n = 1041
+algorithm: LRU
+task: Multiply
+timeSimple: 783.798
+# of checks: 3384335763 # of hits: 3313691355 # of misses: 70644408 Miss Rate: 0.0208739
+n = 1050
+algorithm: LRU
+task: Multiply
+timeSimple: 806.106
+# of checks: 3472875000 # of hits: 3400383918 # of misses: 72491082 Miss Rate: 0.0208735
+n = 1100
+algorithm: LRU
+task: Multiply
+timeSimple: 928.017
+# of checks: 3993000000 # of hits: 3909659324 # of misses: 83340676 Miss Rate: 0.0208717

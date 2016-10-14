@@ -1,0 +1,35 @@
+n = 1023
+algorithm: LRU
+task: Transpose
+timeTranspose: 0.496981
+# of checks: 2093058 # of hits: 1961282 # of misses: 131776 Miss Rate: 0.0629586
+n = 1024
+algorithm: LRU
+task: Transpose
+timeTranspose: 0.718699
+# of checks: 2097152 # of hits: 983039 # of misses: 1114113 Miss Rate: 0.53125
+n = 1025
+algorithm: LRU
+task: Transpose
+timeTranspose: 0.496788
+# of checks: 2101250 # of hits: 1968960 # of misses: 132290 Miss Rate: 0.0629578
+n = 1040
+algorithm: LRU
+task: Transpose
+timeTranspose: 0.506755
+# of checks: 2163200 # of hits: 2026959 # of misses: 136241 Miss Rate: 0.0629812
+n = 1041
+algorithm: LRU
+task: Transpose
+timeTranspose: 0.513708
+# of checks: 2167362 # of hits: 2030925 # of misses: 136437 Miss Rate: 0.0629507
+n = 1050
+algorithm: LRU
+task: Transpose
+timeTranspose: 0.52795
+# of checks: 2205000 # of hits: 2066268 # of misses: 138732 Miss Rate: 0.062917
+n = 1100
+algorithm: LRU
+task: Transpose
+timeTranspose: 0.584681
+# of checks: 2420000 # of hits: 2267924 # of misses: 152076 Miss Rate: 0.0628413
