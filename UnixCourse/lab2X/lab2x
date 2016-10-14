@@ -1,0 +1,3 @@
+#!/bin/bash
+
+[[ $1 =~ http(s)?://* ]] && echo $1 || echo http://$1

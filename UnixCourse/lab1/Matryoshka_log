@@ -1,0 +1,54 @@
+~$ dd if=/dev/zero of=Matryoshka bs=1M count=512
+#512+0 records in
+#512+0 records out
+#536870912 bytes (537 MB, 512 MiB) copied, 0,348703 s, 1,5 GB/s
+
+~$ mkfs -t ext2 Matryoshka
+
+#mke2fs 1.42.13 (17-May-2015)
+#Discarding device blocks: done                            
+#Creating filesystem with 131072 4k blocks and 32768 inodes
+#Filesystem UUID: 493398f2-44f6-4950-b350-9fc4153180da
+#Superblock backups stored on blocks: 
+#	32768, 98304
+
+#Allocating group tables: done                            
+#Writing inode tables: done                            
+#Writing superblocks and filesystem accounting information: done
+
+~$ fdisk -l Matryoshka
+#Disk Matryoshka: 512 MiB, 536870912 bytes, 1048576 sectors
+#Units: sectors of 1 * 512 = 512 bytes
+#Sector size (logical/physical): 512 bytes / 512 bytes
+#I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+~$  sudo mount -o loop ./Matryoshka ./Matryoshka_m
+
+~$ cd Matryoshka_m
+
+~/Matryoshka_m$ ls
+
+#lost+found  Matryoshka
+
+~/Matryoshka_m$ cd Matryoshka
+
+~/Matryoshka_m/Matryoshka$ ls
+
+#
+
+~/Matryoshka_m/Matryoshka$ sudo mkdir m_root
+
+~/Matryoshka_m/Matryoshka$ ls
+
+#m_root
+
+~/Matryoshka_m/Matryoshka$ cd m_root
+
+~/Matryoshka_m/Matryoshka/m_root$ echo "Hello World!" | sudo tee readme.txt
+
+#Hello World!
+
+~/Matryoshka_m/Matryoshka/m_root$ cat readme.txt 
+
+#Hello World!
+
