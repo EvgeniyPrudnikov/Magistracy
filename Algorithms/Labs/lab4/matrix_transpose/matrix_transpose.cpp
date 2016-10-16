@@ -7,16 +7,17 @@
 #include <vector>
 #include <ctime>
 
+
 using namespace std;
 
 int main()
 {
-	const int n = 2;
-	const int m = 4;
+	const int n = 5;
+	const int m = 5;
 	srand(static_cast<unsigned int>(time(NULL)));
 
 
-	vector<char> matrix(n*m);
+	vector<unsigned char> matrix(n*m);
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < m; ++j)
@@ -25,20 +26,10 @@ int main()
 		}
 	}
 
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < m; j++)
-		{
-			cout << matrix[i*m + j];
-		}
-		cout << endl;
-	}
-
-
 	ofstream out("input.bin", ios::out | ios::binary);
 	
-	out.write((char *)&n, sizeof n);
-	out.write((char *)&m, sizeof m);
+	out.write((char *)&n, sizeof( int));
+	out.write((char *)&m, sizeof(int));
 	copy(matrix.begin(), matrix.end(), std::ostreambuf_iterator<char>(out));
 
 	out.close();
