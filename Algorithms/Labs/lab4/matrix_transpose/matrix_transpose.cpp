@@ -12,8 +12,8 @@ using namespace std;
 
 int main()
 {
-	const int n = 5;
-	const int m = 5;
+	const int n = 2048;
+	const int m = 2048;
 	srand(static_cast<unsigned int>(time(NULL)));
 
 
@@ -28,7 +28,7 @@ int main()
 
 	ofstream out("input.bin", ios::out | ios::binary);
 	
-	out.write((char *)&n, sizeof( int));
+	out.write((char *)&n, sizeof(int));
 	out.write((char *)&m, sizeof(int));
 	copy(matrix.begin(), matrix.end(), std::ostreambuf_iterator<char>(out));
 
