@@ -12,6 +12,7 @@ using namespace std;
 
 int main()
 {
+
 	const int n = 2048;
 	const int m = 2048;
 	srand(static_cast<unsigned int>(time(NULL)));
