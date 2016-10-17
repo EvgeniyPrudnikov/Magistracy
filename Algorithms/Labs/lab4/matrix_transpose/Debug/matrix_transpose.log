@@ -1,0 +1,4 @@
+﻿  matrix_transpose.cpp
+d:\nowork\git\magistracy\algorithms\labs\lab4\matrix_transpose\matrix_transpose.cpp(39): warning C4018: '<': signed/unsigned mismatch
+d:\nowork\git\magistracy\algorithms\labs\lab4\matrix_transpose\matrix_transpose.cpp(42): warning C4018: '<': signed/unsigned mismatch
+  matrix_transpose.vcxproj -> D:\NoWork\Git\Magistracy\Algorithms\Labs\lab4\matrix_transpose\Debug\matrix_transpose.exe
