@@ -3,13 +3,9 @@ class NVector:
 
         if isinstance(obj, list):
             self.__vector = list(obj)
-            self.scalar_sq = self.scalar_square()
-            self.scalar_length = self.scalar_len()
 
         else:
             self.__vector = [obj]
-            self.scalar_sq = obj ** 2
-            self.scalar_length = obj
 
     def __getitem__(self, item):
         return self.__vector[item]
@@ -45,7 +41,7 @@ class NVector:
         return sum([self.__vector[i] * self.__vector[i] for i, e in enumerate(self.__vector)])
 
     def scalar_len(self):
-        return self.scalar_sq ** 0.5
+        return self.scalar_square() ** 0.5
 
     def distance(self, other):
         return (sum([(self.__vector[i] - other[i]) ** 2 for i, e in enumerate(self.__vector)]))**0.5
@@ -56,7 +52,7 @@ class NVector:
 
 a = NVector([1, -2, 3, 4, 7])
 
-b = NVector([1, -2, 4, 4, 7])
+b = NVector([1, -2, 3, 4, 7])
 
 print 'a =',
 print a
@@ -74,9 +70,9 @@ print a * b
 print 'a == b =',
 print a == b
 print 'scalar square =',
-print a.scalar_square
+print a.scalar_square()
 print 'scalar length =',
-print a.scalar_length
+print a.scalar_len()
 print 'distance =',
 print a.distance(b)
 print 'angle =',
