@@ -1,5 +1,6 @@
 test = [1, [2, {'a': [1, 2, 3], 'b': {'c':[1,2,3],'d':'str'}}], 4]
 print test
+print ''
 
 
 def format_print(obj, res=[], lvl=0, et=None):

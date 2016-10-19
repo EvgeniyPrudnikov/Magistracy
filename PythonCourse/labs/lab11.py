@@ -3,7 +3,6 @@ class NVector:
 
         if isinstance(obj, list):
             self.__vector = list(obj)
-
         else:
             self.__vector = [obj]
 
@@ -22,11 +21,17 @@ class NVector:
     def __add__(self, other):
         return NVector([self.__vector[i] + other[i] for i, e in enumerate(self.__vector)])
 
+    def __radd__(self, other):
+        return self.__add__(other)
+
     def __mul__(self, other):
         if isinstance(other, (int, float)):
             return NVector([self.__vector[i] * other for i, e in enumerate(self.__vector)])
         else:
             return sum([self.__vector[i] * other[i] for i, e in enumerate(self.__vector)])
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
 
     def __sub__(self, other):
         return NVector([self.__vector[i] - other[i] for i, e in enumerate(self.__vector)])
@@ -63,6 +68,8 @@ print 'a + b =',
 print a + b
 print 'a * 4 =',
 print a * 4
+print '4 * a =',
+print 4* a
 print 'a ** 3 =',
 print a ** 3
 print 'a * b =',
