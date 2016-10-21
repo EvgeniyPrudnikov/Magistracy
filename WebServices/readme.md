@@ -160,10 +160,10 @@ PUT /sources/
 #### Пример ответа сервера: 
 ```
 HTTP/1.1 201 Created
-    Date: ...
-    Content-Length: ...  
-    Content-Type: json;charset="utf-8"
-    Location: /sources/{id}
+Date: ...
+Content-Length: ...  
+Content-Type: json;charset="utf-8"
+Location: /sources/{id}
 	... 
 
 { 
@@ -177,14 +177,14 @@ HTTP/1.1 201 Created
 }
 ```
 
-Если объект не изменился придет ответ:
+Если объект не изменился, придет ответ:
 
 ```
 HTTP/1.1 304 Not Modified
 Date: ... 
 ```
 
-Если бъект успешно обновился придет ответ:
+Если объект успешно обновился, придет ответ:
 ```
 HTTP/1.1 200 Ok 
 Date: ... 
