@@ -44,7 +44,7 @@ GET /sources/
 					}
 					,
 					{
-					 ,"source_id": "/sources/{id}"
+					 "source_id": "/sources/{id}"
 					 ,"source_global_url":" ... "
 					 ,"source_name": " ... "
 					 ,"source_desc": " ... "
@@ -73,17 +73,17 @@ GET /sources/news?start_dt=sysdate&end_dt=sysdate-2
 					 ,"news_date_id": "{news_date_id}" // дата появления/обновления новости
 					 ,"news_title": " ... " // заголовок/имя новости
 					 ,"news_body_limited":" ...  " // 1 - 2 абзаца тела новости
-					 ,"news_start_image":" ... " //url на картинку на сервере (может быть пустым)
-					 
+					 ,"news_start_image":" ... " //url на картинку в заголовке на сервере (может быть пустым)
 					}
 					,
 					{
 					  "news_id": "/sources/news/{news_is}"
 					 ,"source_id": "/sources/{id}"
-					 ,"source_name": " ... " // имя источника новостей (пример: СБ беларусь сегодня :) )
+					 ,"source_name": " ... "
 					 ,"news_date_id": "{news_date_id}"
-					 ,"news_title": " ... " // заголовок/имя новости
-					 ,"news_body_limited":" ...  " // 1 - 2 абзаца тела новости
+					 ,"news_title": " ... " 
+					 ,"news_body_limited":" ...  " 
+					 ,"news_start_image":" ... " 
 					}
 					,
 					{...}
@@ -157,7 +157,7 @@ HTTP/1.1 201 Created
 					 ,"source_global_url": " ... " // глобальный url источника (например tut.by)
 					 ,"source_name": " ... "  // имя источника новостей (пример: СБ Беларусь сегодня :) ) 
 					 ,"source_desc": " ... "  // краткое описание источника (новости спорта/политика/финансы и тд) может быть пустым (например СБ Беларусь сегодня - там есть все новости)
-					 ,"source_lable": " ... " // image
+					 ,"source_lable": " ... " // url на картинку на сервере (может быть пустым)
 				}
 }
 ```
