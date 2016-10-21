@@ -1,12 +1,11 @@
 // matrix_transpose.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <ctime>
-#include <bitset>
 
 using namespace std;
 
@@ -32,43 +31,16 @@ int main()
 
 	//vector<unsigned char> matr (n*m,0);
 
-	vector<unsigned char> buffer(64, 0);
+	vector<unsigned char> buffer(300 * 300, 0);
 	while (!infile.eof())
 	{
-		infile.read((char *)&buffer[0], buffer.size());
-		for (size_t i = 0; i < n; i++)
-		{
-			outfile.seekp(i);
-			for (size_t j = 0; j < m; j++)
-			{
-				outfile.write((char *)&buffer[i/m], sizeof(char));
-			}
-		}
-
-
-		/*
-		cout << endl;
-		for (int i = 0; i < n; i++)
-		{
-			cout << (int)buffer[i] << " ";
-		}
-
-		cout << endl;
-		for (size_t i = 0; i < n*m; i++)
-		{
-			cout << (int)matr[i] << " ";
-		}
-		*/
+		
 	}
 
 
 
 	infile.close();
 	outfile.close();
-
-	//ifstream infileTest("output.bin", ios::in | ios::binary);
-
-
 
 	cout << endl<< "done." << endl;
 	getchar();
@@ -87,8 +59,8 @@ void printBuf(vector<unsigned  char> & buf)
 
 void CreateTestFile()
 {
-	const int n = 100;
-	const int m = 100;
+	const int n = 1024;
+	const int m = 1024;
 	srand(static_cast<unsigned int>(time(NULL)));
 
 
