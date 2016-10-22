@@ -23,7 +23,7 @@ int main()
 	int n;
 	int m;
 
-	CreateTestFile();
+	//CreateTestFile();
 
 	ifstream infile("input.bin", ios::in | ios::binary);
 	ofstream outfile("output.bin", ios::out | ios::binary);
@@ -31,8 +31,8 @@ int main()
 	infile.read(reinterpret_cast<char *>(&n), 4);
 	infile.read(reinterpret_cast<char *>(&m), 4);
 
-	int p = 2;
-	int q = 2;
+	int p = 512;
+	int q = 512;
 
 	vector<unsigned char> buffer(p * q, 0);
 
@@ -104,7 +104,7 @@ int main()
 
 	infile.close();
 	outfile.close();
-
+/*
 	cout << endl;
 
 	ifstream infile1("output.bin", ios::in | ios::binary);
@@ -120,7 +120,7 @@ int main()
 		}
 		cout << endl;
 	}
-
+*/
 	const auto endTime = std::clock();
 	std::cout << endl << "done in  " << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
 	//getchar();
@@ -156,9 +156,9 @@ void printBuf(vector<unsigned  char> & buf, int p)
 
 void CreateTestFile()
 {
-	const int n = 7;
-	const int m = 5;
-	//srand(static_cast<unsigned int>(time(NULL)));
+	const int n = 4097;
+	const int m = 3200;
+	srand(static_cast<unsigned int>(time(NULL)));
 
 
 	vector<unsigned char> matrix(n * m);
@@ -167,11 +167,11 @@ void CreateTestFile()
 	{
 		for (int j = 0; j < m; ++j)
 		{
-			matrix[i * m + j] = c; //rand() % 256;
+			matrix[i * m + j] = rand() % 256;
 			c++;
 		}
 	}
-
+/*
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < m; ++j)
@@ -180,7 +180,7 @@ void CreateTestFile()
 		}
 		cout << endl;
 	}
-
+*/
 	ofstream out("input.bin", ios::out | ios::binary);
 
 	out.write((char *) &n, sizeof(int));
