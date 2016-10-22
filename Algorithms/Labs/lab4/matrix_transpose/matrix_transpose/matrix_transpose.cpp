@@ -6,18 +6,19 @@
 #include <fstream>
 #include <vector>
 #include <ctime>
+#include <iomanip>
 
 using namespace std;
 
 void CreateTestFile();
-void printBuf(vector<unsigned  char> & buf);
+void printBuf(vector<unsigned  char> & buf,int );
 void Transpose( vector<unsigned char > & buf, int row, int col );
 
 
 int main()
 {
 
-    const auto startTime = std::clock();
+	const auto startTime = std::clock();
 
 	int n;
 	int m;
@@ -30,57 +31,98 @@ int main()
 	infile.read(reinterpret_cast<char *>(&n), 4);
 	infile.read(reinterpret_cast<char *>(&m), 4);
 
-	int p = 3;
-	int q = 3;
+	int p = 2;
+	int q = 2;
 
 	vector<unsigned char> buffer(p * q, 0);
 
-    for (int k = 0; k < n/p; ++k)
-    {
-        for (int u = 0; u < m / p; ++u)
-        {
-            for (int i = 0; i < p; ++i)
-            {
+	int u = n%p == 0 ? n/p : n/p + 1;
+	int v = m%p == 0 ? m/p : m/p + 1;
 
-                infile.read((char *) &buffer[i * p], p);
-                infile.seekg(m - p, ios::cur);
-            }
-            infile.seekg(-m * p + p, ios::cur);
+	for (int k = 0; k < u; ++k)
+	{
+		for (int l = 0; l < v; ++l)
+		{
 
-            Transpose(buffer, p, q);
+			if ((m - l*p) < p)
+			{
 
-            for (int i = 0; i < p; ++i)
-            {
+				for (int i = 0; i < p; ++i)
+				{
 
-                outfile.write((char *) &buffer[i * p], p);
-                outfile.seekp(n - p, ios::cur);
-            }
-        }
-        infile.seekg(m * (p - 1), ios::cur);
-        outfile.seekp((-n * m) + p, ios::cur);
-    }
+					infile.read((char *) &buffer[i * p], m - l*p);
+					if (i != p-1 ) infile.seekg(  m - (m - l*p) , ios::cur);
+				}
+
+				Transpose(buffer, p, q);
+
+				for (int i = 0; i < m - l*p; ++i)
+				{
+					outfile.write((char *) &buffer[i * p], p);
+					if (i != p - 1) outfile.seekp(n - p, ios::cur);
+				}
+			}
+			else if ((n - k*p) < p)
+			{
+
+				for (int i = 0; i < n - k*p; ++i)
+				{
+					infile.read((char *) &buffer[i * p], p);
+				}
+				infile.seekg(-m * (p-1) + m , ios::cur);
+
+				Transpose(buffer, p, q);
+
+				for (int i = 0; i < p; ++i)
+				{
+					outfile.write((char *) &buffer[i * p], n - k*p);
+					outfile.seekp(n - (n - k*p), ios::cur);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < p; ++i)
+				{
+
+					infile.read((char *) &buffer[i * p], p);
+					if (i != p-1 ) infile.seekg(m - p, ios::cur);
+				}
+				infile.seekg(-m * (p-1) , ios::cur);
+
+
+				Transpose(buffer, p, q);
+				for (int i = 0; i < p; ++i)
+				{
+					outfile.write((char *) &buffer[i * p], p);
+					outfile.seekp(n - p, ios::cur);
+				}
+			}
+		}
+		if (m%p == 0) infile.seekg(m, ios::cur);
+		outfile.seekp((-n * m) + p , ios::cur);
+	}
 
 	infile.close();
 	outfile.close();
 
-    cout<<endl;
+	cout << endl;
 
 	ifstream infile1("output.bin", ios::in | ios::binary);
-	vector<unsigned char> buffer1(135, 0);
-	infile1.read((char *)&buffer1[0],buffer1.size());
+	vector<unsigned char> buffer1(m * n, 0);
+	infile1.read((char *) &buffer1[0], buffer1.size());
 
 
 	for (int i = 0; i < m; ++i)
 	{
 		for (int j = 0; j < n; ++j)
 		{
-			cout<<(int)buffer1[i*n+j]<<" ";
+			cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int) buffer1[i * n + j] << " ";
 		}
-		cout<<endl;
+		cout << endl;
 	}
 
-    const auto endTime = std::clock();
-    //std::cerr << "done in  " << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
+	const auto endTime = std::clock();
+	std::cout << endl << "done in  " << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
 	//getchar();
 	return 0;
 }
@@ -96,15 +138,15 @@ void Transpose( vector<unsigned char > & buf, int row, int col )
 	}
 }
 
-void printBuf(vector<unsigned  char> & buf)
+void printBuf(vector<unsigned  char> & buf, int p)
 {
 	cout<<endl;
 
-	for (int i = 0; i < buf.size()/3; i++)
+	for (int i = 0; i < buf.size()/p; i++)
 	{
-		for (int j = 0; j < buf.size()/3; ++j)
+		for (int j = 0; j < buf.size()/p; ++j)
 		{
-			cout << (int) buf[i * 3 + j] << " ";
+			cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int) buf[i * p + j] << " ";
 		}
 		cout << endl;
 	}
@@ -114,17 +156,19 @@ void printBuf(vector<unsigned  char> & buf)
 
 void CreateTestFile()
 {
-	const int n = 15;
-	const int m = 9;
+	const int n = 7;
+	const int m = 5;
 	//srand(static_cast<unsigned int>(time(NULL)));
 
 
-	vector<unsigned char> matrix(n*m);
+	vector<unsigned char> matrix(n * m);
+	int c = 1;
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < m; ++j)
 		{
-			matrix[i*m + j] = rand() % 256;
+			matrix[i * m + j] = c; //rand() % 256;
+			c++;
 		}
 	}
 
@@ -132,15 +176,15 @@ void CreateTestFile()
 	{
 		for (int j = 0; j < m; ++j)
 		{
-			cout << (int) matrix[i*m + j] << " ";
+			cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int) matrix[i * m + j] << " ";
 		}
 		cout << endl;
 	}
 
 	ofstream out("input.bin", ios::out | ios::binary);
 
-	out.write((char *)&n, sizeof(int));
-	out.write((char *)&m, sizeof(int));
+	out.write((char *) &n, sizeof(int));
+	out.write((char *) &m, sizeof(int));
 	copy(matrix.begin(), matrix.end(), std::ostreambuf_iterator<char>(out));
 
 	out.close();
