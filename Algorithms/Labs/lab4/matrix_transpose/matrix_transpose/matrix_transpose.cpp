@@ -89,8 +89,8 @@ int main()
 				}
 				infile.seekg(-m * (p-1) , ios::cur);
 
-
 				Transpose(buffer, p, q);
+                
 				for (int i = 0; i < p; ++i)
 				{
 					outfile.write((char *) &buffer[i * p], p);
