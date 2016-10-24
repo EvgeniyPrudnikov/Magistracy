@@ -31,8 +31,8 @@ int main()
     outfile.write(reinterpret_cast<char *>(&m), 4);
     outfile.write(reinterpret_cast<char *>(&n), 4);
 
-    int p = 2;
-    int q = 2;
+    int p = 5;
+    int q = 5;
 
     vector<char> buffer(p * q, 0);
 
@@ -173,8 +173,8 @@ void printBuf(vector< char> & buf, int p)
 
 void CreateTestFile()
 {
-    const int n = 3;
-    const int m = 5;
+    const int n = 9;
+    const int m = 7;
     //srand(static_cast<unsigned int>(time(NULL)));
 
 
@@ -184,7 +184,7 @@ void CreateTestFile()
     {
         for (int j = 0; j < m; ++j)
         {
-            matrix[i * m + j] = rand() % 256;
+            matrix[i * m + j] = j;
             c++;
         }
     }
