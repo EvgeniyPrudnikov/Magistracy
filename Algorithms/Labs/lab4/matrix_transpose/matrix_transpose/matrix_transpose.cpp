@@ -82,8 +82,7 @@ int main()
 				for (int i = 0; i < n - k * p; ++i)
 				{
 					infile.read((char *)&buffer[i * p], p);
-					//TODO:
-					//add seek!!
+					if (i != p - 1) infile.seekg(m - p, ios::cur); //ok , find new problem
 				}
 				infile.seekg(-m * (p - 1) + m, ios::cur);
 
@@ -99,7 +98,6 @@ int main()
 			{
 				for (int i = 0; i < p; ++i)
 				{
-
 					infile.read((char *)&buffer[i * p], p);
 					if (i != p - 1) infile.seekg(m - p, ios::cur);
 				}
