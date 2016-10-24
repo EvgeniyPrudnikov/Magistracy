@@ -60,7 +60,7 @@ int main()
 				}
 
 			}
-			else if ((m - l * p) < p)
+			else  if ((m - l * p) < p)
 			{
 				for (int i = 0; i < p; ++i)
 				{
@@ -82,6 +82,8 @@ int main()
 				for (int i = 0; i < n - k * p; ++i)
 				{
 					infile.read((char *)&buffer[i * p], p);
+					//TODO:
+					//add seek!!
 				}
 				infile.seekg(-m * (p - 1) + m, ios::cur);
 
