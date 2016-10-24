@@ -82,9 +82,10 @@ int main()
 				for (int i = 0; i < n - k * p; ++i)
 				{
 					infile.read((char *)&buffer[i * p], p);
-					if (i != p - 1) infile.seekg(m - p, ios::cur); //ok , find new problem
+					if (i != n - k * p - 1) infile.seekg(m - p, ios::cur);
 				}
-				infile.seekg(-m * (p - 1) + m, ios::cur);
+
+				infile.seekg(-m * (n - k * p) + m, ios::cur);
 
 				Transpose(buffer, p, q);
 
@@ -173,8 +174,8 @@ void printBuf(vector< char> & buf, int p)
 
 void CreateTestFile()
 {
-    const int n = 9;
-    const int m = 7;
+    const int n = 7;
+    const int m = 9;
     //srand(static_cast<unsigned int>(time(NULL)));
 
 
