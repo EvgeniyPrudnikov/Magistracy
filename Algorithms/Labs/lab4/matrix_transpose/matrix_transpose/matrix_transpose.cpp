@@ -1,4 +1,4 @@
-
+#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -16,7 +16,7 @@ int main()
 {
 
     const auto startTime = std::clock();
-
+	
     int n;
     int m;
 
@@ -39,88 +39,108 @@ int main()
     int u = n % p == 0 ? n / p : n / p + 1;
     int v = m % p == 0 ? m / p : m / p + 1;
 
-    for (int k = 0; k < u; ++k)
-    {
-        for (int l = 0; l < v; ++l)
-        {
-            if ((m - l * p) < p)
-            {
-                for (int i = 0; i < p; ++i)
-                {
-                    infile.read((char *) &buffer[i * p], m - l * p);
-                    if (i != p - 1) infile.seekg(m - (m - l * p), ios::cur);
-                }
+	for (int k = 0; k < u; ++k)
+	{
+		for (int l = 0; l < v; ++l)
+		{
+			if ((m - l * p) < p && (n - k * p) < p)
+			{
+				for (int i = 0; i < n - k * p; ++i)
+				{
+					infile.read((char *)&buffer[i * p], m - l * p);
+					if (i != p - 1) infile.seekg(m - (m - l * p), ios::cur);
+				}
 
-                Transpose(buffer, p, q);
+				Transpose(buffer, p, q);
 
-                for (int i = 0; i < m - l * p; ++i)
-                {
-                    outfile.write((char *) &buffer[i * p], p);
-                    if (i != p - 1) outfile.seekp(n - p, ios::cur);
-                }
-            } else if ((n - k * p) < p)
-            {
+				for (int i = 0; i < m - l * p; ++i)
+				{
+					outfile.write((char *)&buffer[i * p], n - k * p);
+					outfile.seekp(n - (n - k * p), ios::cur);
+				}
 
-                for (int i = 0; i < n - k * p; ++i)
-                {
-                    infile.read((char *) &buffer[i * p], p);
-                }
-                infile.seekg(-m * (p - 1) + m, ios::cur);
+			}
+			else if ((m - l * p) < p)
+			{
+				for (int i = 0; i < p; ++i)
+				{
+					infile.read((char *)&buffer[i * p], m - l * p);
+					if (i != p - 1) infile.seekg(m - (m - l * p), ios::cur);
+				}
 
-                Transpose(buffer, p, q);
+				Transpose(buffer, p, q);
 
-                for (int i = 0; i < p; ++i)
-                {
-                    outfile.write((char *) &buffer[i * p], n - k * p);
-                    outfile.seekp(n - (n - k * p), ios::cur);
-                }
-            } else
-            {
-                for (int i = 0; i < p; ++i)
-                {
+				for (int i = 0; i < m - l * p; ++i)
+				{
+					outfile.write((char *)&buffer[i * p], p);
+					if (i != p - 1) outfile.seekp(n - p, ios::cur);
+				}
+			}
+			else if ((n - k * p) < p)
+			{
 
-                    infile.read((char *) &buffer[i * p], p);
-                    if (i != p - 1) infile.seekg(m - p, ios::cur);
-                }
-                infile.seekg(-m * (p - 1), ios::cur);
+				for (int i = 0; i < n - k * p; ++i)
+				{
+					infile.read((char *)&buffer[i * p], p);
+				}
+				infile.seekg(-m * (p - 1) + m, ios::cur);
 
-                Transpose(buffer, p, q);
+				Transpose(buffer, p, q);
 
-                for (int i = 0; i < p; ++i)
-                {
-                    outfile.write((char *) &buffer[i * p], p);
-                    outfile.seekp(n - p, ios::cur);
-                }
-            }
-        }
-        if (m % p == 0) infile.seekg(m, ios::cur);
-        outfile.seekp((-n * m) + p, ios::cur);
-    }
+				for (int i = 0; i < p; ++i)
+				{
+					outfile.write((char *)&buffer[i * p], n - k * p);
+					outfile.seekp(n - (n - k * p), ios::cur);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < p; ++i)
+				{
+
+					infile.read((char *)&buffer[i * p], p);
+					if (i != p - 1) infile.seekg(m - p, ios::cur);
+				}
+				infile.seekg(-m * (p - 1), ios::cur);
+
+				Transpose(buffer, p, q);
+
+				for (int i = 0; i < p; ++i)
+				{
+					outfile.write((char *)&buffer[i * p], p);
+					outfile.seekp(n - p, ios::cur);
+				}
+			}
+		}
+		if (m % p == 0) infile.seekg(m, ios::cur);
+		outfile.seekp((-n * m) + p, ios::cur);
+	}
 
     infile.close();
     outfile.close();
-
+	
 	cout << endl;
 	ifstream infile1("output.bin", ios::in | ios::binary);
-	vector<unsigned char> buffer1(m * n, 0);
+	
     int z;
     int x;
     infile1.read(reinterpret_cast<char *>(&z), 4);
     infile1.read(reinterpret_cast<char *>(&x), 4);
+	vector<unsigned char> buffer1(z * x, 0);
 
 	infile1.read((char *) &buffer1[0], buffer1.size());
-	for (int i = 0; i < m; ++i)
+	for (int i = 0; i < z; ++i)
 	{
-		for (int j = 0; j < n; ++j)
+		for (int j = 0; j < x; ++j)
 		{
-			cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int) buffer1[i * n + j] << " ";
+			cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int) buffer1[i * x + j] << " ";
 		}
 		cout << endl;
 	}
 
     const auto endTime = std::clock();
     std::cout << endl << "done in  " << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
-    //getchar();
+    getchar();
     return 0;
 }
 
@@ -153,9 +173,9 @@ void printBuf(vector< char> & buf, int p)
 
 void CreateTestFile()
 {
-    const int n = 7;
+    const int n = 3;
     const int m = 5;
-    srand(static_cast<unsigned int>(time(NULL)));
+    //srand(static_cast<unsigned int>(time(NULL)));
 
 
     vector<unsigned char> matrix(n * m);
