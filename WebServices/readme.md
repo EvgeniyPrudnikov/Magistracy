@@ -76,7 +76,7 @@ GET /sources/
    если пустой, значит получить новости из всех существующих в системе источников
 
 ```
-GET /sources/news?start_dt=0+00&end_dt=-2&source_id=
+GET /news?start_dt=0+00&end_dt=-2&source_id=
 ```
 #### Пример ответа сервера:
 ```
@@ -108,7 +108,7 @@ GET /sources/news?start_dt=0+00&end_dt=-2&source_id=
 ```
 #### Получаем отдельную статью:
 ```
-GET /sources/news/{news_id}
+GET /news/{news_id}
 ```
 #### Пример ответа сервера:
 
