@@ -54,7 +54,6 @@ int main()
 		{
 			for (int k = 0; k < u; k++)
 			{
-
 				for (int b = 0; b < p; b++)
 				{
 					infileA.read(&bufferA[b*p], p);
@@ -86,13 +85,13 @@ int main()
 				outfile.write(&bufferC[b*p], p);
 				if (b != p - 1) outfile.seekp(m - p, ios::cur);
 			}
-			outfile.seekp(-m * (p - 1), ios::cur);
+			if (j != u - 1) outfile.seekp(-m * (p - 1), ios::cur);
 
 
 			fill(bufferC.begin(), bufferC.end(), 0);
 			// seek a start
 			// b seek next column
-			cout << "seek a to start b to next col";
+			cout << "seek a to start b to next col" << endl;
 			infileA.seekg(-m*(p-1), ios::cur);
 			infileB.seekg((-n * m) + p, ios::cur);
 		}
@@ -100,7 +99,9 @@ int main()
 		cout << "seek a to next row";
 		//seek A to next row
 		infileA.seekg(m*p, ios::cur);
-		infileB.seekg((-n * m), ios::cur);
+		//seek B to start
+		infileB.seekg(-m, ios::cur);
+		//seek out to next row
 		//outfile.seekp()
 
 	}
@@ -173,8 +174,8 @@ void AddMartr(vector<char> &c, vector<char> &  b, int n)
 
 void CreateTestFile()
 {
-	const int n = 4;
-	const int m = 4;
+	const int n = 5;
+	const int m = 5;
 	//srand(static_cast<unsigned int>(time(NULL)));
 
 
@@ -185,7 +186,7 @@ void CreateTestFile()
 	{
 		for (int j = 0; j < m; ++j)
 		{
-			matrixA[i * m + j] = c;
+			matrixA[i * m + j] = i;
 			c++;
 		}
 	}
@@ -194,7 +195,7 @@ void CreateTestFile()
 	{
 		for (int j = 0; j < m; ++j)
 		{
-			matrixB[i * m + j] =c;
+			matrixB[i * m + j] =j;
 			c++;
 		}
 	}
