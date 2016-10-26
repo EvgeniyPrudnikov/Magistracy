@@ -54,29 +54,62 @@ int main()
 		{
 			for (int k = 0; k < u; k++)
 			{
-				for (int b = 0; b < p; b++)
-				{
-					infileA.read(&bufferA[b*p], p);
 
-					if (b != p - 1) infileA.seekg(m - p, ios::cur);
+				if (n - k*p < p) {
+					q = n - k*p;
+
+					for (int b = 0; b < q; b++)
+					{
+						infileA.read(&bufferA[b*q], q);
+
+						if (b != q - 1) infileA.seekg(m - q, ios::cur);
+					}
+					cout << "a";
+					printBuf(bufferA, q);
+					infileA.seekg(-m*(q - 1), ios::cur);
+
+
+					for (int b = 0; b < q; b++)
+					{
+						infileB.read(&bufferB[b*q], q);
+
+						if (b != q - 1) infileB.seekg(m - q, ios::cur);
+					}
+					cout << "b";
+					printBuf(bufferB, q);
+					infileB.seekg(m - q, ios::cur);
+
+					AddMartr(bufferC, MultSwappedLoops(bufferA, bufferB, q), q);
+
+
 				}
-				cout << "a";
-				printBuf(bufferA, p);
-				infileA.seekg(-m*(p - 1), ios::cur);
-
-
-				for (int b = 0; b < p; b++)
+				else
 				{
-					infileB.read(&bufferB[b*p], p);
 
-					if (b != p - 1) infileB.seekg(m - p, ios::cur);
+					for (int b = 0; b < p; b++)
+					{
+						infileA.read(&bufferA[b*p], p);
+
+						if (b != p - 1) infileA.seekg(m - p, ios::cur);
+					}
+					cout << "a";
+					printBuf(bufferA, p);
+					infileA.seekg(-m*(p - 1), ios::cur);
+
+
+					for (int b = 0; b < p; b++)
+					{
+						infileB.read(&bufferB[b*p], p);
+
+						if (b != p - 1) infileB.seekg(m - p, ios::cur);
+					}
+					cout << "b";
+					printBuf(bufferB, p);
+					infileB.seekg(m - p, ios::cur);
+
+					AddMartr(bufferC, MultSwappedLoops(bufferA, bufferB, p), p);
+					//printBuf(bufferC, p);
 				}
-				cout << "b";
-				printBuf(bufferB, p);
-				infileB.seekg(m - p, ios::cur);
-
-				AddMartr(bufferC, MultSwappedLoops(bufferA, bufferB, p), p);
-				//printBuf(bufferC, p);
 			}
 
 			// write
