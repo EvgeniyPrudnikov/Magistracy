@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -9,7 +9,8 @@ using namespace std;
 
 void CreateTestFile();
 void printBuf(vector< char> & buf,int );
-void Transpose( vector< char > & buf, int row, int col );
+void Transpose(vector<char> & buf, const unsigned h, const unsigned w);
+void printBuf2(vector<char> & buf, int beg, int size);
 
 
 int main()
@@ -32,89 +33,90 @@ int main()
     outfile.write(reinterpret_cast<char *>(&n), 4);
 
     int p = 5;
-    int q = 5;
+    int q = 2;
 
     vector<char> buffer(p * q, 0);
 
-    int u = n % p == 0 ? n / p : n / p + 1;
+    int u = n % q == 0 ? n / q : n / q + 1;
     int v = m % p == 0 ? m / p : m / p + 1;
 
 	for (int k = 0; k < u; ++k)
 	{
 		for (int l = 0; l < v; ++l)
 		{
-			if ((m - l * p) < p && (n - k * p) < p)
+			if ((m - l * p) < p && (n - k * q) < q)
 			{
-				for (int i = 0; i < n - k * p; ++i)
+				for (int i = 0; i < n - k * q; ++i)
 				{
-					infile.read((char *)&buffer[i * p], m - l * p);
-					if (i != p - 1) infile.seekg(m - (m - l * p), ios::cur);
+					infile.read(&buffer[i * p], m - l * p);
+					if (i != n - k * q - 1) infile.seekg(m - (m - l * p), ios::cur);
 				}
 
-				Transpose(buffer, p, q);
+				Transpose(buffer, q, p);
 
 				for (int i = 0; i < m - l * p; ++i)
 				{
-					outfile.write((char *)&buffer[i * p], n - k * p);
-					outfile.seekp(n - (n - k * p), ios::cur);
+					outfile.write(&buffer[i * q], n - k * q);
+					outfile.seekp(n - (n - k * q), ios::cur);
 				}
 
 			}
 			else  if ((m - l * p) < p)
 			{
-				for (int i = 0; i < p; ++i)
+				for (int i = 0; i < q; ++i)
 				{
-					infile.read((char *)&buffer[i * p], m - l * p);
-					if (i != p - 1) infile.seekg(m - (m - l * p), ios::cur);
+					infile.read(&buffer[i * p], m - l * p);
+					if (i != q - 1) infile.seekg(m - (m - l * p), ios::cur);
 				}
 
-				Transpose(buffer, p, q);
+				Transpose(buffer, q, p);
 
 				for (int i = 0; i < m - l * p; ++i)
 				{
-					outfile.write((char *)&buffer[i * p], p);
-					if (i != p - 1) outfile.seekp(n - p, ios::cur);
+					outfile.write(&buffer[i * q], q);
+					if (i != m - l * p - 1) outfile.seekp(n - q, ios::cur);
 				}
 			}
-			else if ((n - k * p) < p)
+			else if ((n - k * q) < q)
 			{
 
-				for (int i = 0; i < n - k * p; ++i)
+				for (int i = 0; i < n - k * q; ++i)
 				{
-					infile.read((char *)&buffer[i * p], p);
-					if (i != n - k * p - 1) infile.seekg(m - p, ios::cur);
+					infile.read(&buffer[i * p], p);
+					if (i != n - k * q - 1) infile.seekg(m - p, ios::cur);
 				}
 
-				infile.seekg(-m * (n - k * p) + m, ios::cur);
+				infile.seekg(-m * (n - k * q) + m, ios::cur);
 
-				Transpose(buffer, p, q);
+				Transpose(buffer, q, p);
 
 				for (int i = 0; i < p; ++i)
 				{
-					outfile.write((char *)&buffer[i * p], n - k * p);
-					outfile.seekp(n - (n - k * p), ios::cur);
+					outfile.write(&buffer[i * q], n - k * q);
+					outfile.seekp(n - (n - k * q), ios::cur);
 				}
 			}
 			else
 			{
-				for (int i = 0; i < p; ++i)
+				for (int i = 0; i < q; ++i)
 				{
-					infile.read((char *)&buffer[i * p], p);
-					if (i != p - 1) infile.seekg(m - p, ios::cur);
+					infile.read(&buffer[i * p], p);
+					if (i != q - 1) infile.seekg(m - p, ios::cur);
 				}
-				infile.seekg(-m * (p - 1), ios::cur);
+				infile.seekg(-m * (q - 1), ios::cur);
 
-				Transpose(buffer, p, q);
+                Transpose(buffer, q, p);
 
 				for (int i = 0; i < p; ++i)
 				{
-					outfile.write((char *)&buffer[i * p], p);
-					outfile.seekp(n - p, ios::cur);
+					outfile.write(&buffer[i * q], q);
+                    //printBuf2(buffer,i*q,q);
+					outfile.seekp(n - q, ios::cur);
 				}
 			}
 		}
 		if (m % p == 0) infile.seekg(m, ios::cur);
-		outfile.seekp((-n * m) + p, ios::cur);
+		outfile.seekp((-n * m) + q, ios::cur);
 	}
 
     infile.close();
@@ -145,13 +147,28 @@ int main()
     return 0;
 }
 
-void Transpose( vector< char > & buf, int row, int col )
+void Transpose(vector<char> & buf, const unsigned h, const unsigned w)
 {
-    for ( int i = 0; i < row; i++ )
+    for (unsigned start = 0; start <= w * h - 1; ++start)
     {
-        for ( int j = i + 1; j < col; j++ )
+        unsigned next = start;
+        unsigned i = 0;
+        do
         {
-            swap(buf[ i * col + j ],buf[ j * col + i ]);
+            ++i;
+            next = (next % h) * w + next / h;
+        } while (next > start);
+
+        if (next >= start && i != 1)
+        {
+            const char tmp = buf[start];
+            next = start;
+            do
+            {
+                i = (next % h) * w + next / h;
+                buf[next] = (i == start) ? tmp : buf[i];
+                next = i;
+            } while (next > start);
         }
     }
 }
@@ -172,10 +189,21 @@ void printBuf(vector< char> & buf, int p)
     cout<<endl;
 }
 
+void printBuf2(vector<char> & buf, int beg, int size)
+{
+
+    for (int i = beg; i <beg + size ; ++i)
+    {
+        cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int) buf[i] << " ";
+    }
+
+    cout<<endl;
+}
+
 void CreateTestFile()
 {
-    const int n = 7;
-    const int m = 9;
+    const int n = 10;
+    const int m = 3;
     //srand(static_cast<unsigned int>(time(NULL)));
 
 
