@@ -1,16 +1,18 @@
 import argparse
+from sys import exit
 
 """
 Unix cut analog
 """
 
-def fieldsNumbers(fieldsString):
+
+def fieldsNumbers(fieldsList):
     """
     parse fields string
-    :param fieldsString: str
+    :param fieldsString: list of str
     :return: list
     """
-    return map(int, fieldsString.split(','))
+    return map(int, fieldsList.split(','))
 
 
 def readFile(filename):
@@ -20,6 +22,7 @@ def readFile(filename):
     :return: list
     """
     lines = [line.rstrip('\n') for line in open(filename)]
+    # return [i.split(sep) for i in lines if len(i.split(sep)) > 1]
     return [i.split(sep) for i in lines]
 
 
@@ -30,12 +33,20 @@ def take(sourceTable, listOfFields):
     :param listOfFields: list
     :return: list
     """
-    result = []
-    [result.append([i[j] for i in sourceTable]) for j in listOfFields]
+    # print table
+    # if not sourceTable:
+    #    print 'error: wrong separator'
+    #    exit()
+    try:
+        result = []
+        [result.append([i[j] for i in sourceTable]) for j in listOfFields]
+    except:
+        print 'error: wrong column number'
+        exit()
     return result
 
 
-def printf(takenColumns , sep):
+def printf(takenColumns, sep):
     """
     pretty print of taken columns
     :param takenColumns: list
@@ -52,11 +63,14 @@ def parseInputArgs():
     :return: object
     """
     parser = argparse.ArgumentParser(description="Unix cut analog", usage='%(prog)s [arguments]')
-
-    parser.add_argument('filename', type=str, help='input file')
+    # pos arg
+    parser.add_argument('filename', type=str, help='input file name')
+    # req arg
     requiredNamed = parser.add_argument_group('required arguments')
     requiredNamed.add_argument('-f', '--fields', type=str, help='list of fields, separated by comma', required=True)
-    parser.add_argument('-s', '--separator', type=str, default='\t', help='column separator')
+    # optional args
+    parser.add_argument('-s', '--separator', type=str, default='\t', help='column separator, default tab')
+
     args = parser.parse_args()
     return args
 
@@ -77,6 +91,7 @@ table = readFile(filename)
 fields = fieldsNumbers(inputArgs.fields)
 # --- ----------------------------------------------------
 
-# --- print result table ---------------------------------
-printf(take(table, fields), sep)
-# --- ----------------------------------------------------
+if __name__ == '__main__':
+    # --- print result table ---------------------------------
+    printf(take(table, fields), sep)
+    # --- ----------------------------------------------------
