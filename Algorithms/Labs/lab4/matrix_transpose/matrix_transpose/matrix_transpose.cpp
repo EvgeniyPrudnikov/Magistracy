@@ -32,7 +32,7 @@ int main()
 	outfile.write(reinterpret_cast<char *>(&m), 4);
 	outfile.write(reinterpret_cast<char *>(&n), 4);
 
-	int p = 5;
+	int p = 512;
 	int u = n % p == 0 ? n / p : n / p + 1;
 	int v = m % p == 0 ? m / p : m / p + 1;
 
@@ -41,8 +41,9 @@ int main()
 		
 		int size_f = p*p;
 		int size_m = ceil((float)size_f/n);
-		vector<char> bufferA(size_f);
-		vector<char> bufferB(size_f);
+		int size_n = n;
+		vector<char> bufferA(size_n*size_m);
+		vector<char> bufferB(size_m*size_n);
 
 
 		for (int l = 0; l < v; ++l)
@@ -52,23 +53,24 @@ int main()
 				size_m = m - l * size_m;
 			}
 
-			for (int i = 0; i < n; ++i)
+			for (int i = 0; i < size_n; ++i)
 			{
 				infile.read(&bufferA[i * size_m], size_m);
-				if (i != n - 1)
+				if (i != size_n - 1)
 					infile.seekg(m - size_m, ios::cur);
 			}
 
-			if ((-m * n + m) != 0)
-				infile.seekg(-m * n + m, ios::cur);
+			if ((-m * size_n + m) != 0)
+				infile.seekg(-m * size_n + m, ios::cur);
 
-			Transpose2(bufferA, bufferB, n, size_m);
+			Transpose2(bufferA, bufferB, size_n, size_m);
 
 			for (int i = 0; i < size_m; ++i)
 			{
-				outfile.write(&bufferB[i * n], n);
+				outfile.write(&bufferB[i * size_n], size_n);
+			
 				//if ((m) != 0)
-				//outfile.seekp(n, ios::cur);
+				//if (size_m != 0) outfile.seekp(n - size_n, ios::cur);
 			}
 		}
 
@@ -79,11 +81,52 @@ int main()
 	else if (m<p)
 	{
 		
+		int size_f = p*p;
+		int size_m = m;
+		int size_n = ceil((float)size_f / m);
+		vector<char> bufferA(size_n*size_m);
+		vector<char> bufferB(size_m*size_n);
+
+
+		for (int l = 0; l < u; ++l)
+		{
+			if (n < (l + 1) * size_n)
+			{
+				size_n = n - l * size_n;
+			}
+
+			for (int i = 0; i < size_n; ++i)
+			{
+				infile.read(&bufferA[i * size_m], size_m);
+				//if (i != n - 1)
+				//	infile.seekg(n - size_n, ios::cur);
+			}
+
+			//if ((-m * size_n + m) != 0)
+			//	infile.seekg(-m * size_n + m, ios::cur);
+
+			Transpose2(bufferA, bufferB, size_n, size_m);
+
+			for (int i = 0; i < size_m; ++i)
+			{
+				outfile.write(&bufferB[i * size_n], size_n);
+				if (i != size_m - 1) outfile.seekp(n - size_n, ios::cur);
+
+			}
+			if ((-m * size_n + m) != 0)
+				outfile.seekp(-n * size_m + n, ios::cur);
+		}
+
+
+		bufferA.clear();
+		bufferB.clear();
+
 	}
 	else
 	{
 
 		vector<char> buffer(p * p, 0);
+
 
 		for (int k = 0; k < u; ++k)
 		{
@@ -116,6 +159,7 @@ int main()
 
 					Transpose(buffer, p, p);
 
+
 					for (int i = 0; i < m - l * p; ++i)
 					{
 						outfile.write(&buffer[i * p], p);
@@ -124,23 +168,22 @@ int main()
 				}
 				else if ((n - k * p) < p)
 				{
+
 					for (int i = 0; i < n - k * p; ++i)
 					{
 						infile.read(&buffer[i * p], p);
-						if (i != n - k * p - 1)
-							infile.seekg(m - p, ios::cur);
+						if (i != n - k * p - 1) infile.seekg(m - p, ios::cur);
 					}
 
-					if ((-m * (n - k * p) + m) != 0)
-						infile.seekg(-m * (n - k * p) + m, ios::cur);
+					infile.seekg(-m * (n - k * p) + m, ios::cur);
 
 					Transpose(buffer, p, p);
+
 
 					for (int i = 0; i < p; ++i)
 					{
 						outfile.write(&buffer[i * p], n - k * p);
-						if ((n - (n - k * p)) != 0)
-							outfile.seekp(n - (n - k * p), ios::cur);
+						outfile.seekp(n - (n - k * p), ios::cur);
 					}
 				}
 				else
@@ -154,9 +197,10 @@ int main()
 
 					Transpose(buffer, p, p);
 
+
 					for (int i = 0; i < p; ++i)
 					{
-						outfile.write(&buffer[i * p], p);
+						outfile.write((&buffer[i * p]), p);
 						outfile.seekp(n - p, ios::cur);
 					}
 				}
@@ -164,13 +208,13 @@ int main()
 			if (m % p == 0) infile.seekg(m, ios::cur);
 			outfile.seekp((-n * m) + p, ios::cur);
 		}
-		buffer.clear();
+
 	}
 	infile.close();
 	outfile.close();
 	
 
-	
+	/*
 	cout << endl;
 	ifstream infile1("output.bin", ios::in | ios::binary);
 
@@ -188,7 +232,7 @@ int main()
 		}
 		cout << endl;
 	}
-	
+	*/
 	const auto endTime = std::clock();
 	std::cout << endl << "done in  " << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
 	getchar();
@@ -236,7 +280,7 @@ void printBuf(vector< char> & buf, int p)
 
 void CreateTestFile()
 {
-    const int n = 2;
+    const int n = 1;
     const int m = 10;
     //srand(static_cast<unsigned int>(time(NULL)));
 
@@ -251,7 +295,7 @@ void CreateTestFile()
             c++;
         }
     }
-	
+	/*
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < m; ++j)
@@ -260,7 +304,7 @@ void CreateTestFile()
 		}
 		cout << endl;
 	}
-	
+	*/
     ofstream out("input.bin", ios::out | ios::binary);
 
     out.write((char *) &n, sizeof(int));

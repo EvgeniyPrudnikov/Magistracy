@@ -8,7 +8,7 @@
 using namespace std;
 
 void CreateTestFile();
-void printBuf(vector< char> & buf, int);
+void printBuf(vector< char> & buf, int row, int col);
 void Transpose(vector< char > & buf, int row, int col);
 void Transpose2(vector< char > & bufA, vector< char > & bufB, int row, int col);
 
@@ -34,79 +34,82 @@ int main()
 
 
 
-	int p = 5;
-	int q = 5;
+	int block_size = 5;
 
-	int u = n / p;
-	int v = m / p;
+
+	int u = n / block_size;
+	int v = m / block_size;
 
 	if (u > 0 && v > 0)
 	{
-		vector<char> buffer(p * q, 0);
+		vector<char> buffer(block_size * block_size, 0);
+
+
+		cout << "i " << (int)infile.tellg() - 8 << endl;
+		cout << "o " << (int)outfile.tellp() - 8 << endl;
 
 		for (int k = 0; k < u; ++k)
 		{
 			for (int l = 0; l < v; ++l)
 			{
-				for (int i = 0; i < p; ++i)
-				{
-					infile.read(&buffer[i * p], p);
-					if (i != p - 1) infile.seekg(m - p, ios::cur);
-				}
-				infile.seekg(-m * (p - 1), ios::cur);
 
-				Transpose(buffer, p, q);
-
-				for (int i = 0; i < p; ++i)
+				for (int i = 0; i < block_size; ++i)
 				{
-					outfile.write(&buffer[i * p], p);
-					outfile.seekp(n - p, ios::cur);
+					infile.read(&buffer[i * block_size], block_size);
+					if (i != block_size - 1) infile.seekg(m - block_size, ios::cur);
 				}
+				infile.seekg(-m * (block_size - 1), ios::cur);
+
+				Transpose(buffer, block_size, block_size);
+
+
+				for (int i = 0; i < block_size; ++i)
+				{
+					outfile.write((&buffer[i * block_size]), block_size);
+					outfile.seekp(n - block_size, ios::cur);
+				}
+
 			}
-
-			//if (k != u - 1) 
-			//{
-				infile.seekg(m*(p-1), ios::cur);
-				outfile.seekp((-n * m) + p, ios::cur);
-			//}
+			if (m % block_size == 0) infile.seekg(m, ios::cur);
+			outfile.seekp((-n * m) + block_size, ios::cur);
 			
 		}
-
 		buffer.clear();
 	}
-	//if (n%p != 0)
-	{
-		
-		//cout << endl << (int)infile.tellg() - 8 << endl;
-		//cout << endl << (int) outfile.tellp() - 8 << endl;
+	cout << (int)infile.tellg() - 8 << endl;
+	cout << (int)outfile.tellp() - 8 << endl;
 
-		int bl_size_n = n - u*p;
-		int bl_size_m = ceil(static_cast<float>(p*p) / bl_size_n);
+	if (false)
+	{
+		int bl_size_n = n - u*block_size;
+		int bl_size_m = ceil(static_cast<float>(block_size*block_size) / bl_size_n);
 		vector<char> bufferA(bl_size_n * bl_size_m);
 		vector<char> bufferB(bl_size_m * bl_size_n);
 
 		u = ceil(static_cast<float>(m) / bl_size_m);
-		cout << endl << (int)outfile.tellp() - 8 << endl;
-		//cout << endl << (int)infile.tellg() - 8 << endl;
-		if (n / p > 0 && u!=0) 
+
+		//cout << (int)outfile.tellp() - 8 << endl;
+		if (n / block_size > 0 && u!=0) 
 		{
-			infile.seekg(m* (n - bl_size_n) - m, ios::cur);
-			outfile.seekp(-m*n + n - bl_size_n, ios::cur);
+			infile.seekg(m - (m/block_size)*block_size, ios::cur);
+			outfile.seekp(-n*(u*block_size) +n - (n - (n / block_size) * block_size), ios::cur);
 		}
-		//cout << endl << (int)infile.tellg() - 8 << endl;
+		cout << (int)outfile.tellp() - 8 << endl;
+
 		for (int l = 0; l < u; ++l)
 		{
-			if (m < (l + 1) * bl_size_m)
-			{
-				bl_size_m = m - l * bl_size_m;
-			}
-			cout << endl << (int)infile.tellg() - 8 << endl;
+			bl_size_m = m < (l + 1) * bl_size_m ? m - l * bl_size_m : bl_size_m;
+
+			//outfile.seekp(-n*(bl_size_m - 1), ios::cur);
+
 			for (int i = 0; i < bl_size_n; ++i)
 			{
 				infile.read(&bufferA[i * bl_size_m], bl_size_m);
 				if (i != bl_size_n - 1)
 					infile.seekg(m - bl_size_m, ios::cur);
 			}
+
+			//printBuf(bufferA, bl_size_n, bl_size_m);
 
 			if ((-m * bl_size_n + m) != 0)
 				infile.seekg(-m * bl_size_n + m, ios::cur);
@@ -116,28 +119,28 @@ int main()
 			for (int i = 0; i < bl_size_m; ++i)
 			{
 				outfile.write(&bufferB[i * bl_size_n], bl_size_n);
-				if (n - bl_size_n != 0) outfile.seekp(n - bl_size_n, ios::cur);
+				if (bl_size_m != 0) outfile.seekp(n - bl_size_n, ios::cur);
 			}
 		}
 
 		bufferA.clear();
 		bufferB.clear();
 	}
-
+	if (false)
 	{
 
 		//cout << endl << (int)infile.tellg() - 8 << endl;
 		//cout << endl << (int)outfile.tellp() - 8 << endl;
-		int n_new = n - (n - (n / p) * p);
-		int bl_size_m = m - v*p;
-		int bl_size_n = ceil(static_cast<float>(p*p) / bl_size_m);
+		int n_new = n - (n - (n / block_size) * block_size);
+		int bl_size_m = m - v*block_size;
+		int bl_size_n = ceil(static_cast<float>(block_size*block_size) / bl_size_m);
 		vector<char> bufferA(bl_size_n * bl_size_m);
 		vector<char> bufferB(bl_size_m * bl_size_n);
 
 		v = ceil(static_cast<float>(n_new) / bl_size_n);
 
 
-		if (m / p > 0 && v!=0)
+		if (m / block_size > 0 && v!=0)
 		{
 			infile.seekg(8 + bl_size_m*bl_size_m, ios::cur);
 			outfile.seekp(-m*n_new + n_new - bl_size_m, ios::cur);
@@ -238,15 +241,15 @@ void Transpose2(vector< char > & bufA, vector< char > & bufB, int row, int col)
 	}
 }
 
-void printBuf(vector< char> & buf, int p)
+void printBuf(vector< char> & buf, int row,int col)
 {
 	cout << endl;
 
-	for (int i = 0; i < buf.size() / p; i++)
+	for (int i = 0; i < row; i++)
 	{
-		for (int j = 0; j < buf.size() / p; ++j)
+		for (int j = 0; j < col; ++j)
 		{
-			cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int)buf[i * p + j] << " ";
+			cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int)buf[i * col + j] << " ";
 		}
 		cout << endl;
 	}
@@ -256,8 +259,8 @@ void printBuf(vector< char> & buf, int p)
 
 void CreateTestFile()
 {
-	const int n = 9;
-	const int m = 10;
+	const int n = 10;
+	const int m = 6;
 	//srand(static_cast<unsigned int>(time(NULL)));
 
 
