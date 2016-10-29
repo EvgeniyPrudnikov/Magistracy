@@ -14,6 +14,8 @@ class plurality:
     def next(self):
         if self.counter < len(self.res) - 1:
             self.counter += 1
+        else:
+            self.counter = 0
         return self.res[self.counter]
 
 

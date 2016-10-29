@@ -46,7 +46,7 @@ def take(sourceTable, listOfFields):
     return result
 
 
-def printf(takenColumns, sep):
+def cut(takenColumns, sep):
     """
     pretty print of taken columns
     :param takenColumns: list
@@ -63,8 +63,10 @@ def parseInputArgs():
     :return: object
     """
     parser = argparse.ArgumentParser(description="Unix cut analog", usage='%(prog)s [arguments]')
+
     # pos arg
     parser.add_argument('filename', type=str, help='input file name')
+
     # req arg
     requiredNamed = parser.add_argument_group('required arguments')
     requiredNamed.add_argument('-f', '--fields', type=str, help='list of fields, separated by comma', required=True)
@@ -93,5 +95,5 @@ fields = fieldsNumbers(inputArgs.fields)
 
 if __name__ == '__main__':
     # --- print result table ---------------------------------
-    printf(take(table, fields), sep)
+    cut(take(table, fields), sep)
     # --- ----------------------------------------------------
