@@ -4,6 +4,7 @@
 #include <vector>
 #include <ctime>
 #include <iomanip>
+#include <math.h>
 
 using namespace std;
 
@@ -32,7 +33,10 @@ int main()
 	outfile.write(reinterpret_cast<char *>(&m), 4);
 	outfile.write(reinterpret_cast<char *>(&n), 4);
 
-	int p = 512;
+
+	int p = 5;
+	int q = 5;
+
 	int u = n % p == 0 ? n / p : n / p + 1;
 	int v = m % p == 0 ? m / p : m / p + 1;
 
@@ -124,9 +128,7 @@ int main()
 	}
 	else
 	{
-
-		vector<char> buffer(p * p, 0);
-
+		vector<char> buffer(p * q, 0);
 
 		for (int k = 0; k < u; ++k)
 		{
@@ -159,7 +161,6 @@ int main()
 
 					Transpose(buffer, p, p);
 
-
 					for (int i = 0; i < m - l * p; ++i)
 					{
 						outfile.write(&buffer[i * p], p);
@@ -168,17 +169,17 @@ int main()
 				}
 				else if ((n - k * p) < p)
 				{
-
+					//cout << (int)infile.tellg() - 8 << endl;
 					for (int i = 0; i < n - k * p; ++i)
 					{
 						infile.read(&buffer[i * p], p);
 						if (i != n - k * p - 1) infile.seekg(m - p, ios::cur);
 					}
-
-					infile.seekg(-m * (n - k * p) + m, ios::cur);
+					
+					if (-m * (n - k * p) + m !=0)
+						infile.seekg(-m * (n - k * p) + m, ios::cur);
 
 					Transpose(buffer, p, p);
-
 
 					for (int i = 0; i < p; ++i)
 					{
@@ -197,7 +198,6 @@ int main()
 
 					Transpose(buffer, p, p);
 
-
 					for (int i = 0; i < p; ++i)
 					{
 						outfile.write((&buffer[i * p]), p);
@@ -205,16 +205,15 @@ int main()
 					}
 				}
 			}
-			if (m % p == 0) infile.seekg(m, ios::cur);
+			if (m % p == 0) infile.seekg(m * (p-1), ios::cur);
 			outfile.seekp((-n * m) + p, ios::cur);
 		}
-
 	}
 	infile.close();
 	outfile.close();
 	
 
-	/*
+	
 	cout << endl;
 	ifstream infile1("output.bin", ios::in | ios::binary);
 
@@ -232,7 +231,7 @@ int main()
 		}
 		cout << endl;
 	}
-	*/
+	
 	const auto endTime = std::clock();
 	std::cout << endl << "done in  " << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
 	getchar();
@@ -240,16 +239,6 @@ int main()
 	return 0;
 }
 
-void Transpose( vector< char > & buf, int row, int col )
-{
-    for ( int i = 0; i < row; i++ )
-    {
-        for ( int j = i + 1; j < col; j++ )
-        {
-            swap(buf[ i * col + j ],buf[ j * col + i ]);
-        }
-    }
-}
 
 void Transpose2(vector< char > & bufA, vector< char > & bufB, int row, int col)
 {
@@ -258,6 +247,17 @@ void Transpose2(vector< char > & bufA, vector< char > & bufB, int row, int col)
 		for (int l = 0; l < col; ++l)
 		{
 			bufB[l * row + k] = bufA[k * col + l];
+		}
+	}
+}
+
+void Transpose(vector< char > & buf, int row, int col)
+{
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = i + 1; j < col; j++)
+		{
+			swap(buf[i * col + j], buf[j * col + i]);
 		}
 	}
 }
@@ -280,7 +280,7 @@ void printBuf(vector< char> & buf, int p)
 
 void CreateTestFile()
 {
-    const int n = 1;
+    const int n = 10;
     const int m = 10;
     //srand(static_cast<unsigned int>(time(NULL)));
 
@@ -295,7 +295,7 @@ void CreateTestFile()
             c++;
         }
     }
-	/*
+	
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < m; ++j)
@@ -304,7 +304,7 @@ void CreateTestFile()
 		}
 		cout << endl;
 	}
-	*/
+	
     ofstream out("input.bin", ios::out | ios::binary);
 
     out.write((char *) &n, sizeof(int));
