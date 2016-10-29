@@ -29,7 +29,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="matrix_mult.cpp">
+    <ClCompile Include="matrix_mult_clear.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
