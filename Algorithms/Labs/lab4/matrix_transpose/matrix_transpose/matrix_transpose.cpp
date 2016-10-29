@@ -37,8 +37,7 @@ int main()
 	int p = 5;
 	int q = 5;
 
-	int u = n % p == 0 ? n / p : n / p + 1;
-	int v = m % p == 0 ? m / p : m / p + 1;
+
 
 	if (n < p)
 	{
@@ -49,8 +48,9 @@ int main()
 		vector<char> bufferA(size_n*size_m);
 		vector<char> bufferB(size_m*size_n);
 
+		int r = ceil((float)m / size_m);
 
-		for (int l = 0; l < v; ++l)
+		for (int l = 0; l < r; ++l)
 		{
 			if (m < (l + 1) * size_m)
 			{
@@ -72,9 +72,6 @@ int main()
 			for (int i = 0; i < size_m; ++i)
 			{
 				outfile.write(&bufferB[i * size_n], size_n);
-			
-				//if ((m) != 0)
-				//if (size_m != 0) outfile.seekp(n - size_n, ios::cur);
 			}
 		}
 
@@ -82,7 +79,7 @@ int main()
 		bufferA.clear();
 		bufferB.clear();
 	} 
-	else if (m<p)
+	else if (m < p)
 	{
 		
 		int size_f = p*p;
@@ -91,8 +88,9 @@ int main()
 		vector<char> bufferA(size_n*size_m);
 		vector<char> bufferB(size_m*size_n);
 
+		int r = ceil((float)n / size_n);
 
-		for (int l = 0; l < u; ++l)
+		for (int l = 0; l < r; ++l)
 		{
 			if (n < (l + 1) * size_n)
 			{
@@ -128,6 +126,9 @@ int main()
 	}
 	else
 	{
+		int u = n % p == 0 ? n / p : n / p + 1;
+		int v = m % p == 0 ? m / p : m / p + 1;
+
 		vector<char> buffer(p * q, 0);
 
 		for (int k = 0; k < u; ++k)
@@ -280,8 +281,8 @@ void printBuf(vector< char> & buf, int p)
 
 void CreateTestFile()
 {
-    const int n = 10;
-    const int m = 10;
+    const int n = 3;
+    const int m = 12;
     //srand(static_cast<unsigned int>(time(NULL)));
 
 
