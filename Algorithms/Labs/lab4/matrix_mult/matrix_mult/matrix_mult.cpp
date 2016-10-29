@@ -10,10 +10,9 @@
 
 using namespace std;
 
-void printBuf(vector< char> & buf, int p);
+void printBuf(vector< int> & buf, int n, int m);
 void CreateTestFile();
-void AddMartr(vector<char> &c, vector<char> &  b, int n);
-vector<char> MultSwappedLoops(vector<char> &a, vector<char> &  b, int n);
+void Mult(vector<int> &a, vector<int> &  b, vector<int> &c, int size_i, int size_j, int size_k);
 
 
 int main()
@@ -36,106 +35,106 @@ int main()
 	outfile.write(reinterpret_cast<char *>(&m), 4);
 
 
-	int p = 2;
-	int q = 2;
+	int block_size = 2;
 
-	vector<char> bufferA(p * q, 0);
-	vector<char> bufferB(p * q, 0);
-	vector<char> bufferC(p * q, 0);
+	vector<int> bufferA;
+	vector<int> bufferB;
+	vector<int> bufferC;
 
-	int u = n % p == 0 ? n / p : n / p + 1;
-	int v = m % p == 0 ? m / p : m / p + 1;
+	int repeat = n % block_size == 0 ? n / block_size : n / block_size + 1;
 
-	infileB.seekg(n*m + 16);
+	infileB.seekg(n*n + 16);
 
-	for (int i = 0; i < u; i++)
+	for (int i = 0; i < repeat; i++)
 	{
-		for (int j = 0; j < u; j++)
+		int size_i = n < (i + 1) * block_size ? n - i * block_size : block_size;
+
+		for (int j = 0; j < repeat; j++)
 		{
-			for (int k = 0; k < u; k++)
+			int size_j = n < (j + 1) * block_size ? n - j * block_size : block_size;
+			bufferC.resize(size_i * size_j, 0);
+
+			for (int k = 0; k < repeat; k++)
 			{
+				int size_k = n < (k + 1) * block_size ? n - k * block_size : block_size;
+				bufferA.resize(size_i * size_k, 0);
 
-				if (n - k*p < p) {
-					q = n - k*p;
-
-					for (int b = 0; b < q; b++)
-					{
-						infileA.read(&bufferA[b*q], q);
-
-						if (b != q - 1) infileA.seekg(m - q, ios::cur);
-					}
-					cout << "a";
-					printBuf(bufferA, q);
-					infileA.seekg(-m*(q - 1), ios::cur);
-
-
-					for (int b = 0; b < q; b++)
-					{
-						infileB.read(&bufferB[b*q], q);
-
-						if (b != q - 1) infileB.seekg(m - q, ios::cur);
-					}
-					cout << "b";
-					printBuf(bufferB, q);
-					infileB.seekg(m - q, ios::cur);
-
-					AddMartr(bufferC, MultSwappedLoops(bufferA, bufferB, q), q);
-
-
-				}
-				else
+				for (int ib = 0; ib < size_i; ib++)
 				{
+					vector<char> line(size_k,0);
 
-					for (int b = 0; b < p; b++)
+					infileA.read(&line[0], size_k);
+
+					for (int kb = 0; kb < size_k; ++kb)
 					{
-						infileA.read(&bufferA[b*p], p);
-
-						if (b != p - 1) infileA.seekg(m - p, ios::cur);
+						bufferA[ib * size_k + kb] = (int)line[kb];
 					}
-					cout << "a";
-					printBuf(bufferA, p);
-					infileA.seekg(-m*(p - 1), ios::cur);
 
-
-					for (int b = 0; b < p; b++)
-					{
-						infileB.read(&bufferB[b*p], p);
-
-						if (b != p - 1) infileB.seekg(m - p, ios::cur);
-					}
-					cout << "b";
-					printBuf(bufferB, p);
-					infileB.seekg(m - p, ios::cur);
-
-					AddMartr(bufferC, MultSwappedLoops(bufferA, bufferB, p), p);
-					//printBuf(bufferC, p);
+					if (ib!=size_i - 1) infileA.seekg(n - size_k, ios::cur);
 				}
+				if (-n*(size_i - 1) !=0)
+					infileA.seekg(-n*(size_i - 1), ios::cur);
+
+				
+				bufferB.resize(size_k*size_j, 0);
+
+				for (int kb = 0; kb < size_k; kb++)
+				{
+					vector<char> line(size_j, 0);
+
+					infileB.read(&line[0], size_j);
+
+					for (int jb = 0; jb < size_j; ++jb)
+					{
+						bufferB[kb * size_j + jb] = (int)line[jb];
+					}
+
+					infileB.seekg(n - size_j, ios::cur);
+				}
+				//cout << "b";
+				//printBuf(bufferB, size_k, size_j);
+				//infileB.seekg(n - size_j, ios::cur);
+
+				Mult(bufferA, bufferB, bufferC, size_i, size_j, size_k);
+				//cout << (int)infileB.tellg() - 16 << endl;
+
 			}
+			bufferA.clear();
+			bufferB.clear();
 
 			// write
-			for (int b = 0; b < p; b++)
+			cout << (int)outfile.tellp() - 8 << endl;
+			for (int ib = 0; ib < size_i; ib++)
 			{
-				outfile.write(&bufferC[b*p], p);
-				if (b != p - 1) outfile.seekp(m - p, ios::cur);
+				vector<char> line(size_j,0);
+				for (int jb = 0; jb < size_j; ++jb)
+				{
+					line[jb] = (char)(bufferC[ib * size_j + jb] /*% 256*/);
+				}
+
+				outfile.write(&line[0], size_j);
+				if (ib != size_i - 1) outfile.seekp(n - size_j, ios::cur);
 			}
-			if (j != u - 1) outfile.seekp(-m * (p - 1), ios::cur);
+			cout << (int)outfile.tellp() - 8 << endl;
+			outfile.seekp(-n * (size_i - 1), ios::cur);
+			cout << (int)outfile.tellp() - 8 << endl;
 
-
-			fill(bufferC.begin(), bufferC.end(), 0);
+			bufferC.clear();
 			// seek a start
 			// b seek next column
-			cout << "seek a to start b to next col" << endl;
-			infileA.seekg(-m*(p-1), ios::cur);
-			infileB.seekg((-n * m) + p, ios::cur);
+			//cout << "seek a to start b to next col" << endl;
+			infileA.seekg(-n, ios::cur);
+			infileB.seekg((-n * n) + size_j , ios::cur);
+
+
 		}
 
-		cout << "seek a to next row";
 		//seek A to next row
-		infileA.seekg(m*p, ios::cur);
+		infileA.seekg(n*size_i, ios::cur);
 		//seek B to start
-		infileB.seekg(-m, ios::cur);
+		infileB.seekg(-n, ios::cur);
 		//seek out to next row
-		//outfile.seekp()
+		outfile.seekp(n*(size_i-1), ios::cur);
 
 	}
 
@@ -151,9 +150,9 @@ int main()
 	int x;
 	infile1.read(reinterpret_cast<char *>(&z), 4);
 	infile1.read(reinterpret_cast<char *>(&x), 4);
-	vector<unsigned char> buffer1(z * x, 0);
+	vector<char> buffer1(z * x, 0);
 
-	infile1.read((char *)&buffer1[0], buffer1.size());
+	infile1.read(&buffer1[0], buffer1.size());
 	for (int i = 0; i < z; ++i)
 	{
 		for (int j = 0; j < x; ++j)
@@ -170,45 +169,24 @@ int main()
 	return 0;
 }
 
-vector<char> MultSwappedLoops(vector<char> &a, vector<char> &  b, int n)
+void Mult(vector<int> &a, vector<int> &  b,vector<int> &c, int size_i,int size_j,int size_k)
 {
-	vector<char> c(n*n, 0);
-
-	for (int i = 0; i < n; ++i)
+	for (int ib = 0; ib < size_i; ++ib)
 	{
-		for (int j = 0; j < n; ++j)
+		for (int jb = 0; jb < size_j; ++jb)
 		{
-			c[i * n + j] = 0;
-		}
-
-		for (int k = 0; k < n; ++k)
-		{
-			for (int j = 0; j < n; ++j)
+			for (int kb = 0; kb < size_k; ++kb)
 			{
-				c[i * n + j] += a[i * n + k] * b[k * n + j];
+				c[ib * size_j + jb] += a[ib * size_k + kb] * b[kb * size_j + jb];
 			}
 		}
 	}
-	return c;
 }
-
-void AddMartr(vector<char> &c, vector<char> &  b, int n)
-{
-	for (int i = 0; i < n; ++i)
-	{
-		for (int j = 0; j < n; ++j)
-		{
-			c[i*n + j] += b[i*n + j];
-		}
-	}
-}
-
-
 
 void CreateTestFile()
 {
-	const int n = 5;
-	const int m = 5;
+	const int n = 4;
+	const int m = 4;
 	//srand(static_cast<unsigned int>(time(NULL)));
 
 
@@ -264,15 +242,15 @@ void CreateTestFile()
 	out.close();
 }
 
-void printBuf(vector< char> & buf, int p)
+void printBuf(vector< int> & buf,int n,int m)
 {
 	cout << endl;
 
-	for (int i = 0; i < buf.size() / p; i++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < buf.size() / p; ++j)
+		for (int j = 0; j < m; ++j)
 		{
-			cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int)buf[i * p + j] << " ";
+			cout << setiosflags(ios::fixed | ios::left) << setw(3) << (int)buf[i * m + j] << " ";
 		}
 		cout << endl;
 	}

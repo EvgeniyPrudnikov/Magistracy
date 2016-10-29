@@ -10,6 +10,7 @@ using namespace std;
 void CreateTestFile();
 void printBuf(vector< char> & buf,int );
 void Transpose( vector< char > & buf, int row, int col );
+void Transpose2(vector< char > & bufA, vector< char > & bufB, int row, int col);
 
 
 int main()
@@ -31,99 +32,143 @@ int main()
 	outfile.write(reinterpret_cast<char *>(&m), 4);
 	outfile.write(reinterpret_cast<char *>(&n), 4);
 
-
-
 	int p = 5;
-	int q = 5;
-
-	vector<char> buffer(p * q, 0);
-
 	int u = n % p == 0 ? n / p : n / p + 1;
 	int v = m % p == 0 ? m / p : m / p + 1;
 
-	for (int k = 0; k < u; ++k)
+	if (n < p)
 	{
+		
+		int size_f = p*p;
+		int size_m = ceil((float)size_f/n);
+		vector<char> bufferA(size_f);
+		vector<char> bufferB(size_f);
+
+
 		for (int l = 0; l < v; ++l)
 		{
-			if ((m - l * p) < p && (n - k * p) < p)
+			if (m < (l + 1) * size_m)
 			{
-				for (int i = 0; i < n - k * p; ++i)
-				{
-					infile.read(&buffer[i * p], m - l * p);
-					if (i != p - 1) infile.seekg(m - (m - l * p), ios::cur);
-				}
-
-				Transpose(buffer, p, q);
-
-				for (int i = 0; i < m - l * p; ++i)
-				{
-					outfile.write(&buffer[i * p], n - k * p);
-					outfile.seekp(n - (n - k * p), ios::cur);
-				}
-
+				size_m = m - l * size_m;
 			}
-			else  if ((m - l * p) < p)
+
+			for (int i = 0; i < n; ++i)
 			{
-				for (int i = 0; i < p; ++i)
-				{
-					infile.read(&buffer[i * p], m - l * p);
-					if (i != p - 1) infile.seekg(m - (m - l * p), ios::cur);
-				}
-
-				Transpose(buffer, p, q);
-
-				for (int i = 0; i < m - l * p; ++i)
-				{
-					outfile.write(&buffer[i * p], p);
-					if (i != p - 1) outfile.seekp(n - p, ios::cur);
-				}
+				infile.read(&bufferA[i * size_m], size_m);
+				if (i != n - 1)
+					infile.seekg(m - size_m, ios::cur);
 			}
-			else if ((n - k * p) < p)
+
+			if ((-m * n + m) != 0)
+				infile.seekg(-m * n + m, ios::cur);
+
+			Transpose2(bufferA, bufferB, n, size_m);
+
+			for (int i = 0; i < size_m; ++i)
 			{
-				for (int i = 0; i < n - k * p; ++i)
-				{
-					infile.read(&buffer[i * p], p);
-					if (i != n - k * p - 1) 
-						infile.seekg(m - p, ios::cur);
-				}
-
-				if ((-m * (n - k * p) + m) != 0)
-					infile.seekg(-m * (n - k * p) + m, ios::cur);
-				
-				Transpose(buffer, p, q);
-
-				for (int i = 0; i < p; ++i)
-				{
-					outfile.write(&buffer[i * p], n - k * p);
-					if ((n - (n - k * p))!=0)
-						outfile.seekp(n - (n - k * p), ios::cur);
-				}
-			}
-			else
-			{
-				for (int i = 0; i < p; ++i)
-				{
-					infile.read(&buffer[i * p], p);
-					if (i != p - 1) infile.seekg(m - p, ios::cur);
-				}
-				infile.seekg(-m * (p - 1), ios::cur);
-
-				Transpose(buffer, p, q);
-
-				for (int i = 0; i < p; ++i)
-				{
-					outfile.write(&buffer[i * p], p);
-					outfile.seekp(n - p, ios::cur);
-				}
+				outfile.write(&bufferB[i * n], n);
+				//if ((m) != 0)
+				//outfile.seekp(n, ios::cur);
 			}
 		}
-		if (m % p == 0) infile.seekg(m, ios::cur);
-		outfile.seekp((-n * m) + p, ios::cur);
-	}
 
+
+		bufferA.clear();
+		bufferB.clear();
+	} 
+	else if (m<p)
+	{
+		
+	}
+	else
+	{
+
+		vector<char> buffer(p * p, 0);
+
+		for (int k = 0; k < u; ++k)
+		{
+			for (int l = 0; l < v; ++l)
+			{
+				if ((m - l * p) < p && (n - k * p) < p)
+				{
+					for (int i = 0; i < n - k * p; ++i)
+					{
+						infile.read(&buffer[i * p], m - l * p);
+						if (i != p - 1) infile.seekg(m - (m - l * p), ios::cur);
+					}
+
+					Transpose(buffer, p, p);
+
+					for (int i = 0; i < m - l * p; ++i)
+					{
+						outfile.write(&buffer[i * p], n - k * p);
+						outfile.seekp(n - (n - k * p), ios::cur);
+					}
+
+				}
+				else  if ((m - l * p) < p)
+				{
+					for (int i = 0; i < p; ++i)
+					{
+						infile.read(&buffer[i * p], m - l * p);
+						if (i != p - 1) infile.seekg(m - (m - l * p), ios::cur);
+					}
+
+					Transpose(buffer, p, p);
+
+					for (int i = 0; i < m - l * p; ++i)
+					{
+						outfile.write(&buffer[i * p], p);
+						if (i != p - 1) outfile.seekp(n - p, ios::cur);
+					}
+				}
+				else if ((n - k * p) < p)
+				{
+					for (int i = 0; i < n - k * p; ++i)
+					{
+						infile.read(&buffer[i * p], p);
+						if (i != n - k * p - 1)
+							infile.seekg(m - p, ios::cur);
+					}
+
+					if ((-m * (n - k * p) + m) != 0)
+						infile.seekg(-m * (n - k * p) + m, ios::cur);
+
+					Transpose(buffer, p, p);
+
+					for (int i = 0; i < p; ++i)
+					{
+						outfile.write(&buffer[i * p], n - k * p);
+						if ((n - (n - k * p)) != 0)
+							outfile.seekp(n - (n - k * p), ios::cur);
+					}
+				}
+				else
+				{
+					for (int i = 0; i < p; ++i)
+					{
+						infile.read(&buffer[i * p], p);
+						if (i != p - 1) infile.seekg(m - p, ios::cur);
+					}
+					infile.seekg(-m * (p - 1), ios::cur);
+
+					Transpose(buffer, p, p);
+
+					for (int i = 0; i < p; ++i)
+					{
+						outfile.write(&buffer[i * p], p);
+						outfile.seekp(n - p, ios::cur);
+					}
+				}
+			}
+			if (m % p == 0) infile.seekg(m, ios::cur);
+			outfile.seekp((-n * m) + p, ios::cur);
+		}
+		buffer.clear();
+	}
 	infile.close();
 	outfile.close();
-	buffer.clear();
+	
 
 	
 	cout << endl;
@@ -162,6 +207,17 @@ void Transpose( vector< char > & buf, int row, int col )
     }
 }
 
+void Transpose2(vector< char > & bufA, vector< char > & bufB, int row, int col)
+{
+	for (int k = 0; k < row; ++k)
+	{
+		for (int l = 0; l < col; ++l)
+		{
+			bufB[l * row + k] = bufA[k * col + l];
+		}
+	}
+}
+
 void printBuf(vector< char> & buf, int p)
 {
     cout<<endl;
@@ -195,7 +251,7 @@ void CreateTestFile()
             c++;
         }
     }
-	/*
+	
 	for (int i = 0; i < n; ++i)
 	{
 		for (int j = 0; j < m; ++j)
@@ -204,7 +260,7 @@ void CreateTestFile()
 		}
 		cout << endl;
 	}
-	*/
+	
     ofstream out("input.bin", ios::out | ios::binary);
 
     out.write((char *) &n, sizeof(int));
