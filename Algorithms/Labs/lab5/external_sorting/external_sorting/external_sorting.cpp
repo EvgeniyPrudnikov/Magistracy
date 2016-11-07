@@ -41,17 +41,17 @@ int main(int argc, char *argv[])
 //======================================================================================================================
 // Phase 1
 //======================================================================================================================
-    vector<long> bufferM(block_size_M);
+    vector<double> bufferM(block_size_M);
 
     long runs = ceil((double) N / block_size_M);
-    long read_size_M = block_size_M * sizeof(long);
+    long read_size_M = block_size_M * sizeof(double);
 
     for (int j = 0; j < runs; ++j)
     {
         if (N - j * block_size_M < block_size_M)
         {
-            read_size_M = (N - j * block_size_M) * sizeof(long);
-            bufferM.resize(read_size_M / sizeof(long));
+            read_size_M = (N - j * block_size_M) * sizeof(double);
+            bufferM.resize(read_size_M / sizeof(double));
         }
 
         infile.read((char *) &bufferM[0], read_size_M);
@@ -62,10 +62,11 @@ int main(int argc, char *argv[])
     }
 
     bufferM.clear();
+    tempfile.flush();
     tempfile.close();
     infile.close();
 
-    coutFile((char *) "temp1.bin");
+    //coutFile((char *) "temp1.bin");
 
 //======================================================================================================================
 // Phase 2
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
         ifstream tempfile2;
         ofstream outfile1;
 
-        read_size_M = block_size_M * sizeof(long);
+        read_size_M = block_size_M * sizeof(double);
 
         long levels = (long) ceil(log2(runs));
 
@@ -99,20 +100,20 @@ int main(int argc, char *argv[])
 
             outfile1.write(reinterpret_cast<char *>(&N), 8);
 
-            for (long k = init_offset; k < N * sizeof(long) + init_offset; k += 2 * read_size_M)
+            for (long k = init_offset; k < N * sizeof(double) + init_offset; k += 2 * read_size_M)
             {
                 long run1_start = k;
                 long run2_start = k + read_size_M;
                 long run2_end = k + 2 * read_size_M;
 
-                if ((N * sizeof(long) + init_offset) - k < read_size_M)
+                if ((N * sizeof(double) + init_offset) - k < read_size_M)
                 {
                     run2_start = k;
                 }
 
-                if ((N * sizeof(long) + init_offset) - run2_start < read_size_M)
+                if ((N * sizeof(double) + init_offset) - run2_start < read_size_M)
                 {
-                    run2_end = (N * sizeof(long) + init_offset);
+                    run2_end = (N * sizeof(double) + init_offset);
                 }
 
                 mergeRuns(tempfile1, tempfile2, outfile1, run1_start, run2_start, run2_end);
@@ -149,14 +150,14 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
     long blk_size_B1 = block_size_B;
     long blk_size_B2 = block_size_B;
 
-    long read_size_B1 = block_size_B * sizeof(long);
-    long read_size_B2 = block_size_B * sizeof(long);
+    long read_size_B1 = block_size_B * sizeof(double);
+    long read_size_B2 = block_size_B * sizeof(double);
 
     long read_blk1_offset = run1_start;
     long read_blk2_offset = run2_start;
 
-    vector<long> bufferBr1(block_size_B);
-    vector<long> bufferBr2(block_size_B);
+    vector<double> bufferBr1(block_size_B);
+    vector<double> bufferBr2(block_size_B);
 
     infile1.seekg(run1_start, ios::beg);
     infile1.read((char *) &bufferBr1[0], read_size_B1);
@@ -164,7 +165,7 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
     infile2.seekg(run2_start, ios::beg);
     infile2.read((char *) &bufferBr2[0], read_size_B2);
 
-    vector<long> bufferBw(block_size_B);
+    vector<double> bufferBw(block_size_B);
 
     int p1 = 0, p2 = 0, po = 0;
 
@@ -174,7 +175,7 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
 
         if (run2_end - read_blk2_offset < read_size_B2)
         {
-            blk_size_B2 = (run2_end - read_blk2_offset) / sizeof(long);
+            blk_size_B2 = (run2_end - read_blk2_offset) / sizeof(double);
             read_size_B2 = (run2_end - read_blk2_offset);
         }
 
@@ -219,8 +220,8 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
         }
     }
 
-    read_size_B1 = block_size_B * sizeof(long);
-    read_size_B2 = block_size_B * sizeof(long);
+    read_size_B1 = block_size_B * sizeof(double);
+    read_size_B2 = block_size_B * sizeof(double);
 
     if (read_blk1_offset == run2_start)
     {
@@ -230,8 +231,8 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
                 bufferBw[po] = bufferBr2[j];
                 po++;
             }
-            outfile.write((char *) &bufferBw[0], po*sizeof(long));
-            read_blk2_offset += po*sizeof(long);
+            outfile.write((char *) &bufferBw[0], po*sizeof(double));
+            read_blk2_offset += po*sizeof(double);
 
 
         for (long i = read_blk2_offset; i < run2_end; i += read_size_B2)
@@ -252,8 +253,8 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
                 bufferBw[po] = bufferBr1[j];
                 po++;
             }
-            outfile.write((char *) &bufferBw[0], po*sizeof(long));
-            read_blk1_offset += po*sizeof(long);
+            outfile.write((char *) &bufferBw[0], po*sizeof(double));
+            read_blk1_offset += po*sizeof(double);
 
 
         for (long i = read_blk1_offset; i < run2_start - read_size_B1; i += read_size_B1)
@@ -280,8 +281,8 @@ void coutFile(char *filename)
 
     long n;
     infile.read(reinterpret_cast<char *>(&n), 8);
-    vector<long> buffer(n, 0);
-    infile.read((char *) &buffer[0], buffer.size() * sizeof(long));
+    vector<double> buffer(n, 0);
+    infile.read((char *) &buffer[0], buffer.size() * sizeof(double));
     for (int i = 0; i < n; ++i)
     {
         cout << setiosflags(ios::fixed | ios::left) << setw(3) << buffer[i] << " ";
@@ -291,10 +292,10 @@ void coutFile(char *filename)
 
 void CreateTestFile()
 {
-    const long n = 16;
+    const long n = 39;
     //srand(static_cast<unsigned int>(time(NULL)));
 
-    vector<long> array(n); //{9,8,7,6,5,4,11,18,15};
+    vector<double> array(n); //{9,8,7,6,5,4,11,18,15};
     int c = n;
     for (int i = 0; i < n; ++i)
     {
@@ -314,5 +315,12 @@ void CreateTestFile()
     out.write((char *) &array[0], n * sizeof(long));
 
     out.close();
+
+    sort (array.begin(),array.end());
+    cout<<endl;
+    for (int i = 0; i < n; ++i)
+    {
+        cout << setiosflags(ios::fixed | ios::left) << setw(3) << array[i] << " ";
+    }
 }
 
