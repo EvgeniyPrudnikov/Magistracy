@@ -1,5 +1,5 @@
 
-//#include "stdafx.h"
+#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -56,7 +56,6 @@ int main(int argc, char *argv[])
 
         sort(bufferM.begin(), bufferM.end());
 
-
         tempfile.write((char *) &bufferM[0], read_size_M);
     }
 
@@ -64,7 +63,7 @@ int main(int argc, char *argv[])
     tempfile.close();
     infile.close();
 
-    coutFile("temp1.bin");
+    //coutFile("temp1.bin");
 
 
     ifstream tempfile1;
@@ -154,14 +153,13 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
 
     while (read_blk1_offset < run2_start && read_blk2_offset < run2_end)
     {
-/*
-        if ( run2_end - read_blk2_offset < read_size_B2)
+
+        if ( run2_end - read_blk2_offset < read_size_B)
         {
-            block_size_B2 = (run2_end - read_blk2_offset)/sizeof(long);
+            //block_size_B2 = (run2_end - read_blk2_offset)/sizeof(long);
             read_blk2_offset += run2_end - read_blk2_offset;
         }
 
-*/
 
         if (bufferBr1[p1] < bufferBr2[p2])
         {
@@ -175,7 +173,7 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
 
                 if (read_blk1_offset < run2_start)
                 {
-                    infile1.read((char *) &bufferBr1[0], block_size_B);
+                    infile1.read((char *) &bufferBr1[0], read_size_B);
                     p1 = 0;
                 }
             }
@@ -190,16 +188,16 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
 
                 if (read_blk2_offset < run2_end)
                 {
-                    infile2.read((char *) &bufferBr2[0], block_size_B);
+                    infile2.read((char *) &bufferBr2[0], read_size_B);
                     p2 = 0;
                 }
             }
         }
 
         po++;
-        if (po > block_size_B - 1)
+        if (po > (run2_end - read_blk2_offset)/sizeof(long) - 1)
         {
-            outfile.write((char *) &bufferBw[0], block_size_B);
+            outfile.write((char *) &bufferBw[0], read_size_B);
             po = 0;
         }
     }
@@ -230,7 +228,7 @@ void coutFile(char *filename)
     cout << endl;
     ifstream infile(filename, ios::in | ios::binary);
 
-    int n;
+    long n;
     infile.read(reinterpret_cast<char *>(&n), 8);
     vector<long> buffer(n, 0);
     infile.read((char *) &buffer[0], buffer.size() * sizeof(long));
