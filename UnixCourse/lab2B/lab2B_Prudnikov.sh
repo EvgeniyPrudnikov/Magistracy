@@ -4,104 +4,103 @@
 function cdd {
 
     if [ $# -gt 1 ]; then 
-        echo "Wrong number of arguments!"
+        echo "Wrong number of arguments!" 1>&2
         return 1
     fi
 
     subdir="${1:-}"
 
-    if ! cd "$HOME"/Downloads/"$subdir" 2>/dev/null; then 
-        echo "No such directory." 
-        return 1
-    fi
+    cd "$HOME"/Downloads/"$subdir"
+
 }
 
 function mvd {
     
     if [ $# -gt 2 ]; then 
-        echo "Wrong number of arguments!"
+        echo "Wrong number of arguments!" 1>&2
         return 1
     fi  
 
     if [ -z "$1" ]; then 
-        echo "Please specify source."
+        echo "Please specify source." 1>&2
         return 1
     fi
 
     subdir="${2:-}"
 
-    mkdir "$HOME"/Downloads/"$subdir" 2>/dev/null
+    impDir="$HOME"/Downloads/"$subdir"
 
-    if ! mv "$1" "$HOME"/Downloads/"$subdir"; then
-        return 1    
-    fi
+    mkdir "$impDir" 2>/dev/null
+
+    mv "$1" "$impDir";
+
 
 }
 
 function cpd {
 
     if [ $# -gt 2 ]; then 
-        echo "Wrong number of arguments!"
+        echo "Wrong number of arguments!" 1>&2
         return 1
     fi  
 
     if [ -z "$1" ]; then 
-        echo "Please specify source."
+        echo "Please specify source." 1>&2
         return 1
     fi
 
     subdir="${2:-}"
 
-    mkdir "$HOME"/Downloads/"$subdir" 2>/dev/null
+    impDir="$HOME"/Downloads/"$subdir"
 
-    if ! cp -r "$1" "$HOME"/Downloads/"$subdir"; then
-        return 1
-    fi
+    mkdir "$impDir" 2>/dev/null
+
+    cp -r "$1" "$impDir"
 
 }
 
 function mvfd {
     
     if [ $# -gt 2 ]; then 
-        echo "Wrong number of arguments!"
+        echo "Wrong number of arguments!" 1>&2
         return 1
     fi  
 
     if [ -z "$1" ]; then 
-        echo "please specify source"
+        echo "please specify source" 1>&2
         return 1
     fi
     
     sourceSubDir="$1"
     targetSubDir="${2:-.}"
 
+    impDir="$HOME"/Downloads/"$sourceSubDir"
+
     mkdir "$targetSubDir" 2>/dev/null
 
-    if ! mv "$HOME"/Downloads/"$sourceSubDir" "$targetSubDir"; then
-        return 1
-    fi
+    mv "$impDir" "$targetSubDir"
 
 }
 
 function cpfd {
     
     if [ $# -gt 2 ]; then 
-        echo "Wrong number of arguments!"
+        echo "Wrong number of arguments!" 1>&2
         return 1
     fi  
 
     if [ -z "$1" ]; then 
-        echo "Please specify source."
+        echo "Please specify source." 1>&2
         return 1
     fi
 
     sourceSubDir="$1"
     targetSubDir="${2:-.}"
 
+	impDir="$HOME"/Downloads/"$sourceSubDir"
+
     mkdir "$targetSubDir" 2>/dev/null
 
-    if ! cp -r "$HOME"/Downloads/"$sourceSubDir" "$targetSubDir"; then
-        return 1
-    fi
+    cp -r "$impDir" "$targetSubDir"
 
 }
