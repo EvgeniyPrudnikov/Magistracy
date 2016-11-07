@@ -73,7 +73,6 @@ int main(int argc, char *argv[])
     if (N > block_size_M)
     {
 
-
         ifstream tempfile1;
         ifstream tempfile2;
         ofstream outfile1;
@@ -241,11 +240,14 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, long run
                 read_size_B = (run2_start - read_blk1_offset);
             }
 
-
             infile1.read((char *) &bufferBr1[0], read_size_B);
             outfile.write((char *) &bufferBr1[0], read_size_B);
         }
     }
+
+    bufferBr1.clear();
+    bufferBr2.clear();
+    bufferBw.clear();
 }
 
 void coutFile(char *filename)
