@@ -6,6 +6,8 @@
 
 # User-specific files
 
+*.bin
+
 *.suo
 
 *.user
