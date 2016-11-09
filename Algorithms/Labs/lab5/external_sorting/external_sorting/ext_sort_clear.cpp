@@ -87,12 +87,12 @@ int main(int argc, char *argv[])
 			for (long long k = init_offset; k < N * sizeof(double) + init_offset; k += 2 * read_size_M)
 			{
 				long long run1_start = k;
-				long long run2_start = k + read_size_M;
-				long long run2_end = k + 2 * read_size_M;
+				long long run2_start = run1_start + read_size_M;
+				long long run2_end = run1_start + 2 * read_size_M;
 
-				if ((N * sizeof(double) + init_offset) - k < read_size_M)
+				if ((N * sizeof(double) + init_offset) - run1_start < read_size_M)
 				{
-					run2_start = k;
+					run2_start = run1_start;
 				}
 
 				if ((N * sizeof(double) + init_offset) - run2_start < read_size_M)
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
 				if (run2_end == run2_start)
 				{
-					run2_start = k;
+					run2_start = run1_start;
 				}
 
 				mergeRuns(tempfile1, tempfile2, outfile1, run1_start, run2_start, run2_end);
