@@ -81,23 +81,25 @@ int main(int argc, char *argv[])
 				tempfile2.open("temp2.bin", ios::in | ios::binary);
 				outfile1.open("temp1.bin", ios::out | ios::binary | ios::trunc);
 			}
-
+			
 			outfile1.write(reinterpret_cast<char *>(&N), sizeof(double));
-
-			for (long long k = init_offset; k < N * sizeof(double) + init_offset; k += 2 * read_size_M)
+			
+			long long end_of_file = N * sizeof(double) + init_offset;
+			
+			for (long long offset = init_offset; offset < end_of_file; offset += 2 * read_size_M)
 			{
-				long long run1_start = k;
+				long long run1_start = offset;
 				long long run2_start = run1_start + read_size_M;
 				long long run2_end = run1_start + 2 * read_size_M;
 
-				if ((N * sizeof(double) + init_offset) - run1_start < read_size_M)
+				if (end_of_file - run1_start < read_size_M)
 				{
 					run2_start = run1_start;
 				}
 
-				if ((N * sizeof(double) + init_offset) - run2_start < read_size_M)
+				if (end_of_file - run2_start < read_size_M)
 				{
-					run2_end = (N * sizeof(double) + init_offset);
+					run2_end = end_of_file;
 				}
 
 				if (run2_end == run2_start)
