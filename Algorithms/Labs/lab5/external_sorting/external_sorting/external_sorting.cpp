@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -12,6 +12,8 @@ using namespace std;
 
 const long long block_size_M = 6;
 const long long block_size_B = 3;
+
+
 
 void CreateTestFile();
 
