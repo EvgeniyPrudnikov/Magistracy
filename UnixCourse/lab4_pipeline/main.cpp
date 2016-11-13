@@ -122,7 +122,11 @@ int main(int argc, char *argv[])
                 }
             }
 
-            execvp(args[0], args);
+            if (execvp(args[0], args) == -1)
+            {
+                cerr << "Wrong command " << args[0] << endl;
+                return 1;
+            }
 
         } else
         {
