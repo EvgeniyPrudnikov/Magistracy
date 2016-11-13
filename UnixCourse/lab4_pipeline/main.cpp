@@ -10,7 +10,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    int exitCode = 0;
+
     vector<vector<char *>> commands;
 
     char *sep = (char *) "|";
@@ -30,20 +30,19 @@ int main(int argc, char *argv[])
                 if (param_pos == 1)
                 {
                     cerr << "Empty arguments before | " << endl;
-                    exitCode = 2;
-                    return exitCode;
+
+                    return 2;
 
                 } else if (param_pos == sep_pos + 1)
                 {
                     cerr << "Empty arguments between | | " << endl;
-                    exitCode = 2;
-                    return exitCode;
+                    return 2;
 
                 } else if (param_pos + 1 == argc)
                 {
                     cerr << "Empty arguments after | " << endl;
-                    exitCode = 2;
-                    return exitCode;
+
+                    return 2;
                 }
 
                 sep_pos = param_pos;
@@ -139,7 +138,7 @@ int main(int argc, char *argv[])
         }
     }
 
-
+    int exitCode = 0;
     int status;
     for (int i = 0; i < cmd_cnt; ++i)
     {
