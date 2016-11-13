@@ -80,7 +80,12 @@ int main(int argc, char *argv[])
 
         pid_t pid = fork();
 
-        if (pid == 0)
+        if (pid == -1)
+        {
+            perror("fork");
+            return 1;
+
+        } else if (pid == 0)
         {
 
             char **args = commands[i].data();
