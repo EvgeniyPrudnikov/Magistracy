@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
                 } else if (param_pos == sep_pos + 1)
                 {
-                    cerr << "Empty arguments between | " << endl;
+                    cerr << "Empty arguments between | | " << endl;
                     exitCode = 2;
                     return exitCode;
 
