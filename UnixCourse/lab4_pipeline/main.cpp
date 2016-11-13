@@ -15,48 +15,46 @@ int main(int argc, char *argv[])
 
     char *sep = (char *) "|";
 
-    int param_p = 1;
-    int sep_p = 0;
+    int param_pos = 1;
+    int sep_pos = 0;
     int cmd_cnt = 0;
-    while (param_p < argc)
+    while (param_pos < argc)
     {
         commands.push_back(vector<char *>());
 
-        for (int i = param_p; i < argc; ++i)
+        for (int i = param_pos; i < argc; ++i)
         {
             if (!strcmp(argv[i], sep))
             {
 
-                if (param_p == 1)
+                if (param_pos == 1)
                 {
-                    cerr << "Wrong arguments before | " << endl;
+                    cerr << "Empty arguments before | " << endl;
+                    exitCode = 2;
+                    return exitCode;
+
+                } else if (param_pos == sep_pos + 1)
+                {
+                    cerr << "Empty arguments between | " << endl;
+                    exitCode = 2;
+                    return exitCode;
+
+                } else if (param_pos + 1 == argc)
+                {
+                    cerr << "Empty arguments after | " << endl;
                     exitCode = 2;
                     return exitCode;
                 }
 
-                if (param_p == sep_p + 1)
-                {
-                    cerr << "Wrong arguments between | " << endl;
-                    exitCode = 2;
-                    return exitCode;
-                }
-
-                sep_p = param_p;
-                param_p++;
-
-                if (param_p == argc)
-                {
-                    cerr << "Wrong arguments after | " << endl;
-                    exitCode = 2;
-                    return exitCode;
-                }
+                sep_pos = param_pos;
+                param_pos++;
 
                 break;
             }
 
             commands[cmd_cnt].push_back(argv[i]);
 
-            param_p++;
+            param_pos++;
         }
         cmd_cnt++;
     }
