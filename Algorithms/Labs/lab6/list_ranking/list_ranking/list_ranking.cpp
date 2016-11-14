@@ -9,9 +9,10 @@
 
 
 using namespace std;
-
+//M = 128 * 256 + 1
 const int block_size_M = 4;
 const int block_size_B = 2;
+const int init_offset = sizeof(int);
 
 
 struct two
@@ -19,12 +20,23 @@ struct two
 	int data[2];
 };
 
+struct three
+{
+	int data[3];
+};
+
 
 void CreateTestFile();
+
+template <typename T1, typename T2, typename T3>
+void Join3(char * input_filename1, char *input_filename2, char* output_filename, int coordinate_f1, int coordinate_f2);
+
 template <typename T>
 void ExternalSort (char* input_filename, char* output_filename, int coordinate);
+
 template <typename T>
 void mergeRuns (ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1_start, int run2_start, int run2_end , int coordinate);
+
 template<typename T>
 void coutFile (char *filename);
 
@@ -36,7 +48,12 @@ int main(int argc, char *argv[])
 
 	CreateTestFile();
 
-	ExternalSort<two>("input.bin", "output.bin", 1);
+	ExternalSort<two>("input.bin", "output1.bin", 1);
+	ExternalSort<two>("input.bin", "output0.bin", 0);
+
+	Join3<two, two, three>("output1.bin", "output0.bin", "join1.bin", 1, 0);
+
+	coutFile<three>("join1.bin");
 
 	const auto endTime = std::clock();
 	std::cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
@@ -44,6 +61,80 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+
+template <typename T1 , typename T2 , typename T3>
+void Join3(char * input_filename1, char *input_filename2, char* output_filename, int coordinate_f1, int coordinate_f2)
+{
+	int N1;
+	int N2;
+
+	ifstream infile1(input_filename1, ios::in | ios::binary);
+	ifstream infile2(input_filename2, ios::in | ios::binary);
+	ofstream outfile(output_filename, ios::out | ios::binary);
+
+
+	infile1.read(reinterpret_cast<char *>(&N1), init_offset);
+	infile2.read(reinterpret_cast<char *>(&N2), init_offset);
+
+	int N3 = min(N1, N2);
+
+	outfile.write(reinterpret_cast<char *>(&N3), init_offset);
+
+	vector<T1> bufferBr1(block_size_B);
+	vector<T2> bufferBr2(block_size_B);
+	vector<T3> bufferWr(block_size_B);
+
+	int read_blk_size1 = block_size_B * sizeof(T1);
+	int read_blk_size2 = block_size_B * sizeof(T2);
+	int write_blk_size = block_size_B * sizeof(T3);
+
+	int p1 = 0, p2 = 0, po = 0;
+
+	T3 tmp;
+
+	for (int i = 0; i <= N2; i++)
+	{
+		int k = (i / block_size_B);
+
+		if (i == block_size_B * k)
+		{
+
+			if (N1 * sizeof(T1) - k*block_size_B < read_blk_size1)
+			{
+				read_blk_size1 = N1 * sizeof(T1) - k*block_size_B;
+				read_blk_size2 = N1 * sizeof(T1) - k*block_size_B;
+			}
+
+			if (N3 * sizeof(T3) - k*block_size_B < write_blk_size)
+			{
+				write_blk_size = N3 * sizeof(T3) - k*block_size_B;
+			}
+
+
+			infile1.read((char *)&bufferBr1[0], read_blk_size1);
+			infile2.read((char *)&bufferBr2[0], read_blk_size2);
+			if (i != 0) outfile.write((char *)&bufferWr[0], write_blk_size);
+			p1 = 0; p2 = 0; po = 0;
+		}
+
+		if (bufferBr1[p1].data[coordinate_f1] == bufferBr2[p2].data[coordinate_f2])
+		{
+			tmp.data[0] = bufferBr1[p1].data[0];
+			tmp.data[1] = bufferBr1[p1].data[1];
+			tmp.data[2] = bufferBr2[p2].data[1];
+
+			bufferWr[po] = tmp;
+
+			p1++; p2++; po++;
+		}
+	}
+
+	bufferBr1.clear();
+	bufferBr2.clear();
+	bufferWr.clear();
+
+}
+
 
 template <typename T>
 void ExternalSort( char* input_filename, char* output_filename, int  coordinate)
@@ -54,10 +145,9 @@ void ExternalSort( char* input_filename, char* output_filename, int  coordinate)
 	ofstream tempfile("temp1.bin", ios::out | ios::binary);
 
 
-	infile.read(reinterpret_cast<char *>(&N), 4);
-	tempfile.write(reinterpret_cast<char *>(&N), 4);
+	infile.read(reinterpret_cast<char *>(&N), init_offset);
+	tempfile.write(reinterpret_cast<char *>(&N), init_offset);
 
-	int init_offset = 4;
 	//======================================================================================================================
 	// Phase 1
 	//======================================================================================================================
@@ -116,7 +206,7 @@ void ExternalSort( char* input_filename, char* output_filename, int  coordinate)
 				outfile1.open("temp1.bin", ios::out | ios::binary | ios::trunc);
 			}
 
-			outfile1.write(reinterpret_cast<char *>(&N), 4);
+			outfile1.write(reinterpret_cast<char *>(&N), init_offset);
 
 			int end_of_file = N * sizeof(T) + init_offset;
 
@@ -151,13 +241,14 @@ void ExternalSort( char* input_filename, char* output_filename, int  coordinate)
 		}
 
 		levels % 2 == 0 ? rename("temp1.bin", output_filename) : rename("temp2.bin", output_filename);
+		levels % 2 == 0 ? remove("temp2.bin") : remove("temp1.bin");
 		coutFile<T>((char *)output_filename);
 
 	}
 	else
 	{
 		rename("temp1.bin", output_filename);
-		coutFile<T>((char *)output_filename);
+		//coutFile<T>((char *)output_filename);
 	}
 }
 
@@ -315,24 +406,24 @@ void coutFile(char *filename)
 	ifstream infile(filename, ios::in | ios::binary);
 
 	int b;
-	infile.read(reinterpret_cast<char *>(&b), 4);
+	infile.read(reinterpret_cast<char *>(&b), init_offset);
 	vector<T> buffer(b);
 	infile.read((char *)&buffer[0], buffer.size() * sizeof(T));
 	for (int i = 0; i < b; ++i)
 	{
-		cout << setiosflags(ios::fixed | ios::left)  << buffer[i].data[0] << " " << buffer[i].data[1] << setw(4) << " ";
+		cout << setiosflags(ios::fixed | ios::left) << buffer[i].data[0] << " " << buffer[i].data[1]  << " " << buffer[i].data[2]  << endl;;
 	}
 	infile.close();
 }
 
 void CreateTestFile()
 {
-	int n = 4;
+	int n = 10;
 	srand(static_cast<unsigned int>(time(NULL)));
 
-	vector<int> array {10, 1, 9, 2, 8, 3, 7, 4};//{6,7,7,1,1,3,3,2,2,8,8,5,5,4,4,10,10,9,9,6};
-					 //7,4 , 8,3 , 9,2 , 10,1
-	/*int c = n;
+	vector<int> array{6,7,7,1,1,3,3,2,2,8,8,5,5,4,4,10,10,9,9,6};
+	/*
+	int c = n;
 	for (int i = 0; i < n; ++i)
 	{
 		array[i] = rand() % n;
@@ -343,12 +434,13 @@ void CreateTestFile()
 	{
 		cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(4) << array[i] << " ";
 	}
-
+	
 	ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
 
 	out.write((char *)&n, sizeof(int));
 
 	out.write((char *) &array[0], n*2 * sizeof(int));
+	//out.write((char *) &array[0], n * sizeof(int));
 
 	out.close();
 }
