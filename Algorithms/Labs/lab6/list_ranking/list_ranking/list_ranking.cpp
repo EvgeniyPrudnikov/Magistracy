@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	ExternalSort<two>("input.bin", "output0.bin", 0);
 
 	Join3<two, two, three>("output1.bin", "output0.bin", "join1.bin", 1, 0);
-
+	/*TODO: big block size support;	*/
 	coutFile<three>("join1.bin");
 
 	const auto endTime = std::clock();
@@ -91,7 +91,7 @@ void Join3(char * input_filename1, char *input_filename2, char* output_filename,
 	int p1 = 0, p2 = 0, po = 0;
 
 	T3 tmp;
-
+	/*TODO: big block size support;	*/
 	for (int i = 0; i <= N2; i++)
 	{
 		int k = (i / block_size_B);
