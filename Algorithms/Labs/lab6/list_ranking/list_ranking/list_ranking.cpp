@@ -85,8 +85,6 @@ void ExternalSort( char* input_filename, char* output_filename, int  coordinate)
 	tempfile.close();
 	infile.close();
 
-	//coutFile<T>((char *) "temp1.bin");
-
 	//======================================================================================================================
 	// Phase 2
 	//======================================================================================================================
@@ -116,7 +114,6 @@ void ExternalSort( char* input_filename, char* output_filename, int  coordinate)
 				tempfile1.open("temp2.bin", ios::in | ios::binary);
 				tempfile2.open("temp2.bin", ios::in | ios::binary);
 				outfile1.open("temp1.bin", ios::out | ios::binary | ios::trunc);
-				//coutFile<T>((char *) "temp2.bin");
 			}
 
 			outfile1.write(reinterpret_cast<char *>(&N), 4);
@@ -153,8 +150,6 @@ void ExternalSort( char* input_filename, char* output_filename, int  coordinate)
 			outfile1.close();
 		}
 
-		//coutFile<T>((char *) "temp1.bin");
-		//coutFile<T>((char *) "temp2.bin");
 		levels % 2 == 0 ? rename("temp1.bin", output_filename) : rename("temp2.bin", output_filename);
 		coutFile<T>((char *)output_filename);
 
