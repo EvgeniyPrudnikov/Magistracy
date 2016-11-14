@@ -48,13 +48,14 @@ int main(int argc, char *argv[])
 
 	CreateTestFile();
 
+	
 	ExternalSort<two>("input.bin", "output1.bin", 1);
 	ExternalSort<two>("input.bin", "output0.bin", 0);
 
 	Join3<two, two, three>("output1.bin", "output0.bin", "join1.bin", 1, 0);
 	/*TODO: big block size support;	*/
 	coutFile<three>("join1.bin");
-
+	
 	const auto endTime = std::clock();
 	std::cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
 	getchar();
@@ -133,6 +134,10 @@ void Join3(char * input_filename1, char *input_filename2, char* output_filename,
 	bufferBr2.clear();
 	bufferWr.clear();
 
+	vector<T1>().swap(bufferBr1);
+	vector<T2>().swap(bufferBr2);
+	vector<T3>().swap(bufferWr);
+
 }
 
 
@@ -172,6 +177,7 @@ void ExternalSort( char* input_filename, char* output_filename, int  coordinate)
 	}
 
 	bufferM.clear();
+	vector<T>().swap(bufferM);
 	tempfile.close();
 	infile.close();
 
@@ -242,7 +248,7 @@ void ExternalSort( char* input_filename, char* output_filename, int  coordinate)
 
 		levels % 2 == 0 ? rename("temp1.bin", output_filename) : rename("temp2.bin", output_filename);
 		levels % 2 == 0 ? remove("temp2.bin") : remove("temp1.bin");
-		coutFile<T>((char *)output_filename);
+		//coutFile<T>((char *)output_filename);
 
 	}
 	else
@@ -397,6 +403,10 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 	bufferBr1.clear();
 	bufferBr2.clear();
 	bufferBw.clear();
+
+	vector<T>().swap(bufferBr1);
+	vector<T>().swap(bufferBr2);
+	vector<T>().swap(bufferBw);
 }
 
 template<typename T>
@@ -414,6 +424,8 @@ void coutFile(char *filename)
 		cout << setiosflags(ios::fixed | ios::left) << buffer[i].data[0] << " " << buffer[i].data[1]  << " " << buffer[i].data[2]  << endl;;
 	}
 	infile.close();
+
+	vector<T>().swap(buffer);
 }
 
 void CreateTestFile()
@@ -439,9 +451,10 @@ void CreateTestFile()
 
 	out.write((char *)&n, sizeof(int));
 
-	out.write((char *) &array[0], n*2 * sizeof(int));
 	//out.write((char *) &array[0], n * sizeof(int));
+	out.write((char *) &array[0], n * 2 * sizeof(int));
 
 	out.close();
+	vector<int>().swap(array);
 }
 
