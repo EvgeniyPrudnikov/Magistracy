@@ -10,8 +10,8 @@
 
 using namespace std;
 //M = 128 * 256 + 1
-const int block_size_M = 4;
-const int block_size_B = 2;
+const int block_size_M = 256 * 256 + 1;
+const int block_size_B = 64 * 64;
 const int init_offset = sizeof(int);
 
 
@@ -29,14 +29,15 @@ struct two
 struct three
 {
     int data[3];
-
 };
 
 
 void CreateTestFile();
 
-template <typename T1 , typename T2 , typename T3>
-void JoinDel (char * input_filename1, char * input_filename2 , char * output_filename);
+void CreateTestFile_PROD();
+
+template<typename T1, typename T2, typename T3>
+void JoinDel(char *input_filename1, char *input_filename2, char *output_filename);
 
 template<typename T1, typename T2, typename T3>
 void createDelList(char *input_filename, char *output_filename1, char *output_filename2);
@@ -62,11 +63,11 @@ int main(int argc, char *argv[])
 
     const auto startTime = std::clock();
 
+    //CreateTestFile_PROD();
     CreateTestFile();
 
 
     ExternalSort<two>("input.bin", "output1.bin", 1);
-
 
     ExternalSort<two>("input.bin", "output0.bin", 0);
 
@@ -83,31 +84,33 @@ int main(int argc, char *argv[])
 
     ExternalSort<two>("input1.bin", "input1_s.bin", 0);
 
-    JoinDel<two,int,two>("input1_s.bin", "delList.bin", "input2.bin");
+    JoinDel<two, int, two>("input1_s.bin", "delList.bin", "input2.bin");
+
     coutFile<two>("input2.bin");
 
 
     const auto endTime = std::clock();
     std::cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
-    getchar();
+    // getchar();
 
     return 0;
 }
 
-template <typename T1 , typename T2 , typename T3>
-void JoinDel (char * input_filename1, char * input_filename2 , char * output_filename)
+template<typename T1, typename T2, typename T3>
+void JoinDel(char *input_filename1, char *input_filename2, char *output_filename)
 {
     int N1;
     int N2;
-    int N3;
+    int N3 = 0;
 
     ifstream infile1(input_filename1, ios::in | ios::binary);
     ifstream infile2(input_filename2, ios::in | ios::binary);
-    ofstream outfile(output_filename, ios::out | ios::binary);
 
     infile1.read(reinterpret_cast<char *>(&N1), init_offset);
     infile2.read(reinterpret_cast<char *>(&N2), init_offset);
 
+    ofstream outfile(output_filename, ios::out | ios::binary);
+    outfile.seekp(init_offset, ios::beg);
 
     vector<T1> bufferMr1(block_size_M);
     vector<T2> bufferMr2(block_size_M);
@@ -117,7 +120,7 @@ void JoinDel (char * input_filename1, char * input_filename2 , char * output_fil
     int read_blk_size2 = block_size_M * sizeof(T2);
     int write_blk_size = block_size_M * sizeof(T3);
 
-    int m = ceil((double) max(N1,N2) / block_size_M);
+    int m = ceil((double) max(N1, N2) / block_size_M);
 
     int k = 0;
     int l = 0;
@@ -129,43 +132,70 @@ void JoinDel (char * input_filename1, char * input_filename2 , char * output_fil
             bufferMr1.resize(read_blk_size1 / sizeof(T1));
 
         }
-        if (N2 - i * block_size_M < block_size_M)
+        if (N2 - i * block_size_M < block_size_M && N2 - i * block_size_M > 0)
         {
-            read_blk_size2 = (N2 - i * block_size_M) * sizeof(T1);
+            read_blk_size2 = (N2 - i * block_size_M) * sizeof(T2);
             bufferMr2.resize(read_blk_size2 / sizeof(T2));
         }
 
         if (N1 - i * block_size_M < block_size_M)
         {
+            if (l <= bufferMw.size())
+            {
+                outfile.write((char *) &bufferMw[0], l * sizeof(T3));
+                l = 0;
+            }
+
             write_blk_size = (N1 - i * block_size_M) * sizeof(T3);
             bufferMw.resize(write_blk_size / sizeof(T3));
         }
 
+        infile1.read((char *) &bufferMr1[0], read_blk_size1);
+        /*TODO: add if to remove additional readings
+         */
+        infile2.read((char *) &bufferMr2[0], read_blk_size2);
+
         for (int j = 0; j < bufferMr1.size(); ++j)
         {
 
-            if(bufferMr1[j].data[0] != bufferMr2[k])
+            if (bufferMr1[j].data[0] != bufferMr2[k])
             {
                 N3++;
-                bufferMw[l] = bufferMr1[k];
+                bufferMw[l] = bufferMr1[j];
                 l++;
-                k++;
 
-                if (k+1 == bufferMr2.size())
+                if (l == bufferMw.size())
                 {
-                    infile2.read((char *) &bufferMr2[0],read_blk_size2);
-                    k=0;
-                }
-                if (l+1 == bufferMw.size())
-                {
-                    outfile.write((char *) & bufferMw[0], write_blk_size);
+                    outfile.write((char *) &bufferMw[0], write_blk_size);
                     l = 0;
                 }
+            } else
+            {
+                k++;
+                if (k == bufferMr2.size())
+                {
+                    infile2.read((char *) &bufferMr2[0], read_blk_size2);
+                    k = 0;
+                }
+
             }
         }
     }
 
+    if (l <= bufferMw.size())
+    {
+        outfile.write((char *) &bufferMw[0], l * sizeof(T3));
+    }
+    outfile.seekp(0, ios::beg);
     outfile.write(reinterpret_cast<char *>(&N3), init_offset);
+
+    bufferMr1.clear();
+    bufferMr2.clear();
+    bufferMw.clear();
+    vector<T1>().swap(bufferMr1);
+    vector<T2>().swap(bufferMr2);
+    vector<T3>().swap(bufferMw);
+
 
 }
 
@@ -229,7 +259,7 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
             //if (delC == tmp)
             if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
             {
-                cout << "del " << bufferMr[j].data[1] << endl;
+                //cout << "del " << bufferMr[j].data[1] << endl;
                 bufferMw1[j] = {bufferMr[j].data[0], bufferMr[j].data[2]};
                 bufferMw2[k] = bufferMr[j].data[1];
                 cnt_f2++;
@@ -312,7 +342,7 @@ void Join3(char *input_filename1, char *input_filename2, char *output_filename, 
             bufferMr2.resize(read_blk_size2 / sizeof(T2));
         }
 
-        if (abs(N3 - i * block_size_M )< block_size_M)
+        if (abs(N3 - i * block_size_M) < block_size_M)
         {
             write_blk_size = (N3 - i * block_size_M) * sizeof(T3);
             bufferMw.resize(write_blk_size / sizeof(T3));
@@ -673,14 +703,7 @@ void CreateTestFile()
     srand(static_cast<unsigned int>(time(NULL)));
 
     vector<int> array{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
-/*
-	int c = n;
-	for (int i = 0; i < n*2; ++i)
-	{
-		array[i] = rand() % n;
-		c--;
-	}
-  */
+
     for (int i = 0; i < n * 2 - 1; i += 2)
     {
         cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(1) << array[i] << " " << array[i + 1]
@@ -696,4 +719,43 @@ void CreateTestFile()
     out.close();
     vector<int>().swap(array);
 }
+
+
+void CreateTestFile_PROD()
+{
+    int n = 1250001;
+    srand(static_cast<unsigned int>(time(NULL)));
+
+    vector<int> array(2 * n);//{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
+
+    int c = 2;
+    array[0] = 1;
+    for (int i = 1; i < n * 2 - 2; ++i)
+    {
+        array[i] = c;
+        array[i + 1] = c;
+        i++;
+        c++;
+    }
+
+    array[n * 2 - 2] = c;
+    array[n * 2 - 1] = 1;
+    /*
+    for (int i = 0; i < n * 2 - 1; i += 2)
+    {
+        cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(1) << array[i] << " " << array[i + 1]
+             << endl;
+    }
+*/
+    ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
+
+    out.write((char *) &n, sizeof(int));
+
+    out.write((char *) &array[0], n * 2 * sizeof(int));
+
+    out.close();
+    vector<int>().swap(array);
+}
+
+
 
