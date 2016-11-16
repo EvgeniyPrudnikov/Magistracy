@@ -51,6 +51,7 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 
 template<typename T>
 void coutFile(char *filename);
+void coutFile_INT(char *filename);
 
 
 int main(int argc, char *argv[])
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
 	createDelList<three,two,int>("join1.bin","input1.bin","delList.bin");
 
     coutFile<two>("input1.bin");
-	
+	coutFile_INT("delList.bin");
 
     const auto endTime = std::clock();
     std::cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
@@ -86,10 +87,9 @@ int main(int argc, char *argv[])
 }
 
 template<typename T1, typename T2, typename T3>
-void createDelList(char *input_filename, char *output_filename1 , char *output_filename2)
+void createDelList(char *input_filename, char *output_filename1, char *output_filename2)
 {
 	int N;
-	int cnt_f1 = 0;
 	int cnt_f2 = 0;
 	vector<T1> bufferMr(block_size_M);
 	vector<T2> bufferMw1(block_size_M);
@@ -110,13 +110,20 @@ void createDelList(char *input_filename, char *output_filename1 , char *output_f
 
 	int m = ceil((double)N / block_size_M);
 	two tmp;
-	two delC = {0,1};
+	two delC = { 0,1 };
 	int k = 0;
 	for (int i = 0; i < m; ++i)
 	{
 
 		if (N - i * block_size_M < block_size_M)
 		{
+
+			if (k > 0 && k <= bufferMw2.size())
+			{
+				outfile2.write((char *)&bufferMw2[0], k * sizeof(T3));
+				k = 0;
+			}
+
 			read_blk_size = (N - i * block_size_M) * sizeof(T1);
 			bufferMr.resize(read_blk_size / sizeof(T1));
 
@@ -134,11 +141,20 @@ void createDelList(char *input_filename, char *output_filename1 , char *output_f
 		for (int j = 0; j < bufferMr.size(); ++j)
 		{
 			tmp = { rand() % 2, rand() % 2 };
+
 			//if (delC == tmp)
 			if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
 			{
 				cout << "del " << bufferMr[j].data[1] << endl;
 				bufferMw1[j] = { bufferMr[j].data[0],bufferMr[j].data[2] };
+				bufferMw2[k] = bufferMr[j].data[1];
+				cnt_f2++;
+				if (k + 1 == bufferMw2.size())
+				{
+					outfile2.write((char *)&bufferMw2[0], write_blk_size2);
+					k = -1;
+				}
+				k++;
 			}
 			else
 			{
@@ -147,8 +163,12 @@ void createDelList(char *input_filename, char *output_filename1 , char *output_f
 		}
 
 		outfile1.write((char*)&bufferMw1[0], write_blk_size1);
-		//outfile2.write((char *)&bufferMw2[0], write_blk_size2);
-		//bufferMw2.clear();
+	}
+
+	if (k > 0 && k <= bufferMw2.size())
+	{
+		outfile2.write((char *)&bufferMw2[0], k * sizeof(T3));
+		k = 0;
 	}
 
 	bufferMr.clear();
@@ -164,8 +184,6 @@ void createDelList(char *input_filename, char *output_filename1 , char *output_f
 
 	outfile1.write(reinterpret_cast<char *>(&N), init_offset);
 	outfile2.write(reinterpret_cast<char *>(&cnt_f2), init_offset);
-
-
 }
 
 
@@ -536,6 +554,34 @@ void coutFile(char *filename)
     infile.close();
 
     vector<T>().swap(buffer);
+}
+
+void coutFile_INT(char *filename)
+{
+	cout << endl << endl;
+	ifstream infile(filename, ios::in | ios::binary);
+
+	int b;
+	infile.read(reinterpret_cast<char *>(&b), init_offset);
+
+	cout << "N = " << b << endl;
+
+	if (b > 0)
+	{
+		vector<int> buffer(b);
+
+		infile.read((char *)&buffer[0], buffer.size() * sizeof(int));
+
+		//int l = sizeof(T) / sizeof(int);
+
+		for (int i = 0; i < b; ++i)
+		{
+			cout << setiosflags(ios::fixed | ios::left) << buffer[i] << " ";
+		}
+
+		vector<int>().swap(buffer);
+	}
+	infile.close();
 }
 
 
