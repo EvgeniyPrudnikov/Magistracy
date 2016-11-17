@@ -10,8 +10,8 @@
 
 using namespace std;
 //M = 128 * 256 + 1
-const int block_size_M = 6;
-const int block_size_B = 2;
+const int block_size_M = 128*256+1;
+const int block_size_B = 64*64;
 const int init_offset = sizeof(int);
 
 
@@ -71,15 +71,15 @@ int main(int argc, char *argv[])
 
     ExternalSort<two>("input.bin", "output0.bin", 0);
 
-    coutFile<two>("output0.bin");
+    //coutFile<two>("output0.bin");
 
     Join3<two, two, three>("output1.bin", "output0.bin", "join1.bin", 1, 0);
 
-    coutFile<three>("join1.bin");
+    //coutFile<three>("join1.bin");
 
     createDelList<three, two, int>("join1.bin", "input1.bin", "delList.bin");
 
-	cout << endl<< "input1.bin:" << endl;
+	//cout << endl<< "input1.bin:" << endl;
     coutFile<two>("input1.bin");
     coutFile_INT("delList.bin");
 
@@ -164,8 +164,7 @@ void JoinDel(char *input_filename1, char *input_filename2, char *output_filename
 		{
 			for (p_read1 = 0; p_read1 < bufferMr1.size(); ++p_read1)
 			{
-				/*error*/
-				if (deleted_elems < N2 && bufferMr1[p_read1].data[0] != bufferMr2[p_read2]  )
+				if (bufferMr1[p_read1].data[0] != bufferMr2[p_read2]  )
 				{
 					N3++;
 					bufferMw[p_write] = bufferMr1[p_read1];
@@ -179,10 +178,10 @@ void JoinDel(char *input_filename1, char *input_filename2, char *output_filename
 				}
 				else
 				{
-					p_read2++;
 					deleted_elems++;
 					if (deleted_elems == N2) continue;
-
+					p_read2++;
+					
 					if (p_read2 == bufferMr2.size())
 					{
 						if (N2 - i * block_size_M < block_size_M && i > 0 && N2 - i * block_size_M > 0)
@@ -225,6 +224,7 @@ void JoinDel(char *input_filename1, char *input_filename2, char *output_filename
 	vector<T1>().swap(bufferMr1);
 	vector<T2>().swap(bufferMr2);
 	vector<T3>().swap(bufferMw);
+	cout << endl << "n3 = " << N3 << endl;
 }
 
 
@@ -252,8 +252,8 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
     outfile2.seekp(init_offset, ios::beg);
 
     int m = ceil((double) N / block_size_M);
-    two tmp;
-    two delC = {0, 1};
+    int tmp;
+    int delC = 0;
     int k = 0;
     for (int i = 0; i < m; ++i)
     {
@@ -283,10 +283,10 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
 
         for (int j = 0; j < bufferMr.size(); ++j)
         {
-            tmp = {rand() % 2, rand() % 2};
+			tmp = rand()%5;
 
-            //if (delC == tmp)
-            if (bufferMr[j].data[1] == 5 || bufferMr[j].data[1] == 11 || bufferMr[j].data[1] == 17 || bufferMr[j].data[1] == 23)
+            if (delC == tmp)
+            //if (bufferMr[j].data[1] == 5 || bufferMr[j].data[1] == 11 || bufferMr[j].data[1] == 17 || bufferMr[j].data[1] == 23)
             {
                 //cout << "del " << bufferMr[j].data[1] << endl;
 				del_cnt++;
@@ -753,7 +753,7 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-    int n = 25;
+    int n = 99;
     srand(static_cast<unsigned int>(time(NULL)));
 
     vector<int> array(2 * n);//{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
