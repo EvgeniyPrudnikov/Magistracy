@@ -1,5 +1,5 @@
 
-//#include "stdafx.h"
+#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -10,8 +10,8 @@
 
 using namespace std;
 //M = 128 * 256 + 1
-const int block_size_M = 256 * 256 + 1;
-const int block_size_B = 64 * 64;
+const int block_size_M = 4;
+const int block_size_B = 2;
 const int init_offset = sizeof(int);
 
 
@@ -63,8 +63,8 @@ int main(int argc, char *argv[])
 
     const auto startTime = std::clock();
 
-    //CreateTestFile_PROD();
-    CreateTestFile();
+    CreateTestFile_PROD();
+    //CreateTestFile();
 
 
     ExternalSort<two>("input.bin", "output1.bin", 1);
@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
 
     createDelList<three, two, int>("join1.bin", "input1.bin", "delList.bin");
 
+	cout << endl<< "input1.bin:" << endl;
     coutFile<two>("input1.bin");
     coutFile_INT("delList.bin");
 
@@ -91,7 +92,7 @@ int main(int argc, char *argv[])
 
     const auto endTime = std::clock();
     std::cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
-    // getchar();
+    getchar();
 
     return 0;
 }
@@ -132,10 +133,11 @@ void JoinDel(char *input_filename1, char *input_filename2, char *output_filename
             bufferMr1.resize(read_blk_size1 / sizeof(T1));
 
         }
-        if (N2 - i * block_size_M < block_size_M && N2 - i * block_size_M > 0)
+        if (N2 - i * block_size_M < block_size_M && N2 - i * block_size_M > 0 && k == bufferMr2.size() )
         {
             read_blk_size2 = (N2 - i * block_size_M) * sizeof(T2);
             bufferMr2.resize(read_blk_size2 / sizeof(T2));
+			k = 0;
         }
 
         if (N1 - i * block_size_M < block_size_M)
@@ -153,7 +155,7 @@ void JoinDel(char *input_filename1, char *input_filename2, char *output_filename
         infile1.read((char *) &bufferMr1[0], read_blk_size1);
         /*TODO: add if to remove additional readings
          */
-        infile2.read((char *) &bufferMr2[0], read_blk_size2);
+        if (k == 0) infile2.read((char *) &bufferMr2[0], read_blk_size2);
 
         for (int j = 0; j < bufferMr1.size(); ++j)
         {
@@ -177,7 +179,6 @@ void JoinDel(char *input_filename1, char *input_filename2, char *output_filename
                     infile2.read((char *) &bufferMr2[0], read_blk_size2);
                     k = 0;
                 }
-
             }
         }
     }
@@ -203,6 +204,7 @@ void JoinDel(char *input_filename1, char *input_filename2, char *output_filename
 template<typename T1, typename T2, typename T3>
 void createDelList(char *input_filename, char *output_filename1, char *output_filename2)
 {
+	int del_cnt = 0;
     int N;
     int cnt_f2 = 0;
     vector<T1> bufferMr(block_size_M);
@@ -256,10 +258,11 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
         {
             tmp = {rand() % 2, rand() % 2};
 
-            //if (delC == tmp)
-            if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
+            if (delC == tmp)
+            //if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
             {
                 //cout << "del " << bufferMr[j].data[1] << endl;
+				del_cnt++;
                 bufferMw1[j] = {bufferMr[j].data[0], bufferMr[j].data[2]};
                 bufferMw2[k] = bufferMr[j].data[1];
                 cnt_f2++;
@@ -296,6 +299,8 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
 
     outfile1.write(reinterpret_cast<char *>(&N), init_offset);
     outfile2.write(reinterpret_cast<char *>(&cnt_f2), init_offset);
+
+	cout << endl << "del_cnt " << del_cnt << endl;
 }
 
 
@@ -723,7 +728,7 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-    int n = 1250001;
+    int n = 25;
     srand(static_cast<unsigned int>(time(NULL)));
 
     vector<int> array(2 * n);//{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
