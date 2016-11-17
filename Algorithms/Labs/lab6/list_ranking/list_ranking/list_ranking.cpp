@@ -10,7 +10,7 @@
 
 using namespace std;
 //M = 128 * 256 + 1
-const int block_size_M = 4;
+const int block_size_M = 6;
 const int block_size_B = 2;
 const int init_offset = sizeof(int);
 
@@ -164,11 +164,11 @@ void JoinDel(char *input_filename1, char *input_filename2, char *output_filename
 		{
 			for (p_read1 = 0; p_read1 < bufferMr1.size(); ++p_read1)
 			{
-				if (bufferMr1[p_read1].data[0] != bufferMr2[p_read2] && deleted_elems < N2)
+				/*error*/
+				if (deleted_elems < N2 && bufferMr1[p_read1].data[0] != bufferMr2[p_read2]  )
 				{
 					N3++;
 					bufferMw[p_write] = bufferMr1[p_read1];
-					bufferMr1[p_read1] = { 0,0 };
 					p_write++;
 
 					if (p_write == bufferMw.size())
@@ -285,8 +285,8 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
         {
             tmp = {rand() % 2, rand() % 2};
 
-            if (delC == tmp)
-            //if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
+            //if (delC == tmp)
+            if (bufferMr[j].data[1] == 5 || bufferMr[j].data[1] == 11 || bufferMr[j].data[1] == 17 || bufferMr[j].data[1] == 23)
             {
                 //cout << "del " << bufferMr[j].data[1] << endl;
 				del_cnt++;
@@ -740,7 +740,6 @@ void CreateTestFile()
         cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(1) << array[i] << " " << array[i + 1]
              << endl;
     }
-
     ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
 
     out.write((char *) &n, sizeof(int));
@@ -754,7 +753,7 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-    int n = 10;
+    int n = 25;
     srand(static_cast<unsigned int>(time(NULL)));
 
     vector<int> array(2 * n);//{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
@@ -773,13 +772,7 @@ void CreateTestFile_PROD()
     array[n * 2 - 3] = c;
 	array[n * 2 - 2] = c;
 	array[n * 2 - 1] =1;
-    /*
-    for (int i = 0; i < n * 2 - 1; i += 2)
-    {
-        cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(1) << array[i] << " " << array[i + 1]
-             << endl;
-    }
-*/
+
     ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
 
     out.write((char *) &n, sizeof(int));
