@@ -10,8 +10,8 @@
 
 
 using namespace std;
-//M = 128 * 256 + 1
-const int block_size_M = 128*256+1;
+//M = 128 * 256
+const int block_size_M = 192*192;
 const int block_size_B = 64*64;
 const int init_offset = sizeof(int);
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
 	//cout << endl<< "input1.bin:" << endl;
     //coutFile<two>("input1.bin");
-    coutFile_INT("delList.bin");
+    //coutFile_INT("delList.bin");
 
     ExternalSort<two>("input1.bin", "input1_s.bin", 0);
 
@@ -352,7 +352,7 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
 		infile.read((char *)&bufferMr[0], read_blk_size);
 
 
-		srand(time(NULL));
+		srand(time(nullptr));
 		for (int j = 0; j < bufferMr.size(); ++j)
 		{
 
@@ -828,7 +828,7 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-    int n = 100000;
+    int n = 1250001;
     srand(static_cast<unsigned int>(time(NULL)));
 
     vector<int> array(2 * n);//{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
