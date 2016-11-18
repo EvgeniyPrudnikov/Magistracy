@@ -294,65 +294,65 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
     outfile2.seekp(init_offset, ios::beg);
 
     int m = ceil((double) N / block_size_M);
-    int tmp;
-	int delC = 0;
+    int curr_rand;
+	int prev_rand = 0;
     int k = 0;
-    for (int i = 0; i < m; ++i)
-    {
+	for (int i = 0; i < m; ++i)
+	{
 
-        if (N - i * block_size_M < block_size_M)
-        {
+		if (N - i * block_size_M < block_size_M)
+		{
 
-            if (k > 0 && k <= bufferMw2.size())
-            {
-                outfile2.write((char *) &bufferMw2[0], k * sizeof(T3));
-                k = 0;
-            }
+			if (k > 0 && k <= bufferMw2.size())
+			{
+				outfile2.write((char *)&bufferMw2[0], k * sizeof(T3));
+				k = 0;
+			}
 
-            read_blk_size = (N - i * block_size_M) * sizeof(T1);
-            bufferMr.resize(read_blk_size / sizeof(T1));
+			read_blk_size = (N - i * block_size_M) * sizeof(T1);
+			bufferMr.resize(read_blk_size / sizeof(T1));
 
-            write_blk_size1 = (N - i * block_size_M) * sizeof(T2);
-            bufferMw1.resize(write_blk_size1 / sizeof(T2));
+			write_blk_size1 = (N - i * block_size_M) * sizeof(T2);
+			bufferMw1.resize(write_blk_size1 / sizeof(T2));
 
-            write_blk_size2 = (N - i * block_size_M) * sizeof(T3);
-            bufferMw2.resize(write_blk_size2 / sizeof(T3));
-        }
+			write_blk_size2 = (N - i * block_size_M) * sizeof(T3);
+			bufferMw2.resize(write_blk_size2 / sizeof(T3));
+		}
 
-        infile.read((char *) &bufferMr[0], read_blk_size);
+		infile.read((char *)&bufferMr[0], read_blk_size);
 
-        
+
 		srand(time(NULL));
-        for (int j = 0; j < bufferMr.size(); ++j)
-        {
-			
-			tmp = rand() % 2;
+		for (int j = 0; j < bufferMr.size(); ++j)
+		{
 
-            if (delC != tmp )
-            //if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
-            {
-                //cout << "del " << bufferMr[j].data[1] << endl;
+			curr_rand = rand() % 2;
+
+			if (prev_rand == 0 && curr_rand == 1)
+				//if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
+			{
+				//cout << "del " << bufferMr[j].data[1] << endl;
 				del_cnt++;
-                bufferMw1[j] = {bufferMr[j].data[0], bufferMr[j].data[2]};
-                bufferMw2[k] = bufferMr[j].data[1];
-                cnt_f2++;
+				bufferMw1[j] = { bufferMr[j].data[0], bufferMr[j].data[2] };
+				bufferMw2[k] = bufferMr[j].data[1];
+				cnt_f2++;
 				k++;
-                if (k == bufferMw2.size())
-                {
-                    outfile2.write((char *) &bufferMw2[0], write_blk_size2);
-                    k = 0;
-                }
-                
-            } else
-            {
-                bufferMw1[j] = {bufferMr[j].data[0], bufferMr[j].data[1]};
-            }
+				if (k == bufferMw2.size())
+				{
+					outfile2.write((char *)&bufferMw2[0], write_blk_size2);
+					k = 0;
+				}
+			}
+			else
+			{
+				bufferMw1[j] = { bufferMr[j].data[0], bufferMr[j].data[1] };
 
-			delC = tmp;
-        }
+			}
+			prev_rand = curr_rand;
+		}
 
-        outfile1.write((char *) &bufferMw1[0], write_blk_size1);
-    }
+		outfile1.write((char *)&bufferMw1[0], write_blk_size1);
+	}
 
     if (k > 0 && k <= bufferMw2.size())
     {
