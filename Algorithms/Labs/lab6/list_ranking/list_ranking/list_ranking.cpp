@@ -6,6 +6,7 @@
 #include <ctime>
 #include <iomanip>
 #include <algorithm>
+#include <map> 
 
 
 using namespace std;
@@ -19,10 +20,12 @@ struct two
 {
     int data[2];
 
-	bool operator==(const two &rhs) const
+	
+	bool operator==(const two &rhs ) const
     {
         return data[0] == rhs.data[0] && data[1] == rhs.data[1];
     }
+	
 
 };
 
@@ -65,8 +68,8 @@ int main(int argc, char *argv[])
 
     const auto startTime = std::clock();
 
-    CreateTestFile_PROD();
-    //CreateTestFile();
+    //CreateTestFile_PROD();
+    CreateTestFile();
 
 
     ExternalSort<two>("input.bin", "output1.bin", 1);
@@ -91,9 +94,9 @@ int main(int argc, char *argv[])
 
     coutFile<two>("input2.bin");
 
-	//Rank("input2.bin", "input3.bin");
+	Rank("input2.bin", "input3.bin");
 
-	//coutFile<two>("input3.bin");
+	coutFile<two>("input3.bin");
 
 
     const auto endTime = clock();
@@ -112,20 +115,70 @@ void Rank(char * input_filename , char * output_filename)
 	infile.read(reinterpret_cast<char *>(&N), init_offset);
 
 	vector<two> bufferMr(N);
-	vector<two> bufferMw(N);
+	vector<int> buff_int(N * 2);
+	vector<two> bufferMw;
+	map<int, int> lol;
+
+
+
 
 	infile.read((char*)&bufferMr[0], N * sizeof(two));
+	//infile.read((char*)&buff_int, N * sizeof(two));
 
 	ofstream outfile(output_filename, ios::out | ios::binary);
 	outfile.write(reinterpret_cast<char*>(&(N)), init_offset);
-	
 
-	//sort(bufferMr.begin(), bufferMr.end(), [](two const &a, two const &b) -> bool { return a.data[1] < b.data[1]; });
 
-	for (int i = 0; i < N; i++)
+	for (auto const&x : bufferMr)
 	{
-		bufferMw[i] = { i,bufferMr[i].data[1] };
+		lol.emplace(move(x.data[0]), move(x.data[1]));
 	}
+
+
+
+	int j = 1;
+
+	//int pos = find(buff_int.begin(), buff_int.end(), 8) - buff_int.begin();
+
+
+	int pos = 0;
+
+	bufferMw.push_back({ j,buff_int[0] });
+
+	j++;
+
+
+	int val = buff_int[++pos];
+
+	bufferMw.push_back({ j,buff_int[pos] });
+	j++;
+
+
+	buff_int.erase(buff_int.begin() + pos);
+
+
+	pos = find(buff_int.begin(), buff_int.end(), val) - buff_int.begin();
+
+	val = buff_int[++pos];
+
+	bufferMw.push_back({ j,val });
+	j++;
+	buff_int.erase(buff_int.begin() + pos);
+
+	pos = find(buff_int.begin(), buff_int.end(), val) - buff_int.begin();
+
+
+	val = buff_int[++pos];
+
+	bufferMw.push_back({ j,val });
+	j++;
+	buff_int.erase(buff_int.begin() + pos);
+
+	pos = find(buff_int.begin(), buff_int.end(), val) - buff_int.begin();
+
+
+
+
 
 	outfile.write((char *)& bufferMw[0], N*sizeof(two));
 
@@ -328,8 +381,8 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
 
 			curr_rand = rand() % 2;
 
-			if (prev_rand == 0 && curr_rand == 1)
-				//if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
+			//if (prev_rand == 0 && curr_rand == 1)
+			if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
 			{
 				//cout << "del " << bufferMr[j].data[1] << endl;
 				del_cnt++;
