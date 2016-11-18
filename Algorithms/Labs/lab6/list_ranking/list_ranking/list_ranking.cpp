@@ -41,6 +41,10 @@ void CreateTestFile();
 
 void CreateTestFile_PROD();
 
+template <typename T1, typename T2, typename T3>
+void JoinInsert(char * input_filename1, char * input_filename2, char * output_filename);
+
+
 void Rank(char * input_filename, char * output_filename);
 
 template<typename T1, typename T2, typename T3>
@@ -50,7 +54,7 @@ template<typename T1, typename T2, typename T3>
 void createDelList(char *input_filename, char *output_filename1, char *output_filename2);
 
 template<typename T1, typename T2, typename T3>
-void Join3(char *input_filename1, char *input_filename2, char *output_filename, int coordinate_f1, int coordinate_f2);
+void Join3(char *input_filename1, char *input_filename2, char *output_filename);
 
 template<typename T>
 void ExternalSort(char *input_filename, char *output_filename, int coordinate);
@@ -60,6 +64,7 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 
 template<typename T>
 void coutFile(char *filename);
+
 
 void coutFile_INT(char *filename);
 
@@ -79,7 +84,7 @@ int main(int argc, char *argv[])
 
     //coutFile<two>("output0.bin");
 
-    Join3<two, two, three>("output1.bin", "output0.bin", "join1.bin", 1, 0);
+    Join3<two, two, three>("output1.bin", "output0.bin", "join1.bin");
 
     //coutFile<three>("join1.bin");
 
@@ -114,6 +119,59 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+
+// t1 - three
+template <typename T1 , typename T2 , typename T3>
+void JoinInsert(char * input_filename1, char * input_filename2, char * output_filename)
+{
+	int N1;
+	int N2;
+	int N3 = 0;
+	int	inserted_elems = 0;
+
+	ifstream infile1(input_filename1, ios::in | ios::binary);
+	ifstream infile2(input_filename2, ios::in | ios::binary);
+
+	infile1.read(reinterpret_cast<char *>(&N1), init_offset);
+	infile2.read(reinterpret_cast<char *>(&N2), init_offset);
+
+	ofstream outfile(output_filename, ios::out | ios::binary);
+	outfile.seekp(init_offset, ios::beg);
+
+	vector<T1> bufferMr1(block_size_M);
+	vector<T2> bufferMr2(N2);
+	vector<T3> bufferMw(block_size_M);
+
+	int read_blk_size1 = block_size_M * sizeof(T1);
+	int read_blk_size2 = N2 * sizeof(T2);
+	int write_blk_size = block_size_M * sizeof(T3);
+
+	int m = ceil(static_cast<double>(max(N1, N2)) / block_size_M);
+	int p_read1 = 0;
+	int p_read2 = 0;
+
+	for (int i = 0; i < m; i++)
+	{
+		
+		infile1.read((char *)&bufferMr1[0], read_blk_size1);
+		infile2.read((char *)&bufferMr2[0], read_blk_size2);
+
+		for (p_read1 = 0; p_read1 < bufferMr1.size(); p_read1++)
+		{
+			if (bufferMr2[p_read2] == bufferMr1[p_read1])
+			{
+
+			}
+		}
+
+		outfile.write((char *)& bufferMw[0], write_blk_size);
+
+	}
+}
+
+
+
 
 void Rank(char * input_filename, char * output_filename)
 {
@@ -383,7 +441,6 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
 			}
 			prev_rand = curr_rand;
 		}
-
 		outfile1.write((char *)&bufferMw1[0], write_blk_size1);
 	}
 
@@ -399,7 +456,6 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
     vector<T2>().swap(bufferMw1);
     vector<T3>().swap(bufferMw2);
 
-
     outfile1.seekp(0, ios::beg);
     outfile2.seekp(0, ios::beg);
 
@@ -410,7 +466,7 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
 }
 
 template<typename T1, typename T2, typename T3>
-void Join3(char *input_filename1, char *input_filename2, char *output_filename, int coordinate_f1, int coordinate_f2)
+void Join3(char *input_filename1, char *input_filename2, char *output_filename)
 {
     int N1;
     int N2;
