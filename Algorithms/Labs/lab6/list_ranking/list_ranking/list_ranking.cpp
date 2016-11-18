@@ -13,10 +13,15 @@ using namespace std;
 //M = 128 * 256
 // M % B == 0 !!!!! 
 
-const int block_size_M = 256*256;
-const int block_size_B = 64*64;
+const int block_size_M = 20;
+const int block_size_B = 10;
 const int init_offset = sizeof(int);
 
+
+struct f_two
+{
+	float data[2];
+};
 
 struct two
 {
@@ -78,27 +83,28 @@ int main(int argc, char *argv[])
     CreateTestFile();
 
 
+	
     ExternalSort<two>("input.bin", "output1.bin", 1);
 
     ExternalSort<two>("input.bin", "output0.bin", 0);
 
-    //coutFile<two>("output0.bin");
+    coutFile<two>("output0.bin");
 
     Join3<two, two, three>("output1.bin", "output0.bin", "join1.bin");
 
-    //coutFile<three>("join1.bin");
+    coutFile<three>("join1.bin");
 
     createDelList<three, two, int>("join1.bin", "input1.bin", "delList.bin");
 
-	//cout << endl<< "input1.bin:" << endl;
-    //coutFile<two>("input1.bin");
-    //coutFile_INT("delList.bin");
+	cout << endl<< "input1.bin:" << endl;
+    coutFile<two>("input1.bin");
+    coutFile_INT("delList.bin");
 
     ExternalSort<two>("input1.bin", "input1_s.bin", 0);
 
     JoinDel<two, int, two>("input1_s.bin", "delList.bin", "input2.bin");
 
-    //coutFile<two>("input2.bin");
+    coutFile<two>("input2.bin");
 
 	Rank("input2.bin", "input3.bin");
 
@@ -111,7 +117,8 @@ int main(int argc, char *argv[])
 	ExternalSort<three>("join1.bin", "join2.bin", 0);
 
 	coutFile<three>("join2.bin");
-
+	
+	JoinInsert<three, two, f_two>("join2.bin","input4.bin","insert1.bin");
 
     const auto endTime = clock();
     cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
@@ -121,13 +128,13 @@ int main(int argc, char *argv[])
 }
 
 
-// t1 - three
+// t1 - three ,t2 - two , t3 - f_two
 template <typename T1 , typename T2 , typename T3>
 void JoinInsert(char * input_filename1, char * input_filename2, char * output_filename)
 {
 	int N1;
 	int N2;
-	int N3 = 0;
+	
 	int	inserted_elems = 0;
 
 	ifstream infile1(input_filename1, ios::in | ios::binary);
@@ -136,37 +143,52 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 	infile1.read(reinterpret_cast<char *>(&N1), init_offset);
 	infile2.read(reinterpret_cast<char *>(&N2), init_offset);
 
+	int N3 = max(N1,N2);
 	ofstream outfile(output_filename, ios::out | ios::binary);
-	outfile.seekp(init_offset, ios::beg);
+	outfile.write(reinterpret_cast<char *>(&N3), init_offset);
+
+	int block_size_file2 = min(N2, block_size_M);
 
 	vector<T1> bufferMr1(block_size_M);
-	vector<T2> bufferMr2(N2);
+	vector<T2> bufferMr2(block_size_file2);
 	vector<T3> bufferMw(block_size_M);
 
 	int read_blk_size1 = block_size_M * sizeof(T1);
-	int read_blk_size2 = N2 * sizeof(T2);
+	int read_blk_size2 = block_size_file2 * sizeof(T2);
 	int write_blk_size = block_size_M * sizeof(T3);
 
 	int m = ceil(static_cast<double>(max(N1, N2)) / block_size_M);
 	int p_read1 = 0;
 	int p_read2 = 0;
+	int p_write = 0;
 
 	for (int i = 0; i < m; i++)
 	{
-		
+
 		infile1.read((char *)&bufferMr1[0], read_blk_size1);
 		infile2.read((char *)&bufferMr2[0], read_blk_size2);
 
 		for (p_read1 = 0; p_read1 < bufferMr1.size(); p_read1++)
 		{
-			if (bufferMr2[p_read2] == bufferMr1[p_read1])
+			if (bufferMr1[p_read1].data[0] == bufferMr2[p_read2].data[1])
 			{
+				if (bufferMr2[p_read2 + 1].data[1] == bufferMr1[p_read1].data[1])
+				{
+					bufferMw[p_write++] = { static_cast<float>(bufferMr2[p_read2].data[0]), static_cast<float>(bufferMr2[p_read2].data[1]) };
+				}
+				else
+				{
+					bufferMw[p_write++] = { static_cast<float>(bufferMr2[p_read2].data[0]), static_cast<float>(bufferMr2[p_read2].data[1]) };
+					bufferMw[p_write++] = { static_cast<float>(bufferMr2[p_read2].data[0]) + 0.5f, static_cast<float>(bufferMr1[p_read1].data[1]) };
+					inserted_elems++;
+				}
 
+				p_read2++;
 			}
 		}
 
 		outfile.write((char *)& bufferMw[0], write_blk_size);
-
+		cout << endl << "inserted_elems " << inserted_elems << endl;
 	}
 }
 
@@ -824,7 +846,7 @@ void coutFile(char *filename)
     {
         for (int j = 0; j < l; ++j)
         {
-            cout << setiosflags(ios::fixed | ios::left) << buffer[i].data[j] << " ";
+            cout << setiosflags(ios::fixed | ios::left) <<setprecision(0)<< buffer[i].data[j] << " ";
         }
         cout << endl;
     }
@@ -853,7 +875,7 @@ void coutFile_INT(char *filename)
 
         for (int i = 0; i < b; ++i)
         {
-            cout << setiosflags(ios::fixed | ios::left) << buffer[i] << " ";
+            cout << setiosflags(ios::fixed | ios::left)<<setprecision(0) << buffer[i] << " ";
         }
 
         vector<int>().swap(buffer);
