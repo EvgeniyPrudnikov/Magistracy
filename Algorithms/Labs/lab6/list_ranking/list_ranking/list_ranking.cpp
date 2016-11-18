@@ -11,7 +11,9 @@
 
 using namespace std;
 //M = 128 * 256
-const int block_size_M = 192*192;
+// M % B == 0 !!!!! 
+
+const int block_size_M = 256*256;
 const int block_size_B = 64*64;
 const int init_offset = sizeof(int);
 
@@ -54,8 +56,7 @@ template<typename T>
 void ExternalSort(char *input_filename, char *output_filename, int coordinate);
 
 template<typename T>
-void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1_start, int run2_start, int run2_end,
-               int coordinate);
+void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1_start, int run2_start, int run2_end, int coordinate);
 
 template<typename T>
 void coutFile(char *filename);
@@ -68,8 +69,8 @@ int main(int argc, char *argv[])
 
     const auto startTime = std::clock();
 
-    CreateTestFile_PROD();
-    //CreateTestFile();
+    //CreateTestFile_PROD();
+    CreateTestFile();
 
 
     ExternalSort<two>("input.bin", "output1.bin", 1);
@@ -96,12 +97,15 @@ int main(int argc, char *argv[])
 
 	Rank("input2.bin", "input3.bin");
 
-	//coutFile<two>("input3.bin");
+	coutFile<two>("input3.bin");
 
 	ExternalSort<two>("input3.bin", "input4.bin", 1);
 
+	coutFile<two>("input4.bin");
+
 	ExternalSort<three>("join1.bin", "join2.bin", 0);
 
+	coutFile<three>("join2.bin");
 
 
     const auto endTime = clock();
@@ -358,10 +362,9 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
 
 			curr_rand = rand() % 2;
 
-			if (prev_rand == 0 && curr_rand == 1)
-			//if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
+			//if (prev_rand == 0 && curr_rand == 1)
+			if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
 			{
-				//cout << "del " << bufferMr[j].data[1] << endl;
 				del_cnt++;
 				bufferMw1[j] = { bufferMr[j].data[0], bufferMr[j].data[2] };
 				bufferMw2[k] = bufferMr[j].data[1];
