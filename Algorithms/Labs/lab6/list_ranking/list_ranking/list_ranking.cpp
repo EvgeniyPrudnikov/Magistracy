@@ -219,13 +219,13 @@ void Rank(char * input_filename, char * output_filename)
 	int j = 1;
 
 	val_next = bufferMr[0].data[0];
-	bufferMw.push_back({ j, val_next });
-	j++;
+	bufferMw.push_back({ j++, val_next });
+	
 
 	val_next = bufferMr[0].data[1];
 	key_next = val_next;
-	bufferMw.push_back({ j,val_next });
-	j++;
+	bufferMw.push_back({ j++,val_next });
+	
 
 	for (auto const& x : bufferMr)
 	{
@@ -235,10 +235,8 @@ void Rank(char * input_filename, char * output_filename)
 	while (j <= N )
 	{
 		val_next = map_buffer[key_next];
-		bufferMw.push_back({ j,val_next });
-		j++;
+		bufferMw.push_back({ j++,val_next });
 		key_next = val_next;
-
 	}
 
 	outfile.write((char *)& bufferMw[0], N * sizeof(two));
