@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 
 	coutFile<two>("input3.bin");
 
-	ExternalSort<two>("input3.bin", "input4.bin", 1);
+	ExternalSort<two>("input3.bin", "input4.bin", 0);
 
 	coutFile<two>("input4.bin");
 
