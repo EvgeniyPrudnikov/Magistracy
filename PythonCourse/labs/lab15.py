@@ -1,9 +1,8 @@
 import time
 
-class Timer():
 
+class Timer:
     def __init__(self):
-
         self.start = time.time()
 
     def __enter__(self):
@@ -18,8 +17,6 @@ class Timer():
 def do_smf():
     time.sleep(3)
 
+
 with Timer():
     do_smf()
-
-
-
