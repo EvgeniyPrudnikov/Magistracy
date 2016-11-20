@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -172,7 +172,14 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 		{
 			if (bufferMr1[p_read1].data[0] == bufferMr2[p_read2].data[1])
 			{
-				if (bufferMr2[p_read2 + 1].data[1] == bufferMr1[p_read1].data[1])
+
+                bool c2 = false;
+                if (p_read2 > 0) c2 = bufferMr2[p_read2 - 1].data[1] == bufferMr1[p_read1].data[1];
+                bool c1;
+                if (p_read2 < bufferMr2.size()) c1 = bufferMr2[p_read2 + 1].data[1] == bufferMr1[p_read1].data[1];
+                bool c0 = bufferMr2[p_read2].data[1] == bufferMr1[p_read1].data[1];
+
+                if (c1 || c2 || c0)
 				{
 					bufferMw[p_write++] = { static_cast<float>(bufferMr2[p_read2].data[0]), static_cast<float>(bufferMr2[p_read2].data[1]) };
 				}
