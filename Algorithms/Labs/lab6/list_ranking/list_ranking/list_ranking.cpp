@@ -62,12 +62,16 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 template<typename T>
 void coutFile(string filename);
 
+template <typename T1, typename T2>
+void Output(string input_filename, string output_filename);
+
+void coutFile_INT(string filename, int n);
 
 
 int main()
 {
 	int N;
-	int N_down = 0;
+	int N_down;
 	int N_up = 0 ;
 
 	CreateTestFile_PROD();
@@ -123,6 +127,9 @@ int main()
 
 	ExternalSort<two>("rnk.bin", "res.bin", 0);
 
+	Output<two, int>("res.bin", "output.bin");
+
+	//coutFile_INT("output.bin", N_up);
 
     const auto endTime = clock();
     cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
@@ -131,7 +138,60 @@ int main()
     return 0;
 }
 
+template <typename T1, typename T2>
+void Output(string input_filename , string output_filename)
+{
+	int N;
 
+	ifstream infile(input_filename, ios::in | ios::binary);
+	infile.read(reinterpret_cast<char *>(&N), init_offset);
+
+	ofstream outfle(output_filename, ios::out | ios::binary);
+
+	vector<T1> bufferMr(block_size_M);
+	vector<T2> bufferMw(block_size_M);
+
+	int read_blk_size = block_size_M * sizeof(T1);
+	int write_blk_size = block_size_M * sizeof(T2);
+
+	int m = ceil(static_cast<double>(N) / block_size_M);
+
+	for (int i = 0; i < m; i++)
+	{
+		if (N - i * block_size_M < block_size_M)
+		{
+			read_blk_size = (N - i * block_size_M) * sizeof(T1);
+			bufferMr.resize(read_blk_size/ sizeof(T1));
+		}
+
+		if (N - i * block_size_M < block_size_M)
+		{
+
+			write_blk_size = (N - i * block_size_M) * sizeof(T2);
+			bufferMw.resize(write_blk_size / sizeof(T2));
+		}
+
+		infile.read((char *)&bufferMr[0], read_blk_size);
+
+		for (int j = 0; j < bufferMr.size(); j++)
+		{
+			bufferMw[j] = bufferMr[j].data[1];
+		}
+
+		outfle.write((char *)&bufferMw[0], write_blk_size);
+
+	}
+	
+	infile.close();
+	outfle.close();
+
+	bufferMr.clear();
+	bufferMw.clear();
+	vector<T1>().swap(bufferMr);
+	vector<T2>().swap(bufferMw);
+
+
+}
 
 template <typename T1 , typename T2 , typename T3>
 int JoinInsert( string  input_filename1,  string  input_filename2,  string  output_filename)
@@ -967,6 +1027,26 @@ void coutFile(string filename)
 
     vector<T>().swap(buffer);
 }
+
+
+void coutFile_INT(string filename, int n)
+{
+	cout << endl << endl;
+	ifstream infile(filename, ios::in | ios::binary);
+
+	vector<int> buffer(n);
+	infile.read((char *)&buffer[0], buffer.size() * sizeof(int));
+
+	
+	for (int i = 0; i < n; ++i)
+	{
+		cout << setiosflags(ios::fixed | ios::left) << setprecision(0) << buffer[i] << " ";
+	}
+	infile.close();
+
+	vector<int>().swap(buffer);
+}
+
 
 void CreateTestFile()
 {
