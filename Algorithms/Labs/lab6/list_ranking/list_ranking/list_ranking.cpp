@@ -40,7 +40,7 @@ void CreateTestFile();
 void CreateTestFile_PROD();
 
 template <typename T1, typename T2, typename T3>
-void JoinInsert(string input_filename1, string input_filename2, string output_filename);
+int JoinInsert(string input_filename1, string input_filename2, string output_filename);
 
 void Rank(string input_filename, string output_filename);
 
@@ -66,6 +66,7 @@ void coutFile(string filename);
 
 int main()
 {
+	int N;
 	int N_down = 0;
 	int N_up = 0 ;
 
@@ -75,53 +76,52 @@ int main()
 
 	const auto startTime = clock();
 	ifstream infile("input.bin", ios::in | ios::binary);
-	infile.read(reinterpret_cast<char *>(&N_down), init_offset);
+	infile.read(reinterpret_cast<char *>(&N), init_offset);
 	infile.close();
-    
+	N_down = N;
 	string i_filename;
 	int v = 1;
+
+
 	while (N_down >= block_size_M)
 	{
 
 		i_filename = v == 1 ? "input.bin" : "6.bin";
 		
-		ExternalSort<two>(i_filename, "1.bin", 1);
-		ExternalSort<two>(i_filename, "2.bin", 0);
+		ExternalSort<two>(i_filename, "1.bin", 1); ExternalSort<two>(i_filename, "2.bin", 0);
 
 		Join3<two, two, three>("1.bin", "2.bin", "3.bin");
 
-		//coutFile<three>("3");
-
 		createDelList<three, two, two>("3.bin", "4.bin", "del_" + to_string(v) + ".bin");
-		
-		//coutFile<two>("4");
-		//coutFile<two>("del_" + to_string(v));
 
 		ExternalSort<two>("4.bin", "5.bin", 0);
 
 		N_down = JoinDel<two, two, two>("5.bin", "del_" + to_string(v) + ".bin", "6.bin");
-		
-		v++;
 
+		v++;
 		remove("1.bin");
 		remove("2.bin");
 		remove("5.bin");
 	}
 	
 	//coutFile<two>("6");
+	v--;
+	Rank("6.bin", "rnk.bin");
 
-	//Rank("input2.bin", "input3.bin");
+	//coutFile<two>("rnk.bin");
 
+	while(N_up != N)
+	{
+		ExternalSort<two>("rnk.bin","1.bin", 1); ExternalSort<two>("del_" + to_string(v) + ".bin", "2.bin", 0);
+		N_up = JoinInsert<two, two, two>("1.bin", "2.bin", "rnk.bin");
+		v--;
+		remove("1.bin");
+		remove("2.bin");
+	}
 
-	//ExternalSort<two>("input3.bin", "input4.bin", 1);
+	//coutFile<two>("rnk.bin");
 
-
-	//ExternalSort<two>("delList.bin", "s_delList.bin", 0);
-
-	//
-	//JoinInsert<two, two, two>("input4.bin","s_delList.bin","insert1.bin");
-
-	//ExternalSort<two>("insert1.bin", "insert2.bin", 0);
+	ExternalSort<two>("rnk.bin", "res.bin", 0);
 
 
     const auto endTime = clock();
@@ -134,7 +134,7 @@ int main()
 
 
 template <typename T1 , typename T2 , typename T3>
-void JoinInsert( string  input_filename1,  string  input_filename2,  string  output_filename)
+int JoinInsert( string  input_filename1,  string  input_filename2,  string  output_filename)
 {
 	int N1;
 	int N2;
@@ -147,6 +147,7 @@ void JoinInsert( string  input_filename1,  string  input_filename2,  string  out
 	infile1.read(reinterpret_cast<char *>(&N1), init_offset);
 	infile2.read(reinterpret_cast<char *>(&N2), init_offset);
 
+	if (N2 == 0) return N1;
 	
 	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
 	outfile.seekp(init_offset, ios::beg);
@@ -293,6 +294,7 @@ void JoinInsert( string  input_filename1,  string  input_filename2,  string  out
 	infile1.close();
 	infile2.close();
 
+	return N3;
 }
 
 void Rank(string input_filename, string output_filename)
