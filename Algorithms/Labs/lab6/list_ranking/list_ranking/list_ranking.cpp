@@ -15,8 +15,8 @@ using namespace std;
 // M % B == 0 !!!!! 
 
 
-const int block_size_M = 256*256;
-const int block_size_B = 64*64;
+const int block_size_M = 60;
+const int block_size_B = 30;
 const int init_offset = sizeof(int);
 
 struct two
@@ -74,8 +74,8 @@ int main()
 	int N_down;
 	int N_up = 0 ;
 
-	CreateTestFile_PROD();
-	//CreateTestFile();
+	//CreateTestFile_PROD();
+	CreateTestFile();
 
 
 	const auto startTime = clock();
@@ -86,8 +86,11 @@ int main()
 	string i_filename;
 	int v = 1;
 
+	int blk_size_M = block_size_M;
 
-	while (N_down >= block_size_M)
+	if (N_down < blk_size_M) blk_size_M = N_down;
+
+	while (N_down >= blk_size_M)
 	{
 
 		i_filename = v == 1 ? "input.bin" : "6.bin";
@@ -129,7 +132,7 @@ int main()
 
 	Output<two, int>("res.bin", "output.bin");
 
-	//coutFile_INT("output.bin", N_up);
+	coutFile_INT("output.bin", N_up);
 
     const auto endTime = clock();
     cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
