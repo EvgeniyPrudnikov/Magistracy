@@ -14,6 +14,7 @@ using namespace std;
 //M = 128 * 256
 // M % B == 0 !!!!! 
 
+
 const int block_size_M = 256*256;
 const int block_size_B = 64*64;
 const int init_offset = sizeof(int);
