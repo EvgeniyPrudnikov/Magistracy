@@ -11,12 +11,10 @@
 
 
 using namespace std;
-//M = 128 * 256
-// M % B == 0 !!!!! 
 
 
-const int block_size_M = 60;
-const int block_size_B = 30;
+const int block_size_M = 256*256;
+const int block_size_B = 64*64;
 const int init_offset = sizeof(int);
 
 struct two
@@ -74,8 +72,8 @@ int main()
 	int N_down;
 	int N_up = 0 ;
 
-	//CreateTestFile_PROD();
-	CreateTestFile();
+	CreateTestFile_PROD();
+	//CreateTestFile();
 
 
 	const auto startTime = clock();
@@ -132,7 +130,7 @@ int main()
 
 	Output<two, int>("res.bin", "output.bin");
 
-	coutFile_INT("output.bin", N_up);
+	//coutFile_INT("output.bin", N_up);
 
     const auto endTime = clock();
     cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
@@ -341,7 +339,7 @@ int JoinInsert( string  input_filename1,  string  input_filename2,  string  outp
 		outfile.write((char *)&bufferMw[0], p_write * sizeof(T3));
 	}
 
-	cout << endl << "inserted_elems " << inserted_elems << endl;
+	//cout << endl << "inserted_elems " << inserted_elems << endl;
 
 	bufferMr1.clear();
 	bufferMr2.clear();
@@ -349,7 +347,7 @@ int JoinInsert( string  input_filename1,  string  input_filename2,  string  outp
 	vector<T1>().swap(bufferMr1);
 	vector<T2>().swap(bufferMr2);
 	vector<T3>().swap(bufferMw);
-	cout << endl << "n3 = " << N3 << endl;
+	//cout << endl << "n3 = " << N3 << endl;
 
 	outfile.seekp(0, ios::beg);
 	outfile.write(reinterpret_cast<char *>(&N3), init_offset);
@@ -547,7 +545,7 @@ int JoinDel(string input_filename1, string input_filename2, string output_filena
 	vector<T1>().swap(bufferMr1);
 	vector<T2>().swap(bufferMr2);
 	vector<T3>().swap(bufferMw);
-	cout << endl << "n3 = " << N3 << endl;
+	//cout << endl << "n3 = " << N3 << endl;
 
 	return N3;
 }
@@ -656,7 +654,7 @@ void createDelList(string input_filename, string output_filename1, string output
 	outfile1.close();
 	outfile2.close();
 
-	cout << endl << "del_cnt " << del_cnt << endl;
+	//cout << endl << "del_cnt " << del_cnt << endl;
 }
 
 template<typename T1, typename T2, typename T3>
