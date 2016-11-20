@@ -7,14 +7,15 @@
 #include <iomanip>
 #include <algorithm>
 #include <map> 
+#include <string>
 
 
 using namespace std;
 //M = 128 * 256
 // M % B == 0 !!!!! 
 
-const int block_size_M = 6;
-const int block_size_B = 2;
+const int block_size_M = 256*256;
+const int block_size_B = 64*64;
 const int init_offset = sizeof(int);
 
 struct two
@@ -38,80 +39,89 @@ void CreateTestFile();
 void CreateTestFile_PROD();
 
 template <typename T1, typename T2, typename T3>
-void JoinInsert(char * input_filename1, char * input_filename2, char * output_filename);
+void JoinInsert(string input_filename1, string input_filename2, string output_filename);
 
-void Rank(char * input_filename, char * output_filename);
-
-template<typename T1, typename T2, typename T3>
-int JoinDel(char *input_filename1, char *input_filename2, char *output_filename);
+void Rank(string input_filename, string output_filename);
 
 template<typename T1, typename T2, typename T3>
-void createDelList(char *input_filename, char *output_filename1, char *output_filename2);
+int JoinDel(string input_filename1, string input_filename2, string output_filename);
 
 template<typename T1, typename T2, typename T3>
-void Join3(char *input_filename1, char *input_filename2, char *output_filename);
+void createDelList(string input_filename, string output_filename1, string output_filename2);
+
+template<typename T1, typename T2, typename T3>
+void Join3(string input_filename1, string input_filename2, string output_filename);
 
 template<typename T>
-void ExternalSort(char *input_filename, char *output_filename, int coordinate);
+void ExternalSort(string input_filename, string output_filename, int coordinate);
 
 template<typename T>
 void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1_start, int run2_start, int run2_end, int coordinate);
 
 template<typename T>
-void coutFile(char *filename);
+void coutFile(string filename);
 
 
 
-int main(int argc, char *argv[])
+int main()
 {
+	int N_down = 0;
+	int N_up = 0 ;
 
-    const auto startTime = std::clock();
-
-    CreateTestFile_PROD();
-    //CreateTestFile();
+	CreateTestFile_PROD();
+	//CreateTestFile();
 
 
-    ExternalSort<two>("input.bin", "output1.bin", 1);
+	const auto startTime = clock();
+	ifstream infile("input.bin", ios::in | ios::binary);
+	infile.read(reinterpret_cast<char *>(&N_down), init_offset);
+	infile.close();
+    
+	string i_filename;
+	int v = 1;
+	while (N_down >= block_size_M)
+	{
 
-    ExternalSort<two>("input.bin", "output0.bin", 0);
+		i_filename = v == 1 ? "input.bin" : "6.bin";
+		
+		ExternalSort<two>(i_filename, "1.bin", 1);
+		ExternalSort<two>(i_filename, "2.bin", 0);
 
-   // coutFile<two>("output0.bin");
+		Join3<two, two, three>("1.bin", "2.bin", "3.bin");
 
-    Join3<two, two, three>("output1.bin", "output0.bin", "join1.bin");
+		//coutFile<three>("3");
 
-   // coutFile<three>("join1.bin");
+		createDelList<three, two, two>("3.bin", "4.bin", "del_" + to_string(v) + ".bin");
+		
+		//coutFile<two>("4");
+		//coutFile<two>("del_" + to_string(v));
 
-    createDelList<three, two, two>("join1.bin", "input1.bin", "delList.bin");
+		ExternalSort<two>("4.bin", "5.bin", 0);
 
-	//cout << endl<< "input1.bin:" << endl;
-    //coutFile<two>("input1.bin");
-	//coutFile<two>("delList.bin");
+		N_down = JoinDel<two, two, two>("5.bin", "del_" + to_string(v) + ".bin", "6.bin");
+		
+		v++;
 
-    ExternalSort<two>("input1.bin", "input1_s.bin", 0);
-
-    JoinDel<two, two, two>("input1_s.bin", "delList.bin", "input2.bin");
-
-    //coutFile<two>("input2.bin");
-
-	Rank("input2.bin", "input3.bin");
-
-	cout << endl << "ranked:" << endl;
-
-	coutFile<two>("input3.bin");
-
-	ExternalSort<two>("input3.bin", "input4.bin", 1);
-
-	coutFile<two>("input4.bin");
-
-	ExternalSort<two>("delList.bin", "s_delList.bin", 0);
-
-	coutFile<two>("s_delList.bin");
+		remove("1.bin");
+		remove("2.bin");
+		remove("5.bin");
+	}
 	
-	JoinInsert<two, two, two>("input4.bin","s_delList.bin","insert1.bin");
+	//coutFile<two>("6");
 
-	ExternalSort<two>("insert1.bin", "insert2.bin", 0);
+	//Rank("input2.bin", "input3.bin");
 
-	coutFile<two>("insert2.bin");
+
+	//ExternalSort<two>("input3.bin", "input4.bin", 1);
+
+
+	//ExternalSort<two>("delList.bin", "s_delList.bin", 0);
+
+	//
+	//JoinInsert<two, two, two>("input4.bin","s_delList.bin","insert1.bin");
+
+	//ExternalSort<two>("insert1.bin", "insert2.bin", 0);
+
 
     const auto endTime = clock();
     cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
@@ -123,7 +133,7 @@ int main(int argc, char *argv[])
 
 
 template <typename T1 , typename T2 , typename T3>
-void JoinInsert(char * input_filename1, char * input_filename2, char * output_filename)
+void JoinInsert( string  input_filename1,  string  input_filename2,  string  output_filename)
 {
 	int N1;
 	int N2;
@@ -137,7 +147,7 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 	infile2.read(reinterpret_cast<char *>(&N2), init_offset);
 
 	
-	ofstream outfile(output_filename, ios::out | ios::binary);
+	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
 	outfile.seekp(init_offset, ios::beg);
 	
 
@@ -153,6 +163,7 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 	int write_blk_size = block_size_M * sizeof(T3);
 
 	int m = ceil(static_cast<double>(max(N1, N2)) / block_size_M);
+	int blk2_reads = 0;
 	int p_read1 = 0;
 	int p_read2 = 0;
 	int p_write = 0;
@@ -188,6 +199,7 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 			}
 
 			infile2.read((char *)&bufferMr2[0], read_blk_size2);
+			blk2_reads++;
 		}
 
 		if (inserted_elems < N2)
@@ -214,36 +226,30 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 
 					bufferMw[p_write++] = { (2 * bufferMr1[p_read1].data[0]) + 1, bufferMr2[p_read2].data[1] };
 
-					
-
-
 					inserted_elems++;
 					if (inserted_elems == N2) continue;
 					p_read2++;
-
 					if (p_read2 == bufferMr2.size())
 					{
-						if (N2 - i * block_size_M < block_size_M && i > 0 && N2 - i * block_size_M > 0)
+						if (N2 - blk2_reads * block_size_file2 < block_size_file2 && N2 - blk2_reads * block_size_file2 > 0)
 						{
-							read_blk_size2 = (N2 - i * block_size_M) * sizeof(T2);
+							read_blk_size2 = (N2 - blk2_reads * block_size_file2) * sizeof(T2);
 							bufferMr2.resize(read_blk_size2 / sizeof(T2));
 						}
 
 						infile2.read((char *)&bufferMr2[0], read_blk_size2);
+						blk2_reads++;
 						p_read2 = 0;
 					}
-
 				}
 				else
 				{
 					N3++;
-
 					if (p_write == bufferMw.size())
 					{
 						outfile.write((char *)& bufferMw[0], write_blk_size);
 						p_write = 0;
 					}
-
 					bufferMw[p_write++] = { 2 * bufferMr1[p_read1].data[0] , bufferMr1[p_read1].data[1] };
 				}
 			}
@@ -282,10 +288,13 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 
 	outfile.seekp(0, ios::beg);
 	outfile.write(reinterpret_cast<char *>(&N3), init_offset);
+	outfile.close();
+	infile1.close();
+	infile2.close();
 
 }
 
-void Rank(char * input_filename, char * output_filename)
+void Rank(string input_filename, string output_filename)
 {
 
 	int N;
@@ -300,7 +309,7 @@ void Rank(char * input_filename, char * output_filename)
 
 	infile.read((char*)&bufferMr[0], N * sizeof(two));
 
-	ofstream outfile(output_filename, ios::out | ios::binary);
+	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
 	outfile.write(reinterpret_cast<char*>(&(N)), init_offset);
 
 
@@ -336,10 +345,13 @@ void Rank(char * input_filename, char * output_filename)
 
 	vector<two>().swap(bufferMr);
 	vector<two>().swap(bufferMw);
+
+	infile.close();
+	outfile.close();
 }
 
 template<typename T1, typename T2, typename T3>
-int JoinDel(char *input_filename1, char *input_filename2, char *output_filename)
+int JoinDel(string input_filename1, string input_filename2, string output_filename)
 {
 	int N1;
 	int N2;
@@ -352,7 +364,7 @@ int JoinDel(char *input_filename1, char *input_filename2, char *output_filename)
 	infile1.read(reinterpret_cast<char *>(&N1), init_offset);
 	infile2.read(reinterpret_cast<char *>(&N2), init_offset);
 
-	ofstream outfile(output_filename, ios::out | ios::binary);
+	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
 	outfile.seekp(init_offset, ios::beg);
 
 	vector<T1> bufferMr1(block_size_M);
@@ -458,6 +470,10 @@ int JoinDel(char *input_filename1, char *input_filename2, char *output_filename)
 
 	outfile.seekp(0, ios::beg);
 	outfile.write(reinterpret_cast<char *>(&N3), init_offset);
+	outfile.close();
+
+	infile1.close();
+	infile2.close();
 
 	bufferMr1.clear();
 	bufferMr2.clear();
@@ -471,7 +487,7 @@ int JoinDel(char *input_filename1, char *input_filename2, char *output_filename)
 }
 
 template<typename T1, typename T2, typename T3>
-void createDelList(char *input_filename, char *output_filename1, char *output_filename2)
+void createDelList(string input_filename, string output_filename1, string output_filename2)
 {
 	int del_cnt = 0;
     int N;
@@ -487,10 +503,10 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
     ifstream infile(input_filename, ios::in | ios::binary);
     infile.read(reinterpret_cast<char *>(&N), init_offset);
 
-    ofstream outfile1(output_filename1, ios::out | ios::binary);
+    ofstream outfile1(output_filename1, ios::out | ios::binary | ios::trunc);
     outfile1.seekp(init_offset, ios::beg);
 
-    ofstream outfile2(output_filename2, ios::out | ios::binary);
+    ofstream outfile2(output_filename2, ios::out | ios::binary | ios::trunc);
     outfile2.seekp(init_offset, ios::beg);
 
     int m = ceil((double) N / block_size_M);
@@ -570,18 +586,22 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
     outfile1.write(reinterpret_cast<char *>(&N), init_offset);
     outfile2.write(reinterpret_cast<char *>(&cnt_f2), init_offset);
 
+	infile.close();
+	outfile1.close();
+	outfile2.close();
+
 	cout << endl << "del_cnt " << del_cnt << endl;
 }
 
 template<typename T1, typename T2, typename T3>
-void Join3(char *input_filename1, char *input_filename2, char *output_filename)
+void Join3(string input_filename1, string input_filename2, string output_filename)
 {
     int N1;
     int N2;
 
     ifstream infile1(input_filename1, ios::in | ios::binary);
     ifstream infile2(input_filename2, ios::in | ios::binary);
-    ofstream outfile(output_filename, ios::out | ios::binary);
+    ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
 
 
     infile1.read(reinterpret_cast<char *>(&N1), init_offset);
@@ -644,15 +664,19 @@ void Join3(char *input_filename1, char *input_filename2, char *output_filename)
     vector<T2>().swap(bufferMr2);
     vector<T3>().swap(bufferMw);
 
+	infile1.close();
+	infile2.close();
+	outfile.close();
+
 }
 
 template<typename T>
-void ExternalSort(char *input_filename, char *output_filename, int coordinate)
+void ExternalSort(string input_filename, string output_filename, int coordinate)
 {
     int N;
 
     ifstream infile(input_filename, ios::in | ios::binary);
-    ofstream tempfile("temp1.bin", ios::out | ios::binary);
+    ofstream tempfile("temp1.bin", ios::out | ios::binary | ofstream::trunc);
 
 
     infile.read(reinterpret_cast<char *>(&N), init_offset);
@@ -751,13 +775,13 @@ void ExternalSort(char *input_filename, char *output_filename, int coordinate)
             outfile1.close();
         }
 
-        levels % 2 == 0 ? rename("temp1.bin", output_filename) : rename("temp2.bin", output_filename);
+        levels % 2 == 0 ? rename("temp1.bin", output_filename.c_str()) : rename("temp2.bin", output_filename.c_str());
         levels % 2 == 0 ? remove("temp2.bin") : remove("temp1.bin");
         //coutFile<T>((char *)output_filename);
 
     } else
     {
-        rename("temp1.bin", output_filename);
+        rename("temp1.bin", output_filename.c_str());
         //coutFile<T>((char *)output_filename);
     }
 }
@@ -913,7 +937,7 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 }
 
 template<typename T>
-void coutFile(char *filename)
+void coutFile(string filename)
 {
     cout << endl << endl;
     ifstream infile(filename, ios::in | ios::binary);
@@ -965,34 +989,34 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-    int n = 100;
-    srand(static_cast<unsigned int>(time(NULL)));
+	int n = 1250001;
+	srand(static_cast<unsigned int>(time(NULL)));
 
-    vector<int> array(2 * n);//{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
+	vector<int> array(2 * n);//{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
 
-    int c = 2;
-    array[0] = 1;
-    for (int i = 1; i < n * 2 - 4; ++i)
-    {
-        array[i] = c;
-        array[i + 1] = c;
-        i++;
-        c++;
-    }
+	int c = 2;
+	array[0] = 1;
+	for (int i = 1; i < n * 2 - 4; ++i)
+	{
+		array[i] = c;
+		array[i + 1] = c;
+		i++;
+		c++;
+	}
 
-    array[n * 2 - 4] = c-1;
-    array[n * 2 - 3] = c;
+	array[n * 2 - 4] = c - 1;
+	array[n * 2 - 3] = c;
 	array[n * 2 - 2] = c;
-	array[n * 2 - 1] =1;
+	array[n * 2 - 1] = 1;
 
-    ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
+	ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
 
-    out.write((char *) &n, sizeof(int));
+	out.write((char *)&n, sizeof(int));
 
-    out.write((char *) &array[0], n * 2 * sizeof(int));
+	out.write((char *) &array[0], n * 2 * sizeof(int));
 
-    out.close();
-    vector<int>().swap(array);
+	out.close();
+	vector<int>().swap(array);
 }
 
 
