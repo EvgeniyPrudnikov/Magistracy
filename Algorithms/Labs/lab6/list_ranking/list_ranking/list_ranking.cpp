@@ -40,7 +40,6 @@ void CreateTestFile_PROD();
 template <typename T1, typename T2, typename T3>
 void JoinInsert(char * input_filename1, char * input_filename2, char * output_filename);
 
-
 void Rank(char * input_filename, char * output_filename);
 
 template<typename T1, typename T2, typename T3>
@@ -68,8 +67,8 @@ int main(int argc, char *argv[])
 
     const auto startTime = std::clock();
 
-    //CreateTestFile_PROD();
-    CreateTestFile();
+    CreateTestFile_PROD();
+    //CreateTestFile();
 
 
     ExternalSort<two>("input.bin", "output1.bin", 1);
@@ -195,18 +194,28 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 		{
 			for (p_read1 = 0; p_read1 < bufferMr1.size(); p_read1++)
 			{
-
-				if (p_write == bufferMw.size())
-				{
-					outfile.write((char *)& bufferMw[0], write_blk_size);
-					p_write = 0;
-				}
-
 				if (bufferMr1[p_read1].data[1] == bufferMr2[p_read2].data[0])
 				{
 					N3 += 2;
+
+					if (p_write == bufferMw.size())
+					{
+						outfile.write((char *)& bufferMw[0], write_blk_size);
+						p_write = 0;
+					}
+
 					bufferMw[p_write++] = { 2 * bufferMr1[p_read1].data[0], bufferMr1[p_read1].data[1] };
+
+					if (p_write == bufferMw.size())
+					{
+						outfile.write((char *)& bufferMw[0], write_blk_size);
+						p_write = 0;
+					}
+
 					bufferMw[p_write++] = { (2 * bufferMr1[p_read1].data[0]) + 1, bufferMr2[p_read2].data[1] };
+
+					
+
 
 					inserted_elems++;
 					if (inserted_elems == N2) continue;
@@ -228,6 +237,13 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 				else
 				{
 					N3++;
+
+					if (p_write == bufferMw.size())
+					{
+						outfile.write((char *)& bufferMw[0], write_blk_size);
+						p_write = 0;
+					}
+
 					bufferMw[p_write++] = { 2 * bufferMr1[p_read1].data[0] , bufferMr1[p_read1].data[1] };
 				}
 			}
@@ -268,9 +284,6 @@ void JoinInsert(char * input_filename1, char * input_filename2, char * output_fi
 	outfile.write(reinterpret_cast<char *>(&N3), init_offset);
 
 }
-
-
-
 
 void Rank(char * input_filename, char * output_filename)
 {
@@ -482,7 +495,7 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
 
     int m = ceil((double) N / block_size_M);
     int curr_rand;
-	int prev_rand = 0;
+	int prev_rand = 1;
     int k = 0;
 	for (int i = 0; i < m; ++i)
 	{
@@ -515,8 +528,8 @@ void createDelList(char *input_filename, char *output_filename1, char *output_fi
 
 			curr_rand = rand() % 2;
 
-			//if (prev_rand == 0 && curr_rand == 1)
-			if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
+			if (prev_rand == 0 && curr_rand == 1)
+				//if (bufferMr[j].data[1] == 2 || bufferMr[j].data[1] == 7 || bufferMr[j].data[1] == 10)
 			{
 				del_cnt++;
 				bufferMw1[j] = { bufferMr[j].data[0], bufferMr[j].data[2] };
@@ -909,7 +922,7 @@ void coutFile(char *filename)
     infile.read(reinterpret_cast<char *>(&b), init_offset);
 
     cout << "N = " << b << endl;
-
+	if (b == 0) return;
     vector<T> buffer(b);
     infile.read((char *) &buffer[0], buffer.size() * sizeof(T));
 
@@ -952,7 +965,7 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-    int n = 1250001;
+    int n = 100;
     srand(static_cast<unsigned int>(time(NULL)));
 
     vector<int> array(2 * n);//{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
