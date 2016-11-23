@@ -13,8 +13,8 @@
 using namespace std;
 
 
-const int block_size_M = 256*256;
-const int block_size_B = 64*64;
+const int block_size_M = 6;
+const int block_size_B = 2;
 const int init_offset = sizeof(int);
 
 struct two
@@ -77,8 +77,8 @@ int main()
 	int N_down;
 	int N_up = 0 ;
 
-	CreateTestFile_PROD();
-	//CreateTestFile();
+	//CreateTestFile_PROD();
+	CreateTestFile();
 
 
 	const auto startTime = clock();
@@ -101,13 +101,22 @@ int main()
 
 		coutFile<two>(i_filename);
 
-		ExternalSort<two>(i_filename, "1.bin", 1); ExternalSort<two>(i_filename, "2.bin", 0);
+		ExternalSort<two>(i_filename, "1.bin", 1);// ExternalSort<two>(i_filename, "2.bin", 0);
 
-		Join3<two, two, three>("1.bin", "2.bin", "3.bin");
+		RandAi<two,three>("1.bin", "r_1.bin");
+
+		coutFile<three>("r_1.bin");
+
+		ExternalSort<three>("r_1.bin", "r_2.bin", 1);
+
+		coutFile<three>("r_2.bin");
+
+
+		//Join3<two, two, three>("1.bin", "2.bin", "3.bin");
 
 		//ExternalSort<three>("3.bin", "s_3.bin", 0);
 
-		coutFile<three>("3.bin");
+		//coutFile<three>("3.bin");
 
 		createDelList<three, two, two>("3.bin", "4.bin", "del_" + to_string(v) + ".bin");
 
@@ -676,6 +685,7 @@ void createDelList(string input_filename, string output_filename1, string output
 	//cout << endl << "del_cnt " << del_cnt << endl;
 }
 
+// sort by 1
 template <typename T1 , typename T2>
 void RandAi(string input_filename, string output_filename)
 {
@@ -690,7 +700,7 @@ void RandAi(string input_filename, string output_filename)
 	outfile.write(reinterpret_cast<char *>(&N), init_offset);
 
 	vector<T1> bufferMr(block_size_M);
-	vector<T3> bufferMw(block_size_M);
+	vector<T2> bufferMw(block_size_M);
 
 	int read_blk_size = block_size_M * sizeof(T1);
 	int write_blk_size = block_size_M * sizeof(T2);
@@ -709,8 +719,8 @@ void RandAi(string input_filename, string output_filename)
 
 		if (abs(N- i * block_size_M) < block_size_M)
 		{
-			write_blk_size = (N - i * block_size_M) * sizeof(T3);
-			bufferMw.resize(write_blk_size / sizeof(T3));
+			write_blk_size = (N - i * block_size_M) * sizeof(T2);
+			bufferMw.resize(write_blk_size / sizeof(T2));
 		}
 
 
@@ -719,7 +729,7 @@ void RandAi(string input_filename, string output_filename)
 		srand(time(nullptr));
 		for (int j = 0; j < bufferMw.size(); j++)
 		{
-			bufferMw[j] = { bufferMr1[j].data[0], j % 2 == 0 ? 0 : 1 };
+			bufferMw[j] = { rand() % 2 , bufferMr[j].data[0],bufferMr[j].data[1] };
 		}
 
 		outfile.write((char *)&bufferMw[0], write_blk_size);
@@ -1130,10 +1140,10 @@ void coutFile_INT(string filename, int n)
 
 void CreateTestFile()
 {
-    int n = 10;
+    int n = 13;
     srand(static_cast<unsigned int>(time(NULL)));
 
-    vector<int> array{6, 7, 7, 1, 1, 3, 3, 2, 2, 8, 8, 5, 5, 4, 4, 10, 10, 9, 9, 6};
+    vector<int> array{13, 18, 18, 4, 4, 23, 23, 8, 8, 6, 6, 2, 2, 9, 9, 12, 12, 22, 22, 5,5,1,1,7,7,13};
 
     for (int i = 0; i < n * 2 - 1; i += 2)
     {
