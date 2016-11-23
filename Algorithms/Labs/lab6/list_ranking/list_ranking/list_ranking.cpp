@@ -13,8 +13,8 @@
 using namespace std;
 
 
-const int block_size_M = 30;
-const int block_size_B = 10;
+const int block_size_M = 8;
+const int block_size_B = 2;
 const int init_offset = sizeof(int);
 
 struct two
@@ -154,7 +154,7 @@ void Output(string input_filename , string output_filename)
 	ifstream infile(input_filename, ios::in | ios::binary);
 	infile.read(reinterpret_cast<char *>(&N), init_offset);
 
-	ofstream outfle(output_filename, ios::out | ios::binary);
+	ofstream outfile(output_filename, ios::out | ios::binary);
 
 	vector<T1> bufferMr(block_size_M);
 	vector<T2> bufferMw(block_size_M);
@@ -170,10 +170,6 @@ void Output(string input_filename , string output_filename)
 		{
 			read_blk_size = (N - i * block_size_M) * sizeof(T1);
 			bufferMr.resize(read_blk_size/ sizeof(T1));
-		}
-
-		if (N - i * block_size_M < block_size_M)
-		{
 
 			write_blk_size = (N - i * block_size_M) * sizeof(T2);
 			bufferMw.resize(write_blk_size / sizeof(T2));
@@ -186,12 +182,12 @@ void Output(string input_filename , string output_filename)
 			bufferMw[j] = bufferMr[j].data[1];
 		}
 
-		outfle.write((char *)&bufferMw[0], write_blk_size);
+		outfile.write((char *)&bufferMw[0], write_blk_size);
 
 	}
 	
 	infile.close();
-	outfle.close();
+	outfile.close();
 
 	vector<T1>().swap(bufferMr);
 	vector<T2>().swap(bufferMw);
@@ -1058,13 +1054,13 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-	int n = 100;
+	int n = 31;
 	srand(static_cast<unsigned int>(time(NULL)));
 
 
 	vector<int> init_array(n);
 
-	int c = 1;
+	int c = 53;
 	for (int i = 0; i < n; i++)
 	{
 		init_array[i] = c;
@@ -1087,11 +1083,12 @@ void CreateTestFile_PROD()
 
 	varray[k] = init_array[0];
 	
+	
 	for (int i = 0; i < n; i++)
 	{
 		cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(1) << init_array[i] << " ";
 	}
-
+	
 	auto lko = *min_element(init_array.begin(), init_array.end());
 	cout <<endl << lko << endl;
 	
