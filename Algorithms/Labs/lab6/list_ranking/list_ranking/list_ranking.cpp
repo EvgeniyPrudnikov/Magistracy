@@ -13,8 +13,8 @@
 using namespace std;
 
 
-const int block_size_M = 6;
-const int block_size_B = 2;
+const int block_size_M = 30;
+const int block_size_B = 10;
 const int init_offset = sizeof(int);
 
 struct two
@@ -48,13 +48,8 @@ int JoinDel(string input_filename1, string input_filename2, string output_filena
 template<typename T1, typename T2>
 void createDelList(string input_filename1, string input_filename2, string output_filename1, string output_filename2);
 
-
 template <typename T1, typename T2>
 void RandAi(string input_filename, string output_filename);
-
-
-template<typename T1, typename T2, typename T3>
-void Join3(string input_filename1, string input_filename2, string output_filename);
 
 template<typename T>
 void ExternalSort(string input_filename, string output_filename, int coordinate);
@@ -91,10 +86,14 @@ int main()
 
 	int blk_size_M = block_size_M;
 
-	if (N_down < blk_size_M) blk_size_M = N_down;
+	if (N_down <= blk_size_M)
+	{
+		blk_size_M = N_down;
+		N_up = N_down;
+	}
 	
 
-	while (N_down >= blk_size_M)
+	while (N_down > blk_size_M)
 	{
 		i_filename = v == 1 ? "input.bin" : "6.bin";
 
@@ -117,8 +116,12 @@ int main()
 		remove("s_l_5.bin");
 	}
 
+	i_filename = v == 1 ? "input.bin" : "6.bin";
+
+	ExternalSort<two>(i_filename, "s_6.bin", 0);
+
 	v--;
-	Rank("6.bin", "rnk.bin");
+	Rank("s_6.bin", "rnk.bin");
 
 	
 	while (N_up != N)
@@ -129,7 +132,6 @@ int main()
 		remove("1.bin");
 		remove("2.bin");
 	}
-
 
 	ExternalSort<two>("rnk.bin", "res.bin", 0);
 
@@ -191,12 +193,8 @@ void Output(string input_filename , string output_filename)
 	infile.close();
 	outfle.close();
 
-	bufferMr.clear();
-	bufferMw.clear();
 	vector<T1>().swap(bufferMr);
 	vector<T2>().swap(bufferMw);
-
-
 }
 
 template <typename T1 >
@@ -350,9 +348,6 @@ int JoinInsert( string  input_filename1,  string  input_filename2,  string  outp
 
 	cout << endl << "inserted_elems " << inserted_elems << endl;
 
-	bufferMr1.clear();
-	bufferMr2.clear();
-	bufferMw.clear();
 	vector<T1>().swap(bufferMr1);
 	vector<T1>().swap(bufferMr2);
 	vector<T1>().swap(bufferMw);
@@ -413,8 +408,6 @@ void Rank(string input_filename, string output_filename)
 
 	outfile.write((char *)& bufferMw[0], N * sizeof(two));
 
-	bufferMr.clear();
-	bufferMw.clear();
 
 	vector<two>().swap(bufferMr);
 	vector<two>().swap(bufferMw);
@@ -551,9 +544,6 @@ int JoinDel(string input_filename1, string input_filename2, string output_filena
 	infile1.close();
 	infile2.close();
 
-	bufferMr1.clear();
-	bufferMr2.clear();
-	bufferMw.clear();
 	vector<T1>().swap(bufferMr1);
 	vector<T1>().swap(bufferMr2);
 	vector<T1>().swap(bufferMw);
@@ -723,9 +713,6 @@ void RandAi(string input_filename, string output_filename)
 
 	}
 
-	bufferMr.clear();
-	bufferMw.clear();
-
 	vector<T1>().swap(bufferMr);
 	vector<T2>().swap(bufferMw);
 
@@ -733,82 +720,6 @@ void RandAi(string input_filename, string output_filename)
 	outfile.close();
 }
 
-template<typename T1, typename T2, typename T3>
-void Join3(string input_filename1, string input_filename2, string output_filename)
-{
-    int N1;
-    int N2;
-
-    ifstream infile1(input_filename1, ios::in | ios::binary);
-    ifstream infile2(input_filename2, ios::in | ios::binary);
-    ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
-
-
-    infile1.read(reinterpret_cast<char *>(&N1), init_offset);
-    infile2.read(reinterpret_cast<char *>(&N2), init_offset);
-
-    int N3 = min(N1, N2);
-
-    outfile.write(reinterpret_cast<char *>(&N3), init_offset);
-
-    vector<T1> bufferMr1(block_size_M);
-    vector<T2> bufferMr2(block_size_M);
-    vector<T3> bufferMw(block_size_M);
-
-    int read_blk_size1 = block_size_M * sizeof(T1);
-    int read_blk_size2 = block_size_M * sizeof(T2);
-    int write_blk_size = block_size_M * sizeof(T3);
-
-    int m = ceil((double) N1 / block_size_M);
-
-    for (int i = 0; i < m; i++)
-    {
-
-        if (abs(N1 - i * block_size_M) < block_size_M)
-        {
-            read_blk_size1 = (N1 - i * block_size_M) * sizeof(T1);
-            bufferMr1.resize(read_blk_size1 / sizeof(T1));
-
-        }
-        if (abs(N2 - i * block_size_M) < block_size_M)
-        {
-            read_blk_size2 = (N2 - i * block_size_M) * sizeof(T1);
-            bufferMr2.resize(read_blk_size2 / sizeof(T2));
-        }
-
-        if (abs(N3 - i * block_size_M) < block_size_M)
-        {
-            write_blk_size = (N3 - i * block_size_M) * sizeof(T3);
-            bufferMw.resize(write_blk_size / sizeof(T3));
-        }
-
-
-        infile1.read((char *) &bufferMr1[0], read_blk_size1);
-        infile2.read((char *) &bufferMr2[0], read_blk_size2);
-
-
-        for (int j = 0; j < bufferMw.size(); j++)
-        {
-            bufferMw[j] = {bufferMr1[j].data[0], bufferMr1[j].data[1], bufferMr2[j].data[1]};
-        }
-
-        outfile.write((char *) &bufferMw[0], write_blk_size);
-
-    }
-
-    bufferMr1.clear();
-    bufferMr2.clear();
-    bufferMw.clear();
-
-    vector<T1>().swap(bufferMr1);
-    vector<T2>().swap(bufferMr2);
-    vector<T3>().swap(bufferMw);
-
-	infile1.close();
-	infile2.close();
-	outfile.close();
-
-}
 
 template<typename T>
 void ExternalSort(string input_filename, string output_filename, int coordinate)
@@ -846,7 +757,6 @@ void ExternalSort(string input_filename, string output_filename, int coordinate)
         tempfile.write((char *) &bufferM[0], read_size_M);
     }
 
-    bufferM.clear();
     vector<T>().swap(bufferM);
     tempfile.close();
     infile.close();
@@ -1067,10 +977,6 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
         }
     }
 
-    bufferBr1.clear();
-    bufferBr2.clear();
-    bufferBw.clear();
-
     vector<T>().swap(bufferBr1);
     vector<T>().swap(bufferBr2);
     vector<T>().swap(bufferBw);
@@ -1152,15 +1058,17 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-	int n = 250;
+	int n = 31;
 	srand(static_cast<unsigned int>(time(NULL)));
 
 
 	vector<int> init_array(n);
 
+	//int c = 1;
 	for (int i = 0; i < n; i++)
 	{
-		init_array[i] = rand() % 1073741825;
+		init_array[i] = rand()%INT_MAX;
+		//c++;
 	}
 
 
@@ -1182,6 +1090,9 @@ void CreateTestFile_PROD()
 	{
 		cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(1) << init_array[i] << " ";
 	}
+
+	auto lko = *min_element(init_array.begin(), init_array.end());
+	cout <<endl << lko << endl;
 	
 	ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
 
