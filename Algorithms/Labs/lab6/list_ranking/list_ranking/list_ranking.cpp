@@ -1058,19 +1058,20 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-	int n = 31;
+	int n = 100;
 	srand(static_cast<unsigned int>(time(NULL)));
 
 
 	vector<int> init_array(n);
 
-	//int c = 1;
+	int c = 1;
 	for (int i = 0; i < n; i++)
 	{
-		init_array[i] = rand()%INT_MAX;
-		//c++;
+		init_array[i] = c;
+		c++;
 	}
 
+	random_shuffle(std::begin(init_array), std::end(init_array));
 
 	vector<int> varray(2 * n );
 
