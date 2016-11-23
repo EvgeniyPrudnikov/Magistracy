@@ -75,10 +75,10 @@ int main()
 {
 	int N;
 	int N_down;
-	int N_up = 0 ;
+	int N_up = 0;
 
-	//CreateTestFile_PROD();
-	CreateTestFile();
+	CreateTestFile_PROD();
+	//CreateTestFile();
 
 
 	const auto startTime = clock();
@@ -92,70 +92,56 @@ int main()
 	int blk_size_M = block_size_M;
 
 	if (N_down < blk_size_M) blk_size_M = N_down;
+	
 
 	while (N_down >= blk_size_M)
 	{
-
 		i_filename = v == 1 ? "input.bin" : "6.bin";
-		
 
-		coutFile<two>(i_filename);
+		ExternalSort<two>(i_filename, "s_1.bin", 1);
 
-		ExternalSort<two>(i_filename, "1.bin", 1);
-
-		RandAi<two,three>("1.bin", "r_1.bin");
-
+		RandAi<two, three>("s_1.bin", "r_1.bin");
 
 		ExternalSort<three>("r_1.bin", "r_2.bin", 1);
 
-		coutFile<three>("r_1.bin");
+		createDelList<three, two>("r_1.bin", "r_2.bin", "l_4.bin", "del_" + to_string(v) + ".bin");
 
-		coutFile<three>("r_2.bin");
+		ExternalSort<two>("l_4.bin", "s_l_5.bin", 0);
 
-		createDelList<three, two>("r_1.bin","r_2.bin", "4.bin", "del_" + to_string(v) + ".bin");
-
-		coutFile<two>("del_" + to_string(v) + ".bin");
-
-		ExternalSort<two>("4.bin", "5.bin", 1);
-		coutFile<two>("5.bin");
-
-		N_down = JoinDel<two>("5.bin", "del_" + to_string(v) + ".bin", "6.bin");
+		N_down = JoinDel<two>("s_l_5.bin", "del_" + to_string(v) + ".bin", "6.bin");
 
 		v++;
-		remove("1.bin");
+		remove("s_1.bin");
 		remove("r_1.bin");
 		remove("r_2.bin");
-		remove("5.bin");
+		remove("s_l_5.bin");
 	}
-	
-	//coutFile<two>("6");
+
 	v--;
 	Rank("6.bin", "rnk.bin");
 
-	//coutFile<two>("rnk.bin");
-
-	while(N_up != N)
+	
+	while (N_up != N)
 	{
-		ExternalSort<two>("rnk.bin","1.bin", 1); ExternalSort<two>("del_" + to_string(v) + ".bin", "2.bin", 0);
+		ExternalSort<two>("rnk.bin", "1.bin", 1); ExternalSort<two>("del_" + to_string(v) + ".bin", "2.bin", 0);
 		N_up = JoinInsert<two>("1.bin", "2.bin", "rnk.bin");
 		v--;
 		remove("1.bin");
 		remove("2.bin");
 	}
 
-	//coutFile<two>("rnk.bin");
 
 	ExternalSort<two>("rnk.bin", "res.bin", 0);
 
 	Output<two, int>("res.bin", "output.bin");
 
-	//coutFile_INT("output.bin", N_up);
+	coutFile_INT("output.bin", N_up);
 
-    const auto endTime = clock();
-    cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
-    getchar();
+	const auto endTime = clock();
+	cout << endl << "done in  " << setprecision(6) << double(endTime - startTime) / CLOCKS_PER_SEC << '\n';
+	getchar();
 
-    return 0;
+	return 0;
 }
 
 template <typename T1, typename T2>
@@ -227,10 +213,10 @@ int JoinInsert( string  input_filename1,  string  input_filename2,  string  outp
 	infile1.read(reinterpret_cast<char *>(&N1), init_offset);
 	infile2.read(reinterpret_cast<char *>(&N2), init_offset);
 
-	if (N2 == 0) return N1;
 	
 	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
 	outfile.seekp(init_offset, ios::beg);
+	
 	
 
 	int block_size_file1 = min(N1, block_size_M);
@@ -264,6 +250,7 @@ int JoinInsert( string  input_filename1,  string  input_filename2,  string  outp
 			if (p_write > 0 && p_write <= bufferMw.size())
 			{
 				outfile.write((char *)&bufferMw[0], p_write * sizeof(T1));
+				N3 += p_write;
 				p_write = 0;
 			}
 
@@ -290,11 +277,11 @@ int JoinInsert( string  input_filename1,  string  input_filename2,  string  outp
 			{
 				if (bufferMr1[p_read1].data[1] == bufferMr2[p_read2].data[0])
 				{
-					N3 += 2;
-
+					
 					if (p_write == bufferMw.size())
 					{
 						outfile.write((char *)& bufferMw[0], write_blk_size);
+						N3 += bufferMw.size();
 						p_write = 0;
 					}
 
@@ -303,6 +290,7 @@ int JoinInsert( string  input_filename1,  string  input_filename2,  string  outp
 					if (p_write == bufferMw.size())
 					{
 						outfile.write((char *)& bufferMw[0], write_blk_size);
+						N3 += bufferMw.size();
 						p_write = 0;
 					}
 
@@ -326,10 +314,11 @@ int JoinInsert( string  input_filename1,  string  input_filename2,  string  outp
 				}
 				else
 				{
-					N3++;
+					
 					if (p_write == bufferMw.size())
 					{
 						outfile.write((char *)& bufferMw[0], write_blk_size);
+						N3+= bufferMw.size();
 						p_write = 0;
 					}
 					bufferMw[p_write++] = { 2 * bufferMr1[p_read1].data[0] , bufferMr1[p_read1].data[1] };
@@ -356,6 +345,7 @@ int JoinInsert( string  input_filename1,  string  input_filename2,  string  outp
 	if (p_write > 0 && p_write <= bufferMw.size())
 	{
 		outfile.write((char *)&bufferMw[0], p_write * sizeof(T1));
+		N3 += p_write;
 	}
 
 	cout << endl << "inserted_elems " << inserted_elems << endl;
@@ -723,10 +713,10 @@ void RandAi(string input_filename, string output_filename)
 
 		infile.read((char *)&bufferMr[0], read_blk_size);
 
-		srand(time(nullptr));
+		srand(time(NULL));
 		for (int j = 0; j < bufferMw.size(); j++)
 		{
-			bufferMw[j] = { rand() % 2 , bufferMr[j].data[0],bufferMr[j].data[1] };
+			bufferMw[j] = { (i == 0 && j == 0) ? 1 : rand() % 2 , bufferMr[j].data[0],bufferMr[j].data[1] };
 		}
 
 		outfile.write((char *)&bufferMw[0], write_blk_size);
@@ -1100,6 +1090,8 @@ void coutFile(string filename)
     vector<T> buffer(b);
     infile.read((char *) &buffer[0], buffer.size() * sizeof(T));
 
+	ofstream out("test.txt", ios::out | ios::app);
+
     int l = sizeof(T) / sizeof(int);
 
     for (int i = 0; i < b; ++i)
@@ -1107,11 +1099,13 @@ void coutFile(string filename)
         for (int j = 0; j < l; ++j)
         {
             cout << setiosflags(ios::fixed | ios::left) <<setprecision(0)<< buffer[i].data[j] << '\t';
+			out << setiosflags(ios::fixed | ios::left) << setprecision(0) << buffer[i].data[j] << '\t';
         }
         cout << endl;
+		out << endl;
     }
     infile.close();
-
+	out.close();
     vector<T>().swap(buffer);
 }
 
@@ -1133,7 +1127,6 @@ void coutFile_INT(string filename, int n)
 
 	vector<int>().swap(buffer);
 }
-
 
 void CreateTestFile()
 {
@@ -1159,7 +1152,7 @@ void CreateTestFile()
 
 void CreateTestFile_PROD()
 {
-	int n = 25;
+	int n = 250;
 	srand(static_cast<unsigned int>(time(NULL)));
 
 
@@ -1184,7 +1177,12 @@ void CreateTestFile_PROD()
 	}
 
 	varray[k] = init_array[0];
-
+	
+	for (int i = 0; i < n; i++)
+	{
+		cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(1) << init_array[i] << " ";
+	}
+	
 	ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
 
 	out.write((char *)&n, sizeof(int));
