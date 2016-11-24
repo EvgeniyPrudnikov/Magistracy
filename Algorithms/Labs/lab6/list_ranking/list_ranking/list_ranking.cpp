@@ -13,8 +13,8 @@
 using namespace std;
 
 
-const int block_size_M = 40 * 40;
-const int block_size_B = 20 * 20;
+const int block_size_M = 30 * 30;
+const int block_size_B = 10 * 10;
 const int init_offset = sizeof(int);
 
 
@@ -188,7 +188,7 @@ void Output(string input_filename, string output_filename)
 
 		for (int j = 0; j < bufferMr.size(); j++)
 		{
-			bufferMw[j] = bufferMr[j].data[1];
+			bufferMw[j] = (int)bufferMr[j].data[1];
 		}
 
 		outfile.write((char *)&bufferMw[0], write_blk_size);
@@ -377,7 +377,7 @@ void Rank(string input_filename, string output_filename)
 
 	vector<T1> bufferMr(N);
 	vector<T2> bufferMw;
-	map<long long, long long> map_buffer;
+	map<int, int> map_buffer;
 
 
 	infile.read((char*)&bufferMr[0], N * sizeof(T1));
@@ -1096,12 +1096,12 @@ void CreateTestFile_PROD()
 
 	varray[k] = init_array[0];
 
-	/*
-	for (int i = 0; i < n; i++)
+	
+	/*for (int i = 0; i < n; i++)
 	{
-	cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(1) << init_array[i] << " ";
-	}
-	*/
+		cout << setiosflags(ios::fixed | ios::left) << setprecision(2) << setw(1) << init_array[i] << " ";
+	}*/
+	
 	auto lko = *min_element(init_array.begin(), init_array.end());
 	cout << endl << endl << lko << endl;
 
