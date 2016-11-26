@@ -1,4 +1,4 @@
-lab 4 HIVE Prudnikov
+#lab 4 HIVE Prudnikov
 
 
 # cоздаем таблицу для файла биграмм
