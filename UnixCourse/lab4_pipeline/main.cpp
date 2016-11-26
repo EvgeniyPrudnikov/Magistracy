@@ -58,6 +58,11 @@ int main(int argc, char *argv[])
         cmd_cnt++;
     }
 
+    if (cmd_cnt == 0)
+    {
+        cerr << "Programm started without arguments. Exit." << endl;
+        return 2;
+    }
 
     int pipefds[cmd_cnt - 1][2];
 
@@ -96,7 +101,6 @@ int main(int argc, char *argv[])
                 dup2(pipefds[curr_pipe][1], 1);
                 close(pipefds[curr_pipe][0]);
 
-
             } else if (i == cmd_cnt - 1)
             {
                 dup2(pipefds[curr_pipe][0], 0);
@@ -105,6 +109,7 @@ int main(int argc, char *argv[])
                 {
                     close(pipefds[j][1]);
                 }
+
             } else
             {
                 dup2(pipefds[curr_pipe][0], 0);
@@ -115,6 +120,7 @@ int main(int argc, char *argv[])
                     if (j == next_pipe)
                     {
                         close(pipefds[j][0]);
+
                     } else
                     {
                         close(pipefds[j][1]);
