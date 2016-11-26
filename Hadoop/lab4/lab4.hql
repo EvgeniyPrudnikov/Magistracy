@@ -13,4 +13,4 @@ SELECT n_gram, SUM(occurrences)/SUM(books) AS occ_per_book
 FROM 2_gram_pr 
 GROUP BY n_gram
 ORDER BY occ_per_book DESC, n_gram ASC
-LIMIT 10
+LIMIT 10;
