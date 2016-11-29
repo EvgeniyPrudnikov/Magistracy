@@ -5,7 +5,6 @@
 #include <vector>
 #include <ctime>
 #include <iomanip>
-#include <algorithm>
 
 using namespace std;
 
@@ -15,6 +14,7 @@ const int init_offset = sizeof(int);
 void CreateTestFile();
 void coutFile_INT(string filename , int M);
 int getNumber(int a, int b, int & c);
+void reverseResult(char* input_filename, char* output_filename);
 
 int main()
 {
@@ -83,7 +83,7 @@ int main()
 
 		if (bufferRA[p_read1] + bufferRB[p_read2] + c >= 10)
 		{
-			bufferWC[p_write++] = (bufferRA[p_read1++] + bufferRB[p_read2++]) % 10;
+			bufferWC[p_write++] = (bufferRA[p_read1++] + bufferRB[p_read2++] + c) % 10;
 			c = 1;
 
 			if (p_read1 > bufferRA.size() - 1)
@@ -131,7 +131,7 @@ int main()
 		}
 		else
 		{
-			bufferWC[p_write++] = (bufferRA[p_read1++] + bufferRB[p_read2++]) + c;
+			bufferWC[p_write++] = bufferRA[p_read1++] + bufferRB[p_read2++] + c;
 			c = 0;
 
 			if (p_read1 > bufferRA.size() - 1)
@@ -201,12 +201,6 @@ int main()
 		n3 += p_write;
 		p_write = 0;
 
-		/*if (++i < bufferRB.size())
-		{
-			outfile.write((char *)&bufferRB[i], (bufferRB.size() - i) * sizeof(int));
-			n3 += (bufferRB.size() - i);
-		}*/
-
 		for (int j = read_offset2 + read_blk_size2; j < run2_end; j += read_blk_size2)
 		{
 			infile2.seekg(-read_blk_size2, ios::cur);
@@ -243,11 +237,6 @@ int main()
 		n3 += p_write;
 		p_write = 0;
 
-		/*if (++i < bufferRA.size())
-		{
-			outfile.write((char *)&bufferRA[i], (bufferRA.size() - i) * sizeof(int));
-			n3 += (bufferRA.size() - i);
-		}*/
 
 		for (int j = read_offset1 + read_blk_size1; j < run2_start; j += read_blk_size1)
 		{
@@ -284,6 +273,10 @@ int main()
 	infile2.close();
 	outfile.close();
 
+	coutFile_INT("temp1.bin", 5);
+
+	reverseResult("temp1.bin", "output.bin");
+
 	coutFile_INT("output.bin", 5);
 
 	getchar();
@@ -291,28 +284,38 @@ int main()
 }
 
 
-int reverseResult(char* input_filename, char* output_filename)
+void reverseResult(char* input_filename, char* output_filename)
 {
+
+
 	ifstream infile(input_filename, ios::in | ios::binary);
-	ofstream outfile(output_filename, ios::out | ios::binary);
+	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
 
-	infile.seekg(ios::end, ios::beg);
+	infile.seekg(0, infile.end);
+	int N = infile.tellg() / sizeof(int);
 
-	int N = infile.tellg()/sizeof(int);
+	int read_blk_size = 2 * block_size_B * sizeof(int);
 
-	//TODO:add changable size
+	vector<int> bufferR(2 * block_size_B);
 
-	int read_blk_size = 2*block_size_B * sizeof(int);
-
-	vector<int> bufferR(2*block_size_B);
+	if (N < 2 * block_size_B)
+	{
+		read_blk_size = N * sizeof(int);
+		bufferR.resize(N);
+	}
 
 	int m = ceil((double)N / (2 * block_size_B));
 
 	for (int i = 0; i < m; i++)
 	{
-		infile.seekg(-read_blk_size, ios::cur);
+		
+		if (N - i * 2 * block_size_B < 2 * block_size_B)
+		{
+			read_blk_size = (N - i * 2 * block_size_B) * sizeof(int);
+			bufferR.resize(N - i * 2 * block_size_B);
+		}
 
-		//TODO:add changable size
+		infile.seekg(-read_blk_size, ios::cur);
 
 		infile.read((char *)&bufferR[0], read_blk_size);
 
@@ -323,15 +326,15 @@ int reverseResult(char* input_filename, char* output_filename)
 
 	}
 
+	vector<int>().swap(bufferR);
 
-
-
-
+	infile.close();
+	outfile.close();
 }
 
 int getNumber(int a, int b, int & c)
 {
-	int result = 0;
+	int result;
 
 	if (a + b + c >= 10)
 	{
@@ -369,13 +372,13 @@ void coutFile_INT(string filename , int M)
 void CreateTestFile()
 {
 
-	int n1 = 1;
-	int n2 = 4;
+	int n1 = 3;
+	int n2 = 3;
 
 	srand(static_cast<unsigned int>(time(NULL)));
-
-	vector<int> array1{ 2 };
-	vector<int> array2{ 1,2,9,9 };
+	//TODO: add pushback
+	vector<int> array1{ 9,9,9 };
+	vector<int> array2{ 9,9,9 };
 
 	ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
 
