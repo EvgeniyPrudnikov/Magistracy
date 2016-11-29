@@ -28,7 +28,7 @@ int main()
 	ifstream infile1("input.bin", ios::in | ios::binary);
 	ifstream infile2("input.bin", ios::in | ios::binary);
 
-	ofstream outfile("output.bin", ios::out | ios::binary | ios::trunc);
+	ofstream outfile("temp1.bin", ios::out | ios::binary | ios::trunc);
 
 	infile1.read((char *)&n1, init_offset);
 	infile1.seekg(n1 * sizeof(int), ios::cur);
@@ -201,11 +201,11 @@ int main()
 		n3 += p_write;
 		p_write = 0;
 
-		if (++i < bufferRB.size())
+		/*if (++i < bufferRB.size())
 		{
 			outfile.write((char *)&bufferRB[i], (bufferRB.size() - i) * sizeof(int));
 			n3 += (bufferRB.size() - i);
-		}
+		}*/
 
 		for (int j = read_offset2 + read_blk_size2; j < run2_end; j += read_blk_size2)
 		{
@@ -214,6 +214,7 @@ int main()
 			{
 				read_blk_size2 = run2_end - j;
 				bufferRB.resize((run2_end - j) / sizeof(int));
+				bufferWC.resize((run2_end - j) / sizeof(int));
 			}
 			infile2.seekg(-read_blk_size2, ios::cur);
 			infile2.read((char *)&bufferRB[0], read_blk_size2);
@@ -221,11 +222,11 @@ int main()
 
 			for (int p = 0; p < bufferRB.size(); p++)
 			{
-				bufferWC[p_write++] = getNumber(bufferRA[p], 0, c);
+				bufferWC[p_write++] = getNumber(bufferRB[p], 0, c);
 			}
-			if (c == 1) bufferWC[p_write] = 1;
-			outfile.write((char *)&bufferWC[0], read_blk_size1);
-			n3 += bufferRB.size();
+			if (c == 1) bufferWC.push_back(1);
+			outfile.write((char *)&bufferWC[0], bufferWC.size() * sizeof(int));
+			n3 += bufferWC.size();
 		}
 	}
 	else if (read_offset2 == run2_end)
@@ -242,11 +243,11 @@ int main()
 		n3 += p_write;
 		p_write = 0;
 
-		if (++i < bufferRA.size())
+		/*if (++i < bufferRA.size())
 		{
 			outfile.write((char *)&bufferRA[i], (bufferRA.size() - i) * sizeof(int));
 			n3 += (bufferRA.size() - i);
-		}
+		}*/
 
 		for (int j = read_offset1 + read_blk_size1; j < run2_start; j += read_blk_size1)
 		{
@@ -255,21 +256,21 @@ int main()
 			{
 				read_blk_size1 = run2_start - j;
 				bufferRA.resize((run2_start - j) / sizeof(int));
+				bufferWC.resize((run2_start - j) / sizeof(int));
 			}
 			infile1.seekg(-read_blk_size1, ios::cur);
 			infile1.read((char *)&bufferRA[0], read_blk_size1);
 			reverse(bufferRA.begin(), bufferRA.end());
-
 
 			for (int p = 0; p < bufferRA.size(); p++)
 			{
 				bufferWC[p_write++] = getNumber(bufferRA[p], 0, c);
 			}
 
-			if (c == 1) bufferWC[p_write] = 1;
+			if (c == 1) bufferWC.push_back(1);
 
-			outfile.write((char *)&bufferWC[0], read_blk_size1);
-			n3 += bufferRA.size();
+			outfile.write((char *)&bufferWC[0], bufferWC.size()*sizeof(int));
+			n3 += bufferWC.size();
 		}
 	}
 
@@ -290,6 +291,43 @@ int main()
 }
 
 
+int reverseResult(char* input_filename, char* output_filename)
+{
+	ifstream infile(input_filename, ios::in | ios::binary);
+	ofstream outfile(output_filename, ios::out | ios::binary);
+
+	infile.seekg(ios::end, ios::beg);
+
+	int N = infile.tellg()/sizeof(int);
+
+	//TODO:add changable size
+
+	int read_blk_size = 2*block_size_B * sizeof(int);
+
+	vector<int> bufferR(2*block_size_B);
+
+	int m = ceil((double)N / (2 * block_size_B));
+
+	for (int i = 0; i < m; i++)
+	{
+		infile.seekg(-read_blk_size, ios::cur);
+
+		//TODO:add changable size
+
+		infile.read((char *)&bufferR[0], read_blk_size);
+
+		reverse(bufferR.begin(), bufferR.end());
+
+		outfile.write((char *)&bufferR[0], read_blk_size);
+		infile.seekg(-read_blk_size, ios::cur);
+
+	}
+
+
+
+
+
+}
 
 int getNumber(int a, int b, int & c)
 {
@@ -331,13 +369,13 @@ void coutFile_INT(string filename , int M)
 void CreateTestFile()
 {
 
-	int n1 = 3;
-	int n2 = 1;
+	int n1 = 1;
+	int n2 = 4;
 
 	srand(static_cast<unsigned int>(time(NULL)));
 
-	vector<int> array1{ 9,9,9 };
-	vector<int> array2{ -1 };
+	vector<int> array1{ 2 };
+	vector<int> array2{ 1,2,9,9 };
 
 	ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
 
