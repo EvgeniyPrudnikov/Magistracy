@@ -196,13 +196,10 @@ int main()
 		int i;
 		for (i = p_read2; i < bufferRB.size(); ++i)
 		{
-
 			bufferWC[p_write++] = getNumber(bufferRB[i], 0, c);
 			if (p_write > bufferRB.size() - 1) break;
 		}
-		//if (c == 1)	p_write == bufferWC.size() ? bufferWC.push_back(1) : bufferWC[p_write++] = 1;
 		
-
 		outfile.write((char *)&bufferWC[0], p_write * sizeof(int));
 		n3 += p_write;
 		p_write = 0;
@@ -224,7 +221,7 @@ int main()
 			{
 				bufferWC[p_write++] = getNumber(bufferRB[p], 0, c);
 			}
-			if (c == 1) bufferWC.push_back(1);
+
 			outfile.write((char *)&bufferWC[0], bufferWC.size() * sizeof(int));
 			n3 += bufferWC.size();
 			p_write = 0;
@@ -243,10 +240,8 @@ int main()
 		for (i = p_read1; i < bufferRA.size(); ++i)
 		{
 			bufferWC[p_write++] = getNumber(bufferRA[i], 0, c);
-
 			if (p_write > bufferRA.size() - 1) break;
 		}
-		//if (c == 1)	p_write == bufferWC.size() ? bufferWC.push_back(1) : bufferWC[p_write++] = 1;
 		
 
 		outfile.write((char *)&bufferWC[0], p_write * sizeof(int));
@@ -271,8 +266,6 @@ int main()
 			{
 				bufferWC[p_write++] = getNumber(bufferRA[p], 0, c);
 			}
-
-			if (c == 1) bufferWC.push_back(1);
 
 			outfile.write((char *)&bufferWC[0], bufferWC.size()*sizeof(int));
 			n3 += bufferWC.size();
@@ -396,25 +389,25 @@ void coutFile_INT(string filename)
 void CreateTestFile()
 {
 
-	int n1 = 30;
+	int n1 = 9;
 	int n2 = 1;
 
 	srand(static_cast<unsigned int>(time(NULL)));
-	vector<int> array1(n1);
-	vector<int> array2(n2);
+	//vector<int> array1(n1);
+	//vector<int> array2(n2);
 
-	//vector<int> array1{1,9,9};
-	//vector<int> array2{2};
+	vector<int> array1{9,9,9,9,9,9,9,9,9};
+	vector<int> array2{2};
 
-	for (int i = 0; i < n1; i++)
-	{
-		array1[i] = rand() % 9 + 1;
-	}
+	//for (int i = 0; i < n1; i++)
+	//{
+	//	array1[i] = rand() % 9 + 1;
+	//}
 
-	for (int i = 0; i < n2; i++)
-	{
-		array2[i] = rand() % 9 + 1;
-	}
+	//for (int i = 0; i < n2; i++)
+	//{
+	//	array2[i] = rand() % 9 + 1;
+	//}
 
 	for (int i = 0; i < n1; i++)
 	{
