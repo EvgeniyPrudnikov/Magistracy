@@ -76,13 +76,13 @@ int main()
 	reverse(bufferRB.begin(), bufferRB.end());
 
 
-	int run2_start = n1 * sizeof(int) + init_offset;
-	int run2_end = (n2 + n1) * sizeof(int) + 2 * init_offset;
+	int number1_end = n1 * sizeof(int) + init_offset;
+	int number2_end = (n2 + n1) * sizeof(int) + 2 * init_offset;
 
 
 	int c = 0;
 
-	while (read_offset1 < run2_start && read_offset2 < run2_end)
+	while (read_offset1 < number1_end && read_offset2 < number2_end)
 	{
 
 		if (bufferRA[p_read1] + bufferRB[p_read2] + c >= 10)
@@ -94,15 +94,15 @@ int main()
 			{
 				read_offset1 += read_blk_size1;
 
-				if (read_offset1 < run2_start)
+				if (read_offset1 < number1_end)
 				{
 
 					infile1.seekg(-read_blk_size1, ios::cur);
 
-					if (run2_start - read_offset1 < read_blk_size1)
+					if (number1_end - read_offset1 < read_blk_size1)
 					{
-						read_blk_size1 = (run2_start - read_offset1);
-						bufferRA.resize((run2_start - read_offset1) / sizeof(int));
+						read_blk_size1 = (number1_end - read_offset1);
+						bufferRA.resize((number1_end - read_offset1) / sizeof(int));
 					}
 
 					infile1.seekg(-read_blk_size1, ios::cur);
@@ -116,14 +116,14 @@ int main()
 			{
 				read_offset2 += read_blk_size2;
 
-				if (read_offset2 < run2_end)
+				if (read_offset2 < number2_end)
 				{
 					infile2.seekg(-read_blk_size2, ios::cur);
 
-					if (run2_end - read_offset2 < read_blk_size2)
+					if (number2_end - read_offset2 < read_blk_size2)
 					{
-						read_blk_size2 = (run2_end - read_offset2);
-						bufferRB.resize((run2_end - read_offset2) / sizeof(int));
+						read_blk_size2 = (number2_end - read_offset2);
+						bufferRB.resize((number2_end - read_offset2) / sizeof(int));
 					}
 
 					infile2.seekg(-read_blk_size2, ios::cur);
@@ -142,15 +142,15 @@ int main()
 			{
 				read_offset1 += read_blk_size1;
 
-				if (read_offset1 < run2_start)
+				if (read_offset1 < number1_end)
 				{
 
 					infile1.seekg(-read_blk_size1, ios::cur);
 
-					if (run2_start - read_offset1 < read_blk_size1)
+					if (number1_end - read_offset1 < read_blk_size1)
 					{
-						read_blk_size1 = (run2_start - read_offset1);
-						bufferRA.resize((run2_start - read_offset1) / sizeof(int));
+						read_blk_size1 = (number1_end - read_offset1);
+						bufferRA.resize((number1_end - read_offset1) / sizeof(int));
 					}
 
 					infile1.seekg(-read_blk_size1, ios::cur);
@@ -165,15 +165,15 @@ int main()
 			{
 				read_offset2 += read_blk_size2;
 
-				if (read_offset2 < run2_end)
+				if (read_offset2 < number2_end)
 				{
 
 					infile2.seekg(-read_blk_size2, ios::cur);
 
-					if (run2_end - read_offset2 < read_blk_size2)
+					if (number2_end - read_offset2 < read_blk_size2)
 					{
-						read_blk_size2 = (run2_end - read_offset2);
-						bufferRB.resize((run2_end - read_offset2) / sizeof(int));
+						read_blk_size2 = (number2_end - read_offset2);
+						bufferRB.resize((number2_end - read_offset2) / sizeof(int));
 					}
 					infile2.seekg(-read_blk_size2, ios::cur);
 					infile2.read((char *)&bufferRB[0], read_blk_size2);
@@ -191,7 +191,7 @@ int main()
 		}
 	}
 
-	if (read_offset1 == run2_start)
+	if (read_offset1 == number1_end)
 	{
 		int i;
 		for (i = p_read2; i < bufferRB.size(); ++i)
@@ -200,21 +200,21 @@ int main()
 			bufferWC[p_write++] = getNumber(bufferRB[i], 0, c);
 			if (p_write > bufferRB.size() - 1) break;
 		}
-		if (c == 1)	p_write == bufferWC.size() ? bufferWC.push_back(1) : bufferWC[p_write++] = 1;
+		//if (c == 1)	p_write == bufferWC.size() ? bufferWC.push_back(1) : bufferWC[p_write++] = 1;
 		
 
 		outfile.write((char *)&bufferWC[0], p_write * sizeof(int));
 		n3 += p_write;
 		p_write = 0;
 
-		for (int j = read_offset2 + read_blk_size2; j < run2_end; j += read_blk_size2)
+		for (int j = read_offset2 + read_blk_size2; j < number2_end; j += read_blk_size2)
 		{
 			infile2.seekg(-read_blk_size2, ios::cur);
-			if (run2_end - j < read_blk_size2)
+			if (number2_end - j < read_blk_size2)
 			{
-				read_blk_size2 = run2_end - j;
-				bufferRB.resize((run2_end - j) / sizeof(int));
-				bufferWC.resize((run2_end - j) / sizeof(int));
+				read_blk_size2 = number2_end - j;
+				bufferRB.resize((number2_end - j) / sizeof(int));
+				bufferWC.resize((number2_end - j) / sizeof(int));
 			}
 			infile2.seekg(-read_blk_size2, ios::cur);
 			infile2.read((char *)&bufferRB[0], read_blk_size2);
@@ -230,8 +230,14 @@ int main()
 			p_write = 0;
 		}
 
+		if (c == 1) 
+		{
+			outfile.write((char*)&c, sizeof(int));
+			n3++;
+		}
+
 	}
-	else if (read_offset2 == run2_end)
+	else if (read_offset2 == number2_end)
 	{
 		int i;
 		for (i = p_read1; i < bufferRA.size(); ++i)
@@ -240,7 +246,7 @@ int main()
 
 			if (p_write > bufferRA.size() - 1) break;
 		}
-		if (c == 1)	p_write == bufferWC.size() ? bufferWC.push_back(1) : bufferWC[p_write++] = 1;
+		//if (c == 1)	p_write == bufferWC.size() ? bufferWC.push_back(1) : bufferWC[p_write++] = 1;
 		
 
 		outfile.write((char *)&bufferWC[0], p_write * sizeof(int));
@@ -248,14 +254,14 @@ int main()
 		p_write = 0;
 
 
-		for (int j = read_offset1 + read_blk_size1; j < run2_start; j += read_blk_size1)
+		for (int j = read_offset1 + read_blk_size1; j < number1_end; j += read_blk_size1)
 		{
 			infile1.seekg(-read_blk_size1, ios::cur);
-			if (run2_start - j < read_blk_size1)
+			if (number1_end - j < read_blk_size1)
 			{
-				read_blk_size1 = run2_start - j;
-				bufferRA.resize((run2_start - j) / sizeof(int));
-				bufferWC.resize((run2_start - j) / sizeof(int));
+				read_blk_size1 = number1_end - j;
+				bufferRA.resize((number1_end - j) / sizeof(int));
+				bufferWC.resize((number1_end - j) / sizeof(int));
 			}
 			infile1.seekg(-read_blk_size1, ios::cur);
 			infile1.read((char *)&bufferRA[0], read_blk_size1);
@@ -271,6 +277,12 @@ int main()
 			outfile.write((char *)&bufferWC[0], bufferWC.size()*sizeof(int));
 			n3 += bufferWC.size();
 			p_write = 0;
+		}
+
+		if (c == 1)
+		{
+			outfile.write((char*)&c, sizeof(int));
+			n3++;
 		}
 	}
 
@@ -296,6 +308,7 @@ int main()
 void reverseResult(char* input_filename, char* output_filename)
 {
 
+	int new_blk_size = 2 * block_size_B;
 
 	ifstream infile(input_filename, ios::in | ios::binary);
 	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
@@ -303,25 +316,25 @@ void reverseResult(char* input_filename, char* output_filename)
 	infile.seekg(0, infile.end);
 	int N = infile.tellg() / sizeof(int);
 
-	int read_blk_size = 2 * block_size_B * sizeof(int);
+	int read_blk_size = new_blk_size * sizeof(int);
 
-	vector<int> bufferR(2 * block_size_B);
+	vector<int> bufferR(new_blk_size);
 
-	if (N < 2 * block_size_B)
+	if (N < new_blk_size)
 	{
 		read_blk_size = N * sizeof(int);
 		bufferR.resize(N);
 	}
 
-	int m = ceil((double)N / (2 * block_size_B));
+	int m = ceil((double)N / (new_blk_size));
 
 	for (int i = 0; i < m; i++)
 	{
 		
-		if (N - i * 2 * block_size_B < 2 * block_size_B)
+		if (N - i * new_blk_size < new_blk_size)
 		{
-			read_blk_size = (N - i * 2 * block_size_B) * sizeof(int);
-			bufferR.resize(N - i * 2 * block_size_B);
+			read_blk_size = (N - i * new_blk_size) * sizeof(int);
+			bufferR.resize(N - i * new_blk_size);
 		}
 
 		infile.seekg(-read_blk_size, ios::cur);
@@ -383,13 +396,15 @@ void coutFile_INT(string filename)
 void CreateTestFile()
 {
 
-	int n1 = 2;
-	int n2 = 9;
+	int n1 = 30;
+	int n2 = 1;
 
 	srand(static_cast<unsigned int>(time(NULL)));
-	//TODO: add pushback
 	vector<int> array1(n1);
 	vector<int> array2(n2);
+
+	//vector<int> array1{1,9,9};
+	//vector<int> array2{2};
 
 	for (int i = 0; i < n1; i++)
 	{
@@ -403,12 +418,12 @@ void CreateTestFile()
 
 	for (int i = 0; i < n1; i++)
 	{
-		cout<< array1[i]<<" ";
+		cout<< array1[i]<<"";
 	}
 	cout << endl;
 	for (int i = 0; i < n2; i++)
 	{
-		cout<<array2[i]<< " ";
+		cout<<array2[i]<< "";
 	}
 	cout << endl;
 	ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
