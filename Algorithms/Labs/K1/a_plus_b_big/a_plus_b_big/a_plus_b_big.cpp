@@ -5,6 +5,10 @@
 #include <vector>
 #include <ctime>
 #include <iomanip>
+#include <sstream>
+#include <string>
+#include <algorithm>
+#include <iterator> 
 
 using namespace std;
 
@@ -12,7 +16,7 @@ const int block_size_B = 2;
 const int init_offset = sizeof(int);
 
 void CreateTestFile();
-void coutFile_INT(string filename , int M);
+void coutFile_INT(string filename);
 int getNumber(int a, int b, int & c);
 void reverseResult(char* input_filename, char* output_filename);
 
@@ -196,6 +200,8 @@ int main()
 			bufferWC[p_write++] = getNumber(bufferRB[i], 0, c);
 			if (p_write > bufferRB.size() - 1) break;
 		}
+		if (c == 1)	p_write == bufferWC.size() ? bufferWC.push_back(1) : bufferWC[p_write++] = 1;
+		
 
 		outfile.write((char *)&bufferWC[0], p_write * sizeof(int));
 		n3 += p_write;
@@ -221,7 +227,9 @@ int main()
 			if (c == 1) bufferWC.push_back(1);
 			outfile.write((char *)&bufferWC[0], bufferWC.size() * sizeof(int));
 			n3 += bufferWC.size();
+			p_write = 0;
 		}
+
 	}
 	else if (read_offset2 == run2_end)
 	{
@@ -232,6 +240,8 @@ int main()
 
 			if (p_write > bufferRA.size() - 1) break;
 		}
+		if (c == 1)	p_write == bufferWC.size() ? bufferWC.push_back(1) : bufferWC[p_write++] = 1;
+		
 
 		outfile.write((char *)&bufferWC[0], p_write * sizeof(int));
 		n3 += p_write;
@@ -260,6 +270,7 @@ int main()
 
 			outfile.write((char *)&bufferWC[0], bufferWC.size()*sizeof(int));
 			n3 += bufferWC.size();
+			p_write = 0;
 		}
 	}
 
@@ -273,11 +284,9 @@ int main()
 	infile2.close();
 	outfile.close();
 
-	coutFile_INT("temp1.bin", 5);
-
 	reverseResult("temp1.bin", "output.bin");
 
-	coutFile_INT("output.bin", 5);
+	coutFile_INT("output.bin");
 
 	getchar();
 	return 0;
@@ -350,10 +359,12 @@ int getNumber(int a, int b, int & c)
 }
 
 
-void coutFile_INT(string filename , int M)
+void coutFile_INT(string filename)
 {
 	cout << endl << endl;
 	ifstream infile(filename, ios::in | ios::binary);
+	int M;
+	infile.read((char*)&M, init_offset);
 
 	vector<int> buffer(M);
 	infile.read((char *)&buffer[0], buffer.size() * sizeof(int));
@@ -361,7 +372,7 @@ void coutFile_INT(string filename , int M)
 
 	for (int i = 0; i < M; ++i)
 	{
-		cout << setiosflags(ios::fixed | ios::left) << setprecision(0) << buffer[i] << " ";
+		cout << setiosflags(ios::fixed | ios::left) << setprecision(0) << buffer[i] << "";
 	}
 	infile.close();
 
@@ -372,14 +383,34 @@ void coutFile_INT(string filename , int M)
 void CreateTestFile()
 {
 
-	int n1 = 3;
-	int n2 = 3;
+	int n1 = 2;
+	int n2 = 9;
 
 	srand(static_cast<unsigned int>(time(NULL)));
 	//TODO: add pushback
-	vector<int> array1{ 9,9,9 };
-	vector<int> array2{ 9,9,9 };
+	vector<int> array1(n1);
+	vector<int> array2(n2);
 
+	for (int i = 0; i < n1; i++)
+	{
+		array1[i] = rand() % 9 + 1;
+	}
+
+	for (int i = 0; i < n2; i++)
+	{
+		array2[i] = rand() % 9 + 1;
+	}
+
+	for (int i = 0; i < n1; i++)
+	{
+		cout<< array1[i]<<" ";
+	}
+	cout << endl;
+	for (int i = 0; i < n2; i++)
+	{
+		cout<<array2[i]<< " ";
+	}
+	cout << endl;
 	ofstream out("input.bin", ios::out | ios::binary | ios::trunc);
 
 	out.write((char *)&n1, sizeof(int));
@@ -390,6 +421,20 @@ void CreateTestFile()
 
 	out.write((char *)&array2[0], n2 * sizeof(int));
 
+	stringstream ss1;
+	copy(array1.begin(), array1.end(), ostream_iterator<int>(ss1, ""));
+	string str1 = ss1.str();
+
+
+	stringstream ss2;
+	copy(array2.begin(), array2.end(), ostream_iterator<int>(ss2, ""));
+	string str2 = ss2.str();
+
+
+	long long a = std::atoi(str1.c_str());
+	long long b = std::atoi(str2.c_str());
+	long long c = a + b;
+	cout << endl << c << endl;
 	out.close();
 	vector<int>().swap(array1);
 	vector<int>().swap(array2);
