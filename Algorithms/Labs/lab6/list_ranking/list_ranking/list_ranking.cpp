@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
@@ -9,9 +8,7 @@
 #include <map> 
 #include <string>
 
-
 using namespace std;
-
 
 const int block_size_M = 30 * 30;
 const int block_size_B = 10 * 10;

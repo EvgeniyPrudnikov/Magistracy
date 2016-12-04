@@ -76,7 +76,6 @@ int main()
 
 	while (read_offset1 < number1_end && read_offset2 < number2_end)
 	{
-
 		if (bufferRA[p_read1] + bufferRB[p_read2] + c >= 10)
 		{
 			bufferWC[p_write++] = (bufferRA[p_read1++] + bufferRB[p_read2++] + c) % 10;
@@ -88,7 +87,6 @@ int main()
 
 				if (read_offset1 < number1_end)
 				{
-
 					infile1.seekg(-read_blk_size1, ios::cur);
 
 					if (number1_end - read_offset1 < read_blk_size1)
@@ -136,7 +134,6 @@ int main()
 
 				if (read_offset1 < number1_end)
 				{
-
 					infile1.seekg(-read_blk_size1, ios::cur);
 
 					if (number1_end - read_offset1 < read_blk_size1)
@@ -159,7 +156,6 @@ int main()
 
 				if (read_offset2 < number2_end)
 				{
-
 					infile2.seekg(-read_blk_size2, ios::cur);
 
 					if (number2_end - read_offset2 < read_blk_size2)
@@ -224,7 +220,6 @@ int main()
 			outfile.write((char*)&c, sizeof(char));
 			n3++;
 		}
-
 	}
 	else if (read_offset2 == number2_end)
 	{
@@ -235,11 +230,9 @@ int main()
 			if (p_write > bufferRA.size() - 1) break;
 		}
 
-
 		outfile.write((char *)&bufferWC[0], p_write * sizeof(char));
 		n3 += p_write;
 		p_write = 0;
-
 
 		for (int j = read_offset1 + read_blk_size1; j < number1_end; j += read_blk_size1)
 		{
@@ -296,7 +289,7 @@ void reverseResult(char* input_filename, char* output_filename)
 	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
 
 	infile.seekg(0, infile.end);
-	int N = ((int)infile.tellg() - 4) / sizeof(char);
+	int N = ((int)infile.tellg() - init_offset) / sizeof(char);
 
 	outfile.write((char*)&N, init_offset);
 
@@ -316,7 +309,6 @@ void reverseResult(char* input_filename, char* output_filename)
 
 	for (int i = 0; i < m; i++)
 	{
-
 		if (N - i * new_blk_size < new_blk_size)
 		{
 			read_blk_size = (N - i * new_blk_size) * sizeof(char);
@@ -331,7 +323,6 @@ void reverseResult(char* input_filename, char* output_filename)
 
 		outfile.write((char *)&bufferR[0], read_blk_size);
 		infile.seekg(-read_blk_size, ios::cur);
-
 	}
 
 	vector<char>().swap(bufferR);
@@ -354,11 +345,6 @@ int getNumber(char a, char b, int & c)
 		result = a + b + c;
 		c = 0;
 	}
+	
 	return result;
 }
-
-
-
-
-
-

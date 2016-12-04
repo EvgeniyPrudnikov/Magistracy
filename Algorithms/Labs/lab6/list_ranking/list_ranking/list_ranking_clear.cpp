@@ -1,5 +1,4 @@
-
-//#include "stdafx.h"
+#include "stdafx.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -8,12 +7,10 @@
 #include <map> 
 #include <string>
 
-
 using namespace std;
 
-
-const int block_size_M = 30 * 30;
-const int block_size_B = 10 * 10;
+const int block_size_M = 40 * 40;
+const int block_size_B = 20 * 20;
 const int init_offset = sizeof(int);
 
 
@@ -62,7 +59,6 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 template <typename T1, typename T2>
 void Output(string input_filename, string output_filename);
 
-
 int main()
 {
 	int N;
@@ -72,6 +68,7 @@ int main()
 	ifstream infile("input.bin", ios::in | ios::binary);
 	infile.read(reinterpret_cast<char *>(&N), init_offset);
 	infile.close();
+	
 	N_down = N;
 	string i_filename;
 	int v = 1;
@@ -83,7 +80,6 @@ int main()
 		blk_size_M = N_down;
 		N_up = N_down;
 	}
-
 
 	while (N_down > blk_size_M)
 	{
@@ -117,9 +113,7 @@ int main()
 
 	while (N_up != N)
 	{
-
-		ExternalSort<long_two>("rnk.bin", "1.bin", 1);
-		ExternalSort<two>("del_" + to_string(v) + ".bin", "2.bin", 0);
+		ExternalSort<long_two>("rnk.bin", "1.bin", 1); ExternalSort<two>("del_" + to_string(v) + ".bin", "2.bin", 0);
 		N_up = JoinInsert<two, long_two>("1.bin", "2.bin", "rnk.bin");
 		v--;
 		remove("1.bin");
@@ -149,7 +143,7 @@ void Output(string input_filename, string output_filename)
 	int read_blk_size = block_size_M * sizeof(T1);
 	int write_blk_size = block_size_M * sizeof(T2);
 
-	int m = ceil(static_cast<double>(N) / block_size_M);
+	int m = ceil((double)N / block_size_M);
 
 	for (int i = 0; i < m; i++)
 	{
@@ -168,7 +162,6 @@ void Output(string input_filename, string output_filename)
 		{
 			bufferMw[j] = (int)bufferMr[j].data[1];
 		}
-
 		outfile.write((char *)&bufferMw[0], write_blk_size);
 	}
 
@@ -215,7 +208,6 @@ int JoinInsert(string  input_filename1, string  input_filename2, string  output_
 
 	for (int i = 0; i < m; i++)
 	{
-
 		if (N1 - i * block_size_file1 < block_size_file1)
 		{
 			read_blk_size1 = (N1 - i * block_size_file1) * sizeof(T2);
@@ -243,7 +235,6 @@ int JoinInsert(string  input_filename1, string  input_filename2, string  output_
 				read_blk_size2 = (N2 - i * block_size_file2) * sizeof(T1);
 				bufferMr2.resize(read_blk_size2 / sizeof(T1));
 			}
-
 			infile2.read((char *)&bufferMr2[0], read_blk_size2);
 			blk2_reads++;
 		}
@@ -254,7 +245,6 @@ int JoinInsert(string  input_filename1, string  input_filename2, string  output_
 			{
 				if (bufferMr1[p_read1].data[1] == bufferMr2[p_read2].data[0])
 				{
-
 					if (p_write == bufferMw.size())
 					{
 						outfile.write((char *)& bufferMw[0], write_blk_size);
@@ -275,6 +265,7 @@ int JoinInsert(string  input_filename1, string  input_filename2, string  output_
 
 					inserted_elems++;
 					if (inserted_elems == N2) continue;
+					
 					p_read2++;
 					if (p_read2 == bufferMr2.size())
 					{
@@ -283,7 +274,6 @@ int JoinInsert(string  input_filename1, string  input_filename2, string  output_
 							read_blk_size2 = (N2 - blk2_reads * block_size_file2) * sizeof(T1);
 							bufferMr2.resize(read_blk_size2 / sizeof(T1));
 						}
-
 						infile2.read((char *)&bufferMr2[0], read_blk_size2);
 						blk2_reads++;
 						p_read2 = 0;
@@ -291,7 +281,6 @@ int JoinInsert(string  input_filename1, string  input_filename2, string  output_
 				}
 				else
 				{
-
 					if (p_write == bufferMw.size())
 					{
 						outfile.write((char *)& bufferMw[0], write_blk_size);
@@ -310,6 +299,7 @@ int JoinInsert(string  input_filename1, string  input_filename2, string  output_
 				N3 += p_write;
 				p_write = 0;
 			}
+			
 			for (int u = p_write; u < bufferMr1.size(); u++)
 			{
 				bufferMw[u] = { 2 * bufferMr1[u].data[0] , bufferMr1[u].data[1] };
@@ -329,9 +319,8 @@ int JoinInsert(string  input_filename1, string  input_filename2, string  output_
 	vector<T1>().swap(bufferMr2);
 	vector<T2>().swap(bufferMw);
 
-
 	outfile.seekp(0, ios::beg);
-	outfile.write(reinterpret_cast<char *>(&N3), init_offset);
+	outfile.write((char *)&N3, init_offset);
 	outfile.close();
 	infile1.close();
 	infile2.close();
@@ -342,7 +331,6 @@ int JoinInsert(string  input_filename1, string  input_filename2, string  output_
 template<typename T1, typename T2>
 void Rank(string input_filename, string output_filename)
 {
-
 	int N;
 
 	ifstream infile(input_filename, ios::in | ios::binary);
@@ -352,12 +340,10 @@ void Rank(string input_filename, string output_filename)
 	vector<T2> bufferMw;
 	map<int, int> map_buffer;
 
-
 	infile.read((char*)&bufferMr[0], N * sizeof(T1));
 
 	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
-	outfile.write(reinterpret_cast<char*>(&(N)), init_offset);
-
+	outfile.write((char*)&N, init_offset);
 
 	int val_next = 0;
 	int key_next = 0;
@@ -366,11 +352,9 @@ void Rank(string input_filename, string output_filename)
 	val_next = bufferMr[0].data[0];
 	bufferMw.push_back({ j++, val_next });
 
-
 	val_next = bufferMr[0].data[1];
 	key_next = val_next;
-	bufferMw.push_back({ j++,val_next });
-
+	bufferMw.push_back({ j++, val_next });
 
 	for (auto const& x : bufferMr)
 	{
@@ -380,12 +364,11 @@ void Rank(string input_filename, string output_filename)
 	while (j <= N)
 	{
 		val_next = map_buffer[key_next];
-		bufferMw.push_back({ j++,val_next });
+		bufferMw.push_back({ j++, val_next });
 		key_next = val_next;
 	}
 
 	outfile.write((char *)& bufferMw[0], N * sizeof(T2));
-
 
 	vector<T1>().swap(bufferMr);
 	vector<T2>().swap(bufferMw);
@@ -457,7 +440,6 @@ int JoinDel(string input_filename1, string input_filename2, string output_filena
 			infile2.read((char *)&bufferMr2[0], read_blk_size2);
 		}
 
-
 		if (deleted_elems < N2)
 		{
 			for (p_read1 = 0; p_read1 < bufferMr1.size(); ++p_read1)
@@ -514,7 +496,6 @@ int JoinDel(string input_filename1, string input_filename2, string output_filena
 		N3 += p_write;
 	}
 
-
 	outfile.seekp(0, ios::beg);
 	outfile.write(reinterpret_cast<char *>(&N3), init_offset);
 	outfile.close();
@@ -534,7 +515,7 @@ void createDelList(string input_filename1, string input_filename2, string output
 {
 	int del_cnt = 0;
 	int N;
-	int cnt_f2 = 0;
+	int N2 = 0;
 	vector<T1> bufferMr1(block_size_B);
 	vector<T1> bufferMr2(block_size_B);
 	vector<T2> bufferMw1(block_size_B);
@@ -547,6 +528,7 @@ void createDelList(string input_filename1, string input_filename2, string output
 
 	ifstream infile1(input_filename1, ios::in | ios::binary);
 	ifstream infile2(input_filename2, ios::in | ios::binary);
+	
 	infile1.read(reinterpret_cast<char *>(&N), init_offset);
 	infile2.seekg(init_offset, ios::beg);
 
@@ -559,12 +541,11 @@ void createDelList(string input_filename1, string input_filename2, string output
 	int m = ceil((double)N / block_size_B);
 
 	int p_write2 = 0;
+	
 	for (int i = 0; i < m; ++i)
 	{
-
 		if (N - i * block_size_B < block_size_B)
 		{
-
 			if (p_write2 > 0 && p_write2 <= bufferMw2.size())
 			{
 				outfile2.write((char *)&bufferMw2[0], p_write2 * sizeof(T2));
@@ -587,7 +568,6 @@ void createDelList(string input_filename1, string input_filename2, string output
 		infile1.read((char *)&bufferMr1[0], read_blk_size1);
 		infile2.read((char *)&bufferMr2[0], read_blk_size2);
 
-
 		for (int p_read_1_2 = 0; p_read_1_2 < bufferMr1.size(); ++p_read_1_2)
 		{
 			if (bufferMr1[p_read_1_2].data[0] == 0 && bufferMr2[p_read_1_2].data[0] == 1)
@@ -597,7 +577,7 @@ void createDelList(string input_filename1, string input_filename2, string output
 				bufferMw1[p_read_1_2] = { bufferMr1[p_read_1_2].data[1], bufferMr2[p_read_1_2].data[2] };
 				bufferMw2[p_write2] = { bufferMr1[p_read_1_2].data[1], bufferMr1[p_read_1_2].data[2] };
 
-				cnt_f2++;
+				N2++;
 				p_write2++;
 				if (p_write2 == bufferMw2.size())
 				{
@@ -609,7 +589,6 @@ void createDelList(string input_filename1, string input_filename2, string output
 			{
 				bufferMw1[p_read_1_2] = { bufferMr1[p_read_1_2].data[1], bufferMr1[p_read_1_2].data[2] };
 			}
-
 		}
 		outfile1.write((char *)&bufferMw1[0], write_blk_size1);
 	}
@@ -619,7 +598,6 @@ void createDelList(string input_filename1, string input_filename2, string output
 		outfile2.write((char *)&bufferMw2[0], p_write2 * sizeof(T2));
 	}
 
-
 	vector<T1>().swap(bufferMr1);
 	vector<T1>().swap(bufferMr2);
 	vector<T2>().swap(bufferMw1);
@@ -628,8 +606,8 @@ void createDelList(string input_filename1, string input_filename2, string output
 	outfile1.seekp(0, ios::beg);
 	outfile2.seekp(0, ios::beg);
 
-	outfile1.write(reinterpret_cast<char *>(&N), init_offset);
-	outfile2.write(reinterpret_cast<char *>(&cnt_f2), init_offset);
+	outfile1.write((char *)&N, init_offset);
+	outfile2.write((char *)&N2, init_offset);
 
 	infile1.close();
 	infile2.close();
@@ -646,10 +624,9 @@ void RandAi(string input_filename, string output_filename)
 	ifstream infile(input_filename, ios::in | ios::binary);
 	ofstream outfile(output_filename, ios::out | ios::binary | ios::trunc);
 
+	infile.read((char *)&N, init_offset);
 
-	infile.read(reinterpret_cast<char *>(&N), init_offset);
-
-	outfile.write(reinterpret_cast<char *>(&N), init_offset);
+	outfile.write((char *)&N, init_offset);
 
 	vector<T1> bufferMr(block_size_M);
 	vector<T2> bufferMw(block_size_M);
@@ -661,7 +638,6 @@ void RandAi(string input_filename, string output_filename)
 
 	for (int i = 0; i < m; i++)
 	{
-
 		if (N - i * block_size_M < block_size_M)
 		{
 			read_blk_size = (N - i * block_size_M) * sizeof(T1);
@@ -674,15 +650,13 @@ void RandAi(string input_filename, string output_filename)
 			bufferMw.resize(write_blk_size / sizeof(T2));
 		}
 
-
 		infile.read((char *)&bufferMr[0], read_blk_size);
 
 		srand(time(NULL));
 		for (int j = 0; j < bufferMw.size(); j++)
 		{
-			bufferMw[j] = { (i == 0 && j == 0) ? 1 : rand() % 2 , bufferMr[j].data[0],bufferMr[j].data[1] };
+			bufferMw[j] = { (i == 0 && j == 0) ? 1 : rand() % 2, bufferMr[j].data[0], bufferMr[j].data[1] };
 		}
-
 		outfile.write((char *)&bufferMw[0], write_blk_size);
 	}
 
@@ -701,9 +675,8 @@ void ExternalSort(string input_filename, string output_filename, int coordinate)
 	ifstream infile(input_filename, ios::in | ios::binary);
 	ofstream tempfile("temp1.bin", ios::out | ios::binary | ofstream::trunc);
 
-
-	infile.read(reinterpret_cast<char *>(&N), init_offset);
-	tempfile.write(reinterpret_cast<char *>(&N), init_offset);
+	infile.read((char *)&N, init_offset);
+	tempfile.write((char *)&N, init_offset);
 
 	//======================================================================================================================
 	// Phase 1
@@ -725,7 +698,6 @@ void ExternalSort(string input_filename, string output_filename, int coordinate)
 
 		sort(bufferM.begin(), bufferM.end(), [coordinate](T const &a, T const &b) -> bool
 		{ return a.data[coordinate] < b.data[coordinate]; });
-
 		tempfile.write((char *)&bufferM[0], read_size_M);
 	}
 
@@ -748,7 +720,6 @@ void ExternalSort(string input_filename, string output_filename, int coordinate)
 
 		int levels = (int)ceil(log2(runs));
 
-
 		for (int i = 0; i < levels; ++i)
 		{
 			if (i % 2 == 0)
@@ -764,7 +735,7 @@ void ExternalSort(string input_filename, string output_filename, int coordinate)
 				outfile1.open("temp1.bin", ios::out | ios::binary | ios::trunc);
 			}
 
-			outfile1.write(reinterpret_cast<char *>(&N), init_offset);
+			outfile1.write((char *)&N, init_offset);
 
 			int end_of_file = N * sizeof(T) + init_offset;
 
@@ -800,13 +771,10 @@ void ExternalSort(string input_filename, string output_filename, int coordinate)
 
 		levels % 2 == 0 ? rename("temp1.bin", output_filename.c_str()) : rename("temp2.bin", output_filename.c_str());
 		levels % 2 == 0 ? remove("temp2.bin") : remove("temp1.bin");
-		//coutFile<T>((char *)output_filename);
-
 	}
 	else
 	{
 		rename("temp1.bin", output_filename.c_str());
-		//coutFile<T>((char *)output_filename);
 	}
 }
 
@@ -814,8 +782,6 @@ template<typename T>
 void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1_start, int run2_start, int run2_end,
 	int coordinate)
 {
-
-
 	int blk_size_B1 = block_size_B;
 	int blk_size_B2 = block_size_B;
 
@@ -825,13 +791,11 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 	int read_blk_offset1 = run1_start;
 	int read_blk_offset2 = run2_start;
 
-
 	if (run2_end - read_blk_offset2 < read_blk_size2)
 	{
 		blk_size_B2 = (run2_end - read_blk_offset2) / sizeof(T);
 		read_blk_size2 = (run2_end - read_blk_offset2);
 	}
-
 
 	vector<T> bufferBr1(blk_size_B1);
 	vector<T> bufferBr2(blk_size_B2);
@@ -839,7 +803,6 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 
 	infile1.seekg(read_blk_offset1, ios::beg);
 	infile1.read((char *)&bufferBr1[0], read_blk_size1);
-
 
 	infile2.seekg(read_blk_offset2, ios::beg);
 	infile2.read((char *)&bufferBr2[0], read_blk_size2);
@@ -849,18 +812,15 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 
 	while (read_blk_offset1 < run2_start && read_blk_offset2 < run2_end)
 	{
-
 		if (run2_end - read_blk_offset2 < read_blk_size2)
 		{
 			blk_size_B2 = (run2_end - read_blk_offset2) / sizeof(T);
 			read_blk_size2 = (run2_end - read_blk_offset2);
 		}
 
-
 		if (bufferBr1[p1].data[coordinate] < bufferBr2[p2].data[coordinate])
 		{
-			bufferBw[po] = bufferBr1[p1];
-			p1++;
+			bufferBw[po++] = bufferBr1[p1++];
 
 			if (p1 > blk_size_B1 - 1)
 			{
@@ -875,8 +835,7 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 		}
 		else
 		{
-			bufferBw[po] = bufferBr2[p2];
-			p2++;
+			bufferBw[po++] = bufferBr2[p2++];
 
 			if (p2 > blk_size_B2 - 1)
 			{
@@ -890,7 +849,6 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 			}
 		}
 
-		po++;
 		if (po > blk_size_B1 - 1)
 		{
 			outfile.write((char *)&bufferBw[0], read_blk_size1);
@@ -898,14 +856,12 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 		}
 	}
 
-
 	if (read_blk_offset1 == run2_start)
 	{
 		int i;
 		for (i = p2; i < blk_size_B2; ++i)
 		{
-			bufferBw[po] = bufferBr2[i];
-			po++;
+			bufferBw[po++] = bufferBr2[i];
 			if (po > blk_size_B1 - 1) break;
 		}
 		outfile.write((char *)&bufferBw[0], po * sizeof(T));
@@ -930,8 +886,7 @@ void mergeRuns(ifstream &infile1, ifstream &infile2, ofstream &outfile, int run1
 		int i;
 		for (i = p1; i < blk_size_B1; ++i)
 		{
-			bufferBw[po] = bufferBr1[i];
-			po++;
+			bufferBw[po++] = bufferBr1[i];
 			if (po > blk_size_B1 - 1) break;
 		}
 
