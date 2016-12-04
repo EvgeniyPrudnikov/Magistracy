@@ -2,10 +2,11 @@ import time
 
 
 class Timer:
-    def __init__(self):
-        self.start = time.time()
+#    def __init__(self):
+
 
     def __enter__(self):
+        self.start = time.time()
         return self.start
 
     def __exit__(self, type, value, traceback):
