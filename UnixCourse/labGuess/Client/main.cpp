@@ -7,11 +7,12 @@
 #include <sys/un.h>
 #include <iostream>
 #include <unistd.h>
+#include <ctime>
 
 int main(int argc, char *argv[])
 {
 
-    if (argc > 2) std::cerr << "Wrong number of arguments!" << std::endl;
+    if (argc != 2) std::cerr << "Wrong number of arguments!\nUsage: ./guess-client UNIX_SOCKET_PATH\n";
 
     const char *SOCK_PATH = argv[1];
     char response;
@@ -19,7 +20,9 @@ int main(int argc, char *argv[])
 
     int sock, t, len;
     struct sockaddr_un remote;
-    int number = rand() % 1000000000;
+    int prev_number = 0;
+    srand(time(NULL));
+    int number = 100;//rand() % 1000000000;
 
     if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
     {
@@ -43,7 +46,8 @@ int main(int argc, char *argv[])
     while (!guess)
     {
 
-        if (send(sock, &number, sizeof(int), 0) == -1)
+        int num_for_send = __builtin_bswap32(number);
+        if (send(sock, &num_for_send, sizeof(int), 0) == -1)
         {
             perror("send");
             exit(1);
@@ -53,11 +57,15 @@ int main(int argc, char *argv[])
         {
             if (response == '>')
             {
-                number /= 2;
+                prev_number = number;
+                number *= 2;
+                number =( number + prev_number)*2;
 
             } else if (response == '<')
             {
-                number *= 2;
+                prev_number = number;
+                number/=2;
+                number = (number + prev_number)/2;
 
             } else
             {
