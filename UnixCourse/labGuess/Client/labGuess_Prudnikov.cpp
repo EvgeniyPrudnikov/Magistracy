@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
             return 2;
         }
     }
-
+    
     std::cout<<number<<std::endl;
 
     std::cerr<<"Guess!\nClosing connection!"<<std::endl;
