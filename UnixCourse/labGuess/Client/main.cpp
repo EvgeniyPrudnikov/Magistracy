@@ -8,6 +8,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <ctime>
+#include <arpa/inet.h>
 
 int main(int argc, char *argv[])
 {
@@ -25,8 +26,8 @@ int main(int argc, char *argv[])
     int sock, t, len;
     struct sockaddr_un remote;
     //srand(time(NULL));
-    int start = 0;
-    int end = 1000000000;
+    int start = -1;
+    int end = 1000000001;
     int number = 500000000;// rand()%1000000001;
 
     if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
@@ -43,6 +44,7 @@ int main(int argc, char *argv[])
     if (connect(sock, (struct sockaddr *) &remote, len) == -1)
     {
         perror("connect");
+        close(sock);
         return 2;
     }
 
@@ -50,10 +52,11 @@ int main(int argc, char *argv[])
 
     while (!guess)
     {
-        int num_for_send = __builtin_bswap32(number);
+        int num_for_send = htonl((uint32_t) number);
         if (send(sock, &num_for_send, sizeof(int), 0) == -1)
         {
             perror("send");
+            close(sock);
             return 2;
         }
 
@@ -78,13 +81,15 @@ int main(int argc, char *argv[])
         {
             if (t < 0) perror("recv");
             else std::cerr << "Server closed connection" << std::endl;
+
+            close(sock);
             return 2;
         }
     }
 
-    std::cout<<number<<std::endl;
+    std::cout << number << std::endl;
 
-    std::cerr<<"Guess!\nClosing connection!"<<std::endl;
+    std::cerr << "Guess!\nClosing connection!" << std::endl;
     close(sock);
 
     return 0;
