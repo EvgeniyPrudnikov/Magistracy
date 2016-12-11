@@ -25,10 +25,10 @@ int main(int argc, char *argv[])
 
     int sock, t, len;
     struct sockaddr_un remote;
-    //srand(time(NULL));
+
     int start = -1;
     int end = 1000000001;
-    int number = 500000000;// rand()%1000000001;
+    int number = 500000000;
 
     if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
     {
