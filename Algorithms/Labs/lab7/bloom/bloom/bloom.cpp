@@ -150,7 +150,6 @@ void MurmurHash3_x64_128(const void * key, const int len, const uint32_t seed, v
 struct BloomFilter 
 {
 	BloomFilter(uint64_t size, uint8_t numHashes);
-
 	void add(const char *data);
 	bool possiblyContains(const char *data) const;
 
@@ -159,7 +158,7 @@ private:
 	vector<bool> m_bits;
 };
 
-BloomFilter::BloomFilter(uint64_t size, uint8_t numHashes)	: m_bits(size),	m_numHashes(numHashes) {}
+BloomFilter::BloomFilter(uint64_t size, uint8_t numHashes) : m_bits(size), m_numHashes(numHashes) {}
 
 array<uint64_t, 2> myhash(const char *data) 
 {
@@ -169,27 +168,28 @@ array<uint64_t, 2> myhash(const char *data)
 	return hashValue;
 }
 
-inline uint64_t nthHash(uint8_t n,	uint64_t hashA,	uint64_t hashB,	uint64_t filterSize) 
+inline uint64_t nthHash(uint8_t n, uint64_t hashA, uint64_t hashB, uint64_t filterSize)
 {
 	return (hashA + n * hashB) % filterSize;
 }
 
-void BloomFilter::add(const char *data) 
+void BloomFilter::add(const char *data)
 {
 	auto hashValues = myhash(data);
 
-	for (int n = 0; n < m_numHashes; n++) 
+	for (int n = 0; n < m_numHashes; n++)
 	{
 		m_bits[nthHash(n, hashValues[0], hashValues[1], m_bits.size())] = true;
 	}
 }
 
-bool BloomFilter::possiblyContains(const char *data) const 
+bool BloomFilter::possiblyContains(const char *data) const
 {
 	auto hashValues = myhash(data);
 
 	for (int n = 0; n < m_numHashes; n++) {
-		if (!m_bits[nthHash(n, hashValues[0], hashValues[1], m_bits.size())]) {
+		if (!m_bits[nthHash(n, hashValues[0], hashValues[1], m_bits.size())]) 
+		{
 			return false;
 		}
 	}
