@@ -5,13 +5,13 @@
 
 using namespace std;
 
-const int N1 = 10;
-const int N2 = 10;
-
 const int block_size = 2;
 
 int main(int argc, char** argv)
 {
+	int N1 = atoi(argv[1]);
+	int N2 = atoi(argv[2]);
+
 	int num_of_procs;
 	int proc_rank;
 	MPI_Status stat;
@@ -99,7 +99,6 @@ int main(int argc, char** argv)
 			printf("\n");
 		}
 		printf("\n");
-
 	}
 	else
 	{
@@ -111,7 +110,6 @@ int main(int argc, char** argv)
 
 			for (int i = 0; i < rows_per_p; i++)
 			{
-
 				for (int j = k*block_size, c = 0; j < (k + 1)*block_size, c < block_size; j++, c++)
 				{
 					if (i == 0)
@@ -125,7 +123,6 @@ int main(int argc, char** argv)
 					}
 				}
 			}
-
 			MPI_Send(buff_send, block_size, MPI_INT, proc_rank + 1, k, MPI_COMM_WORLD/*, &req*/);
 		}
 
@@ -139,8 +136,6 @@ int main(int argc, char** argv)
 		}
 		printf("\n");
 	}
-
-
 	MPI_Finalize();
 	return 0;
 }
