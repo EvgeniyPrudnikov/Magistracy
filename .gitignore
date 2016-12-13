@@ -6,6 +6,13 @@
 
 # User-specific files
 
+
+MPI_Debug
+
+*.exe
+
+*.tlog
+
 *.bin
 
 *.suo
