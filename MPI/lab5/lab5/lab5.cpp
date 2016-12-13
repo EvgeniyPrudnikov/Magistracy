@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	int **p_tape = (int **)calloc(rows_per_p, sizeof(int));
 	if (!p_tape)
 	{
-		printf("bad allocation");
+		printf("bad alloc");
 		return 2;
 	}
 	for (int i = 0; i < rows_per_p; i++)
@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 
 		if (!p_tape[i])
 		{
-			printf("bad allocation");
+			printf("bad alloc");
 			return 2;
 		}
 	}
@@ -48,14 +48,11 @@ int main(int argc, char** argv)
 		{
 			for (int i = 1; i < rows_per_p; i++)
 			{
-				int c = 0;
-				for (int j = k*block_size; j < (k + 1)*block_size; j++)
+				for (int j = k*block_size, c = 0; j < (k + 1)*block_size, c < block_size; j++, c++)
 				{
 					p_tape[i][j] = p_tape[i - 1][j] + 1;
 					if (i == rows_per_p - 1) buff_send[c] = p_tape[i][j];
-					c++;
 				}
-
 			}
 			MPI_Send(buff_send, block_size, MPI_INT, proc_rank + 1, k, MPI_COMM_WORLD /*, &req*/);
 		}
@@ -76,11 +73,10 @@ int main(int argc, char** argv)
 		{
 			int buff_res[block_size];
 			MPI_Recv(buff_res, block_size, MPI_INT, proc_rank - 1, k, MPI_COMM_WORLD, &stat);
-			
+
 			for (int i = 0; i < rows_per_p; i++)
 			{
-				int c = 0;
-				for (int j = k*block_size; j < (k + 1)*block_size; j++)
+				for (int j = k*block_size, c = 0; j < (k + 1)*block_size, c < block_size; j++, c++)
 				{
 					if (i == 0)
 					{
@@ -90,7 +86,6 @@ int main(int argc, char** argv)
 					{
 						p_tape[i][j] = p_tape[i - 1][j] + 1;
 					}
-					c++;
 				}
 			}
 		}
@@ -113,11 +108,11 @@ int main(int argc, char** argv)
 			int buff_res[block_size];
 			int buff_send[block_size];
 			MPI_Recv(buff_res, block_size, MPI_INT, proc_rank - 1, k, MPI_COMM_WORLD, &stat);
-			
+
 			for (int i = 0; i < rows_per_p; i++)
 			{
-				int c = 0;
-				for (int j = k*block_size; j < (k + 1)*block_size; j++)
+
+				for (int j = k*block_size, c = 0; j < (k + 1)*block_size, c < block_size; j++, c++)
 				{
 					if (i == 0)
 					{
@@ -128,7 +123,6 @@ int main(int argc, char** argv)
 						p_tape[i][j] = p_tape[i - 1][j] + 1;
 						if (i == rows_per_p - 1) buff_send[c] = p_tape[i][j];
 					}
-					c++;
 				}
 			}
 
@@ -145,6 +139,8 @@ int main(int argc, char** argv)
 		}
 		printf("\n");
 	}
+
+
 	MPI_Finalize();
 	return 0;
 }
