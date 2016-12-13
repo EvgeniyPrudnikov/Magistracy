@@ -43,9 +43,11 @@ int main(int argc, char** argv)
 
 	if (proc_rank == 0)
 	{
-		int buff_send[block_size];
+		
 		for (int k = 0; k < num_of_blk_per_p; k++)
 		{
+			int buff_send[block_size];
+
 			for (int i = 1; i < rows_per_p; i++)
 			{
 				for (int j = k*block_size, c = 0; j < (k + 1)*block_size, c < block_size; j++, c++)
