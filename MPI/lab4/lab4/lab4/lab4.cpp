@@ -1,39 +1,37 @@
-#include <iostream>
-#include "mpi.h"
+#include <mpi.h>
 #include <stdio.h>
 
-int main(int argc, char** argv)
-{
-	int rank, size;
+int main(int argc, char** argv) {
+	// Initialize the MPI environment
+	MPI_Init(&argc, &argv);
 
-	MPI_Init(&argc, &argv);						/* starts MPI */
+	// Get the number of processes
+	int world_size;
+	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank);        /* get current process id */
-	MPI_Comm_size(MPI_COMM_WORLD, &size);        /* get number of processes */
+	// Get the rank of the process
+	int world_rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
 	MPI_Status stat;
 
-	printf("lol");
-
-	if (rank == 0)
+	if (world_rank == 0)
 	{
-		printf("from 0");
-		for (int i = 1; i < size; i++)
+		for (int i = 1; i < world_size; i++)
 		{
-			char buf[50];
-			//MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &stat);
-			MPI_Recv(buf, 50, MPI_CHAR, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &stat);
+			MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &stat);
+			int n;
+			MPI_Get_count(&stat, MPI_CHAR, &n);
+			char* buf = new char [n];
+			MPI_Recv(buf, n, MPI_CHAR, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &stat);
 			printf(buf);
 		}
 	}
-	else 
+	else
 	{
-		for (int i = 1; i < size; i++)
-		{
-			char buf[25];
-			int len = sprintf(buf, "Hello from %d", i);
-			MPI_Send(buf, len + 1, MPI_CHAR, 0, i, MPI_COMM_WORLD);
-			printf("sended from %d", i);
-		}
+		char buf[25];
+		int len = sprintf(buf, "Hello from %d\n", world_rank);
+		MPI_Send(buf, len + 1, MPI_CHAR, 0, world_rank, MPI_COMM_WORLD);
 	}
 
 	MPI_Finalize();
