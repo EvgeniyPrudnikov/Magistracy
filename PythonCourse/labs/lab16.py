@@ -19,5 +19,5 @@ def my_xrange(start, stop=None, step=None):
             x += x_step
 
 
-print list(my_xrange(10, 0, -1))
-print list(xrange(10, 0, -1))
+print list(my_xrange(10, 0, 0))
+print list(xrange(10, 0, 0))
