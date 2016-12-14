@@ -1,4 +1,5 @@
 def compress(lst):
+    assert len(lst) > 0, 'sequence is empty'
     el_cnt = 1
     for i in xrange(len(lst) - 1):
         if lst[i + 1] == lst[i]:
@@ -12,17 +13,18 @@ def compress(lst):
 
 
 def decompress(lst):
+    assert len(lst) > 0, 'sequence is empty'
     el_cnt = 1
     for i in xrange(len(lst)):
         if i % 2 == 0:
             el_cnt = lst[i]
-            assert isinstance(el_cnt, int), 'Wrong sequence!'
+            assert isinstance(el_cnt, int), 'wrong sequence!'
         else:
             for j in xrange(el_cnt):
                 yield lst[i]
 
 
-lol = ["hi", 'q', 'q', 'q', [1, 2], 3, 3, 3, 3, 3, 23, 'lol', 'lol', 'lol']
+lol = []
 
 lol2 = list(compress(lol))
 
