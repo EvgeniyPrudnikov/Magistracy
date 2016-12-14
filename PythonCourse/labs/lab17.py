@@ -1,6 +1,5 @@
 def compress(lst):
     el_cnt = 1
-
     for i in xrange(len(lst) - 1):
         if lst[i + 1] == lst[i]:
             el_cnt += 1
