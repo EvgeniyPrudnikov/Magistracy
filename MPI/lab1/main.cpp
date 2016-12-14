@@ -37,8 +37,6 @@ int main(int argc, char *argv[]) {
         left = a + procNum * cntStepsPerThread;
         right = (a + (procNum + 1) * cntStepsPerThread < b) ? a + (procNum + 1) * cntStepsPerThread : b;
 
-        // создаем новый процесс и для child делаем break для дальнешего подсчета с границами left и right
-        // parent в свою очередь, продолжает работу по созданию child процессов в цикле
         pid = fork();
         if (pid < 0 )
         {
@@ -52,8 +50,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (pid == 0)
-    { // Если находимся в child
-
+    {
         close(pipefdls[0]);
 
         double sum = 0.;
@@ -63,19 +60,15 @@ int main(int argc, char *argv[]) {
             sum += step * (i + step / 2) * (i + step / 2);
         }
 
-        //пишем в пайп
         write(pipefdls[1], &sum, sizeof(double));
 
     } else
     {
-        // Если находимся в parent
-
         close(pipefdls[1]);
 
         double singleResult;
         double result = 0;
 
-        //Читаем с пайпа
         for (int i = 0; i < numberOfProcesses; i++)
         {
             read(pipefdls[0], &singleResult, sizeof(double));
