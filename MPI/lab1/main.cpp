@@ -51,7 +51,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (pid == 0) { // Если находимся в child
+    if (pid == 0)
+    { // Если находимся в child
 
         close(pipefdls[0]);
 
