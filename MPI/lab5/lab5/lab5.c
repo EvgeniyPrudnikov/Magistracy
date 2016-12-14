@@ -1,9 +1,7 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
 
-using namespace std;
 
 const int block_size = 2;
 
@@ -42,8 +40,7 @@ int main(int argc, char** argv)
 	}
 
 	if (proc_rank == 0)
-	{
-		
+    {
 		for (int k = 0; k < num_of_blk_per_p; k++)
 		{
 			int buff_send[block_size];
