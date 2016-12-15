@@ -1,0 +1,78 @@
+# --------------------------------------------------------------------------------
+# fastcgi1
+# --------------------------------------------------------------------------------
+...
+<daemon>
+    <logger component="daemon-logger"/>
+    <endpoint>
+        <backlog>128</backlog>
+        <socket>/tmp/fastcgi_daemon1.sock</socket>
+        <threads>1</threads>
+    </endpoint>
+    <pidfile>/tmp/fastcgi_daemon1.pid</pidfile>
+    <monitor_port>20011</monitor_port>
+</daemon>
+...
+# --------------------------------------------------------------------------------
+# fastcgi2
+# --------------------------------------------------------------------------------
+...
+<daemon>
+    <logger component="daemon-logger"/>
+    <endpoint>
+        <backlog>128</backlog>
+        <socket>/tmp/fastcgi_daemon2.sock</socket>
+        <threads>1</threads>
+    </endpoint>
+    <pidfile>/tmp/fastcgi_daemon2.pid</pidfile>
+    <monitor_port>20012</monitor_port>
+</daemon>
+...
+
+# --------------------------------------------------------------------------------
+# nginx
+# --------------------------------------------------------------------------------
+
+# --- http example ------------------------------
+
+http://localhost:port/...
+
+# -----------------------------------------------
+
+server {
+  listen 80;
+
+  location / {
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
+    fastcgi_pass unix:/tmp/fastcgi_daemon1.sock;
+  }
+}
+
+server {
+  listen 2564;
+
+  location / {
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
+    fastcgi_pass unix:/tmp/fastcgi_daemon2.sock;
+  }
+}
+
+# --------------------------------------------------------------------------------
+# mongodb
+# --------------------------------------------------------------------------------
+
+# network interfaces
+net:
+  port: 27017
+  bindIp: 127.0.0.1
+
+# --------------------------------------------------------------------------------
+# mongodb2
+# --------------------------------------------------------------------------------
+
+# network interfaces
+net:
+  port: 27018
+  bindIp: 127.0.0.1
