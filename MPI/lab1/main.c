@@ -1,7 +1,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
-#include <iostream>
+#include <stdio.h>
 
 int a = 3;
 int b = 15;
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
             result += singleResult;
         }
 
-        std::cout << result << std::endl;
+        printf("%f", result);
         wait(NULL);
     }
 
