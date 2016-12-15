@@ -15,21 +15,21 @@ int main() {
     if (shmid == -1)
     {
         fprintf(stderr, "shmget failed\n");
-        exit(1);
+        return 1;
     }
 
     void *sharedMemory = shmat(shmid, NULL, 0);
     if (sharedMemory == NULL)
     {
         fprintf(stderr, "shmat failed\n");
-        exit(1);
+        
     }
 
     int semId = semget((key_t) 123, 2, 0666);
     if (semId == -1)
     {
         fprintf(stderr, "semget failed\n");
-        exit(1);
+        return 1;
     }
 
     struct sembuf operations[2];
@@ -49,7 +49,7 @@ int main() {
         printf("Waiting for a server.\n");
         if (semop(semId, operations, 2) == -1) {
             fprintf(stderr, "semop failed\n");
-            exit(1);
+            return 1;
         }
 
         struct shared_data *sharedData = (struct shared_data *) sharedMemory;

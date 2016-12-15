@@ -16,14 +16,14 @@ int main() {
     if (shmid == -1)
     {
         fprintf(stderr, "shmget failed\n");
-        exit(1);
+        return 1;
     }
 
     void *sharedMemory = shmat(shmid, NULL, 0);
     if (sharedMemory == NULL)
     {
         fprintf(stderr, "shmat failed\n");
-        exit(1);
+        return 1;
     }
 
     // create sems
@@ -31,19 +31,19 @@ int main() {
     if (semId == -1)
     {
         fprintf(stderr, "semget failed\n");
-        exit(1);
+        return 1;
     }
 
     // init sems
     if(semctl( semId, 0, SETVAL, 0) == -1)
     {
         fprintf(stderr, "semctl failed for 0 sem\n");
-        exit(1);
+        return 1;
     }
     if(semctl( semId, 1, SETVAL, 0) == -1)
     {
         fprintf(stderr, "semctl failed for 1 sem\n");
-        exit(1);
+        return 1;
     }
 
     struct shared_data *sharedData = (struct shared_data *)sharedMemory;
