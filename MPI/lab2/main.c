@@ -1,10 +1,9 @@
-
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-long a = 3;
-long b = 15;
+long a = -5;
+long b = 5;
 double step;
 double result;
 
@@ -16,15 +15,21 @@ struct thdata {
     double step;
 };
 
+double f (double x)
+{
+    return x*x;
+}
 
 void* worker(void *ptrData)
 {
     struct thdata *data = (struct thdata *)ptrData;
 
     double sum = 0.;
-    for (double i = data->left; i < data->right; i+=data->step) {
-        sum += data->step * (i + data->step / 2) * (i + data->step / 2);
+    for (double i = data->left; i < data->right; i+=data->step)
+    {
+        sum+= f(i);
     }
+    sum = (step/2) * (f(data->left) + 2*sum + f(data->right));
 
     pthread_mutex_lock(&mutex);
     result += sum;
