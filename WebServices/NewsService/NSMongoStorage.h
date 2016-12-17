@@ -22,9 +22,9 @@ public:
 
     ~NSMongoStorage();
 
-    std::string GetNewsCollection();
+    std::string GetNewsCollection(std::vector<std::string>& params);
 
-    std::string GetNewsItem(std::string NewsId);
+    std::string GetNewsItem(std::string& NewsId);
 
 private:
     mongocxx::uri *uri;

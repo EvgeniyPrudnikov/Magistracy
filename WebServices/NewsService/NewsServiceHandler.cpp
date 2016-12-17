@@ -36,11 +36,33 @@ void NewsServiceHandler::ScheduleRequest(fastcgi::Request *request, fastcgi::Han
 
     if (IstNewsCollection(path, method))
     {
-        RespondNewsCollection(request, mongoStorage);
+        std::vector<std::string> params;
+        params.push_back(request->hasArg("start_dt") ? request->getArg("start_dt") : "NULL");
+        params.push_back(request->hasArg("end_dt") ? request->getArg("end_dt") : "NULL");
+        params.push_back(request->hasArg("source_id") ? request->getArg("source_id") : "NULL");
+
+        bool missingParam = any_of(params.begin(), params.end(), [](std::string i)
+        { return i == "NULL"; });
+
+        if (!missingParam)
+        {
+            RespondNewsCollection(request, mongoStorage, params);
+
+        } else
+        {
+            request->setStatus(404);
+        }
 
     } else if (IsNewsInstance(path, method, &NewsId))
     {
-        RespondNewsInstance(request,mongoStorage,NewsId);
+        if (!NewsId.empty())
+        {
+            RespondNewsInstance(request, mongoStorage, NewsId);
+
+        } else
+        {
+            request->setStatus(404);
+        }
 
     } else
     {
@@ -48,17 +70,19 @@ void NewsServiceHandler::ScheduleRequest(fastcgi::Request *request, fastcgi::Han
     }
 }
 
-void NewsServiceHandler::RespondNewsCollection(fastcgi::Request *request, NSMongoStorage *mongoStorage)
+void NewsServiceHandler::RespondNewsCollection(fastcgi::Request *request, NSMongoStorage *mongoStorage,
+                                               std::vector<std::string> &params)
 {
     std::string response;
 
-    response = mongoStorage->GetNewsCollection();
+    response = mongoStorage->GetNewsCollection(params);
 
     request->write(response.c_str(), response.size());
 
 }
 
-void NewsServiceHandler::RespondNewsInstance(fastcgi::Request *request, NSMongoStorage *mongoStorage, std::string NewsId)
+void
+NewsServiceHandler::RespondNewsInstance(fastcgi::Request *request, NSMongoStorage *mongoStorage, std::string& NewsId)
 {
     std::string response;
 

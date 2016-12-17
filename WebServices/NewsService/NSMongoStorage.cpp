@@ -19,7 +19,7 @@ NSMongoStorage::NSMongoStorage(std::string host, std::string serverPort)
 
 }
 
-std::string NSMongoStorage::GetNewsCollection()
+std::string NSMongoStorage::GetNewsCollection(std::vector<std::string>& params)
 {
     std::string newsCollJsonString = "";
     mongocxx::database db = (*client)["NewsDB"];
@@ -32,7 +32,7 @@ std::string NSMongoStorage::GetNewsCollection()
     return newsCollJsonString;
 }
 
-std::string NSMongoStorage::GetNewsItem(std::string NewsId)
+std::string NSMongoStorage::GetNewsItem(std::string& NewsId)
 {
     std::string newsInstanceJsonString = "";
     mongocxx::database db = (*client)["NewsDB"];

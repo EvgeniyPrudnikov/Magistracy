@@ -1,6 +1,6 @@
 #include <fastcgi2/handler.h>
 #include <fastcgi2/request.h>
-
+#include <vector>
 #include <string>
 
 #include "NSMongoStorage.h"
@@ -19,7 +19,7 @@ public:
 
 private:
 
-    void RespondNewsCollection(fastcgi::Request *request, NSMongoStorage* mongoStorage);
-    void RespondNewsInstance(fastcgi::Request *request, NSMongoStorage* mongoStorage, std::string NewsId);
+    void RespondNewsCollection(fastcgi::Request *request, NSMongoStorage* mongoStorage, std::vector<std::string>& params);
+    void RespondNewsInstance(fastcgi::Request *request, NSMongoStorage* mongoStorage, std::string& NewsId);
 
 };
