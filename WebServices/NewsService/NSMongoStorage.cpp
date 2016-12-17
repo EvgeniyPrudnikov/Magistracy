@@ -60,7 +60,7 @@ std::string NSMongoStorage::GetNewsItem(std::string &NewsId)
     mongocxx::database db = (*client)["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
-    bsoncxx::document::value query_value = document{} << "Nid" << NewsId << finalize;
+    bsoncxx::document::value query_value = document{} << "news_uri" << NewsId << finalize;
     mongocxx::stdx::optional<bsoncxx::document::value> maybe_result = coll.find_one(query_value.view());
 
     if (maybe_result)

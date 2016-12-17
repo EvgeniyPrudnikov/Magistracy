@@ -1,7 +1,7 @@
 
 #include "NewsServiceHandler.h"
 
-const size_t POLL_PREFIX_SIZE = sizeof("/news/") - 1;
+const size_t NEWS_PREFIX_SIZE = sizeof("/news/") - 1;
 
 bool IstNewsCollection(const std::string &path, const std::string &method)
 {
@@ -10,9 +10,9 @@ bool IstNewsCollection(const std::string &path, const std::string &method)
 
 bool IsNewsInstance(const std::string &path, const std::string &method, std::string *NewsId)
 {
-    if (method == "GET" && path.find("/news/") == 0 && path.find('/', POLL_PREFIX_SIZE) == std::string::npos)
+    if (method == "GET" && path.find("/news/") == 0 && path.find('/', NEWS_PREFIX_SIZE) == std::string::npos)
     {
-        *NewsId = path.substr(POLL_PREFIX_SIZE);
+        *NewsId = path.substr(NEWS_PREFIX_SIZE);
         return true;
     }
     return false;
