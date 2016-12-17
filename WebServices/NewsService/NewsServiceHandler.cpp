@@ -1,7 +1,7 @@
 
 #include "NewsServiceHandler.h"
 
-const size_t NEWS_PREFIX_SIZE = sizeof("/news/") - 1;
+const unsigned long NEWS_PREFIX_SIZE = sizeof("/news/") - 2;
 
 bool IstNewsCollection(const std::string &path, const std::string &method)
 {
@@ -10,7 +10,7 @@ bool IstNewsCollection(const std::string &path, const std::string &method)
 
 bool IsNewsInstance(const std::string &path, const std::string &method, std::string *NewsId)
 {
-    if (method == "GET" && path.find("/news/") == 0 && path.find('/', NEWS_PREFIX_SIZE) == std::string::npos)
+    if (method == "GET" && path.find("/news/") == 0)
     {
         *NewsId = path.substr(NEWS_PREFIX_SIZE);
         return true;

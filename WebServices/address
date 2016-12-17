@@ -9,13 +9,15 @@ fastcgi-daemon2 --config=NewsService2.conf
 # requsts example
 # --------------------------------------------------------------------------------
 
-curl -v "http://localhost/News"
+curl -v "http://localhost/news"
 
-curl -v "http://localhost/News/10"
+curl -v "http://localhost/news/10"
 
-curl -v "http://localhost:2564/News"
+curl -v "http://localhost:2564/news"
 
-curl -v "http://localhost:2564/News/10"
+curl -v "http://localhost:2564/news/10"
+
+curl -v "http://localhost/news?start_dt=2016-12-14T16:00:00Z&end_dt=-2&source_id="
 
 
 
