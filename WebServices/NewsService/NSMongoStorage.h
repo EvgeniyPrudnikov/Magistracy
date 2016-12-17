@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <chrono>
 #include <string>
 #include <iostream>
 #include <vector>
@@ -6,6 +7,8 @@
 #include <mongocxx/client.hpp>
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/uri.hpp>
+#include <bsoncxx/types.hpp>
+
 
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
@@ -29,4 +32,7 @@ public:
 private:
     mongocxx::uri *uri;
     mongocxx::client *client;
+
+    std::chrono::time_point<std::chrono::system_clock> getDateFromString(std::string& date);
+
 };

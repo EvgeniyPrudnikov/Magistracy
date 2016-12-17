@@ -13,4 +13,4 @@ set(SOURCE_FILES NewsService.cpp NewsServiceHandler.cpp NSMongoStorage.cpp)
 
 add_library(NewsService SHARED ${SOURCE_FILES})
 
-SET(CMAKE_CXX_COMPILER c++)
+SET(CMAKE_CXX_COMPILER g++)

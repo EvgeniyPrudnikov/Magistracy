@@ -41,8 +41,7 @@ void NewsServiceHandler::ScheduleRequest(fastcgi::Request *request, fastcgi::Han
         params.push_back(request->hasArg("end_dt") ? request->getArg("end_dt") : "NULL");
         params.push_back(request->hasArg("source_id") ? request->getArg("source_id") : "NULL");
 
-        bool missingParam = any_of(params.begin(), params.end(), [](std::string i)
-        { return i == "NULL"; });
+        bool missingParam = any_of(params.begin(), params.end(), [](std::string i) { return i == "NULL"; });
 
         if (!missingParam)
         {
