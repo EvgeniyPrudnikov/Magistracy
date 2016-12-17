@@ -83,7 +83,7 @@ GET /news?start_dt=current_date&end_dt=-2&source_id=
 { 
 	"items":[
 			{ 
-			  "news_uri": "/sources/news/{news_id}"
+			  "news_uri": "/news/{news_id}"
 			 ,"source_uri": "/sources/{id}"
 			 ,"source_name": " ... " // имя источника новостей (пример: СБ Беларусь сегодня :) )
 			 ,"news_date": "{news_date}" // дата появления/обновления новости
@@ -116,7 +116,7 @@ GET /news/{news_id}
 
 { 
 	 "items":{ 
-			  "news_uri": "/sources/news/{news_is}"
+			  "news_uri": "/news/{news_is}"
 			 ,"source_uri": "/sources/{id}"
 			 ,"source_name": " ... " // имя источника новостей (пример: СБ Беларусь сегодня :) )
 			 ,"news_date": "{news_date}" // дата появления/обновления новости
