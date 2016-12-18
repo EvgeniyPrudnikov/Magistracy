@@ -48,9 +48,10 @@ std::string NSMongoStorage::GetNewsCollection(std::vector<std::string> &params)
     mongocxx::cursor cursor = coll.find(query_value->view());
     for (auto doc : cursor)
     {
-        newsCollJsonString += bsoncxx::to_json(doc) + "\n";
+        newsCollJsonString += bsoncxx::to_json(doc) + ",";
     }
-    return newsCollJsonString + " ] }\n";
+    newsCollJsonString.pop_back();
+    return newsCollJsonString + "]}\n";
 }
 
 std::string NSMongoStorage::GetNewsItem(std::string &NewsId)
@@ -67,7 +68,7 @@ std::string NSMongoStorage::GetNewsItem(std::string &NewsId)
         newsInstanceJsonString += bsoncxx::to_json(*maybe_result) + "\n";
     }
 
-    return newsInstanceJsonString + " ] }\n";
+    return newsInstanceJsonString + "]}";
 }
 
 std::chrono::time_point<std::chrono::system_clock> NSMongoStorage::getDateFromString(std::string &date)
