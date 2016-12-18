@@ -20,7 +20,7 @@ NSMongoStorage::NSMongoStorage(int fastcgiPort)
 
 std::string NSMongoStorage::GetNewsCollection(std::vector<std::string> &params)
 {
-    std::string newsCollJsonString = "";
+    std::string newsCollJsonString = "{\"items\": [";
     mongocxx::database db = (*client)["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
@@ -50,12 +50,12 @@ std::string NSMongoStorage::GetNewsCollection(std::vector<std::string> &params)
     {
         newsCollJsonString += bsoncxx::to_json(doc) + "\n";
     }
-    return newsCollJsonString;
+    return newsCollJsonString + " ] }\n";
 }
 
 std::string NSMongoStorage::GetNewsItem(std::string &NewsId)
 {
-    std::string newsInstanceJsonString = "";
+    std::string newsInstanceJsonString = "{\"items\": [ ";
     mongocxx::database db = (*client)["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
@@ -67,7 +67,7 @@ std::string NSMongoStorage::GetNewsItem(std::string &NewsId)
         newsInstanceJsonString += bsoncxx::to_json(*maybe_result) + "\n";
     }
 
-    return newsInstanceJsonString;
+    return newsInstanceJsonString + " ] }\n";
 }
 
 std::chrono::time_point<std::chrono::system_clock> NSMongoStorage::getDateFromString(std::string &date)
