@@ -3,15 +3,14 @@
 
 NSMongoStorage::~NSMongoStorage() = default;
 
-NSMongoStorage::NSMongoStorage(std::string host, std::string serverPort)
+NSMongoStorage::NSMongoStorage(int fastcgiPort)
 {
     std::string mongoPort;
     std::string mongoServerAddress;
 
-    mongoPort = serverPort == "80" ? "27017" : serverPort == "2564" ? "27018" : NULL;
+    mongoPort = fastcgiPort == 20011 ? "27017" : fastcgiPort == 20012 ? "27018" : NULL;
 
-    mongoServerAddress = "mongodb://" + host + ":" + mongoPort;
-
+    mongoServerAddress = "mongodb://localhost:" + mongoPort;
 
     uri = new mongocxx::uri(mongoServerAddress);
 

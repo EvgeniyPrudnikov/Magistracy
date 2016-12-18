@@ -11,6 +11,7 @@ class NewsService : virtual public fastcgi::Component, virtual public fastcgi::H
 public:
     NewsService(fastcgi::ComponentContext *context) : fastcgi::Component(context)
     {
+        NSHandle = new NewsServiceHandler(context);
     }
 
     virtual ~NewsService()
@@ -25,11 +26,11 @@ public:
 
     virtual void handleRequest(fastcgi::Request *request, fastcgi::HandlerContext *context)
     {
-        NSHandle.ScheduleRequest(request, context);
+        NSHandle->ScheduleRequest(request, context);
     }
 
 private:
-    NewsServiceHandler NSHandle;
+    NewsServiceHandler* NSHandle;
 
 };
 

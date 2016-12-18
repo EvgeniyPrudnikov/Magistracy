@@ -1,3 +1,5 @@
+#include <fastcgi2/config.h>
+#include <fastcgi2/component.h>
 #include <fastcgi2/handler.h>
 #include <fastcgi2/request.h>
 #include <vector>
@@ -10,9 +12,9 @@ class NewsServiceHandler
 {
 public:
 
-    NSMongoStorage* mongoStorage = NULL;
+    NSMongoStorage* mongoStorage;
 
-    NewsServiceHandler();
+    NewsServiceHandler(fastcgi::ComponentContext *context);
     ~NewsServiceHandler();
 
     void ScheduleRequest(fastcgi::Request *request, fastcgi::HandlerContext *context);

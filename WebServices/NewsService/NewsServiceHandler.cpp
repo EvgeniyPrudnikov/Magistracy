@@ -18,15 +18,16 @@ bool IsNewsInstance(const std::string &path, const std::string &method, std::str
     return false;
 }
 
-NewsServiceHandler::NewsServiceHandler()
-{}
+NewsServiceHandler::NewsServiceHandler(fastcgi::ComponentContext *context)
+{
+    int fastcgiPort = context->getConfig()->asInt("/fastcgi/daemon/monitor_port");
+    this->mongoStorage = new NSMongoStorage(fastcgiPort);
+}
 
 NewsServiceHandler::~NewsServiceHandler() = default;
 
 void NewsServiceHandler::ScheduleRequest(fastcgi::Request *request, fastcgi::HandlerContext *context)
 {
-    this->mongoStorage = new NSMongoStorage(request->getHost(), std::to_string(request->getServerPort()));
-
     auto &path = request->getScriptName();
     auto &method = request->getRequestMethod();
 

@@ -21,7 +21,7 @@ using bsoncxx::builder::stream::open_document;
 class NSMongoStorage
 {
 public:
-    NSMongoStorage(std::string host, std::string serverPort);
+    NSMongoStorage(int fastcgiPort);
 
     ~NSMongoStorage();
 
