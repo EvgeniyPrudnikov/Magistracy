@@ -107,17 +107,8 @@ int main(int argc, char* argv[])
         throw std::invalid_argument("Wrong mongo address");
     }
 
-    std::cout<<mongoServerAddressInto<<std::endl;
-    std::cout<<std::endl;
-    std::cout<<mongoServerAddressFrom<<std::endl;
-
     std::string NewsJsonStrDBInto = GetNewsCollectionForMerge(mongoServerAddressInto, days_diff_to_now);
     std::string NewsJsonStrDBFrom = GetNewsCollectionForMerge(mongoServerAddressFrom, days_diff_to_now);
-
-    std::cout<<NewsJsonStrDBInto<<std::endl;
-    std::cout<<std::endl;
-    std::cout<<NewsJsonStrDBFrom<<std::endl;
-
 
     Json::Reader reader;
 
@@ -130,11 +121,6 @@ int main(int argc, char* argv[])
     {
         throw "Json parsing error";
     }
-
-
-    std::cout<<NewsJsonDBInto<<std::endl;
-    std::cout<<std::endl;
-    std::cout<<NewsJsonDBFrom<<std::endl;
 
     std::vector<Json::Value> diff;
 
