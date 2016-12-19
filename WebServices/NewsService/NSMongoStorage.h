@@ -9,7 +9,6 @@
 #include <mongocxx/uri.hpp>
 #include <bsoncxx/types.hpp>
 
-
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
 using bsoncxx::builder::stream::document;

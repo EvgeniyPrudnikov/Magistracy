@@ -10,7 +10,15 @@ NSMongoStorage::NSMongoStorage(int fastcgiPort)
 
     mongoPort = fastcgiPort == 20011 ? "27017" : fastcgiPort == 20012 ? "27018" : NULL;
 
-    mongoServerAddress = "mongodb://localhost:" + mongoPort;
+    if (!mongoPort.empty())
+    {
+        mongoServerAddress = "mongodb://localhost:" + mongoPort;
+
+    }else
+    {
+        throw std::invalid_argument("NULL port for mongoDB");
+    }
+
 
     uri = new mongocxx::uri(mongoServerAddress);
 
