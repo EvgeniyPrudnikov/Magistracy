@@ -26,7 +26,7 @@ std::string GetNewsCollectionForMerge(std::string uriString, int days_diff_to_no
 {
     std::string newsCollJsonString = "{\"items\": [";
     mongocxx::uri uri (uriString);
-    thread_local mongocxx::client client (uri);
+    mongocxx::client client (uri);
     mongocxx::database db = client["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
@@ -51,13 +51,14 @@ std::string GetNewsCollectionForMerge(std::string uriString, int days_diff_to_no
 void WriteDiffData(std::string uriString, std::vector<Json::Value>& diff)
 {
     mongocxx::uri uri (uriString);
-    thread_local mongocxx::client client (uri);
+    mongocxx::client client (uri);
     mongocxx::database db = client["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
     std::vector<bsoncxx::document::value> documents;
     for(auto item_diff:diff)
     {
+        std::cerr<<item_diff<<std::endl;
         documents.push_back(bsoncxx::from_json(item_diff.asString()));
     }
     coll.insert_many(documents);
@@ -80,7 +81,6 @@ void merge(Json::Value& a, const Json::Value& b , std::vector<Json::Value>& diff
         }
         if (!find)
         {
-            //a[ROOT].append(item_b);
             diff.push_back(item_b);
         }
     }
@@ -112,9 +112,9 @@ int main(int argc, char* argv[])
     std::string NewsJsonStrDBInto = GetNewsCollectionForMerge(mongoServerAddressInto, days_diff_to_now);
     std::string NewsJsonStrDBFrom = GetNewsCollectionForMerge(mongoServerAddressFrom, days_diff_to_now);
 
-    //std::cout<<NewsJsonStrDBInto<<std::endl;
-    //std::cout<<std::endl;
-    //std::cout<<NewsJsonStrDBFrom<<std::endl;
+    std::cout<<NewsJsonStrDBInto<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<NewsJsonStrDBFrom<<std::endl;
 
 
     Json::Reader reader;
@@ -130,9 +130,9 @@ int main(int argc, char* argv[])
     }
 
 
-    //std::cout<<NewsJsonDBInto<<std::endl;
-   // std::cout<<std::endl;
-   // std::cout<<NewsJsonDBFrom<<std::endl;
+    std::cout<<NewsJsonDBInto<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<NewsJsonDBFrom<<std::endl;
 
     std::vector<Json::Value> diff;
 
@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
     {
         WriteDiffData(mongoServerAddressInto, diff);
         std::cerr<<"Data merged successfully!"<<std::endl;
-    }
+    }else
     {
         std::cerr<<"Data is the same!"<<std::endl;
     }
