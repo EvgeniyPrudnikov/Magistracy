@@ -20,18 +20,17 @@ using bsoncxx::builder::stream::open_document;
 class NSMongoStorage
 {
 public:
+    std::string mongoServerAddress;
+
     NSMongoStorage(int fastcgiPort);
 
     ~NSMongoStorage();
 
-    std::string GetNewsCollection(std::vector<std::string>& params);
+    std::string GetNewsCollection(std::string mongoServerAddress, std::vector<std::string>& params);
 
-    std::string GetNewsItem(std::string& NewsId);
+    std::string GetNewsItem(std::string mongoServerAddress, std::string& NewsId);
 
 private:
-    mongocxx::uri *uri;
-    mongocxx::client *client;
-
     std::chrono::time_point<std::chrono::system_clock> getDateFromString(std::string& date);
 
 };
