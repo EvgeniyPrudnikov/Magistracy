@@ -56,10 +56,11 @@ void WriteDiffData(std::string uriString, std::vector<Json::Value>& diff)
     mongocxx::collection coll = db["NewsCollection"];
 
     std::vector<bsoncxx::document::value> documents;
+    Json::FastWriter writer;
     for(auto item_diff:diff)
     {
         std::cerr<<item_diff<<std::endl;
-        documents.push_back(bsoncxx::from_json(item_diff.asString()));
+        documents.push_back(bsoncxx::from_json(writer.write(item_diff)));
     }
     coll.insert_many(documents);
 }
@@ -93,7 +94,8 @@ int main(int argc, char* argv[])
     if (argc != 4)
     {
         std::cerr
-                << "Wrong number of arguments!\nUsage ./MergeNews HOST_DB_INTO_MERGE:PORT_DB_INTO_MERGE HOST_DB_FROM_MERGE:PORT_DB_FROM_MERGE DAYS_DIFF_TO_NOW";
+                << "Wrong number of arguments!\nUsage ./MergeNews HOST_DB_INTO_MERGE:PORT_DB_INTO_MERGE HOST_DB_FROM_MERGE:PORT_DB_FROM_MERGE DAYS_DIFF_TO_NOW"<<std::endl;
+        return 1;
     }
 
     std::string mongoServerAddressInto = !std::string(argv[1]).empty() ? "mongodb://" + std::string(argv[1]):"NULL";
