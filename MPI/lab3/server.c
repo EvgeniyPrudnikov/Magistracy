@@ -57,10 +57,10 @@ int main()
     {
         sem_trywait(mutex);
 
-        if (sharedData->text[0] != 0)
+        if (sharedData->text[0] != '\0')
         {
             printf("Client: %s", sharedData->text);
-            sharedData->text[0] = 0;
+            sharedData->text[0] = '\0';
         }
         sem_post(mutex);
     }
