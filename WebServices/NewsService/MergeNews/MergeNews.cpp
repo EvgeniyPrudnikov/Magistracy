@@ -18,7 +18,7 @@ using bsoncxx::builder::stream::open_document;
 
 void* GetNewsCollectionForMerge(std::string uriString, int days_diff_to_now , std::string & result)
 {
-    std::string newsCollJsonString = "{\"items\": [";
+    std::string newsCollJsonString = "{\"items\":[ ";
     mongocxx::uri uri (uriString);
     mongocxx::client client (uri);
     mongocxx::database db = client["NewsDB"];
@@ -110,6 +110,12 @@ int main(int argc, char* argv[])
     thxInto.join();
     thxFrom.join();
 
+
+    std::cout<<NewsJsonStrDBInto<<std::endl;
+    std::cout<<std::endl;
+    std::cout<<NewsJsonStrDBFrom<<std::endl;
+
+
     Json::Reader reader;
 
     Json::Value NewsJsonDBInto;
@@ -119,7 +125,8 @@ int main(int argc, char* argv[])
 
     if (!parsingSuccessfulJsInto || !parsingSuccessfulJsFrom)
     {
-        throw "Json parsing error";
+        std::cerr<<"Error Json parsing"<<std::endl;
+        return 2;
     }
 
     std::vector<Json::Value> diff;

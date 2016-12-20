@@ -21,7 +21,7 @@ NSMongoStorage::NSMongoStorage(int fastcgiPort)
 
 std::string NSMongoStorage::GetNewsCollection(std::string mongoServerAddress, std::vector<std::string> &params)
 {
-    std::string newsCollJsonString = "{\"items\": [";
+    std::string newsCollJsonString = "{\"items\":[ ";
     mongocxx::uri uri (mongoServerAddress);
     thread_local mongocxx::client client (uri);
     mongocxx::database db = client["NewsDB"];
@@ -59,7 +59,7 @@ std::string NSMongoStorage::GetNewsCollection(std::string mongoServerAddress, st
 
 std::string NSMongoStorage::GetNewsItem(std::string mongoServerAddress, std::string &NewsId)
 {
-    std::string newsInstanceJsonString = "{\"items\": [ ";
+    std::string newsInstanceJsonString = "{\"items\":[ ";
 
     mongocxx::uri uri (mongoServerAddress);
     thread_local mongocxx::client client (uri);
@@ -74,7 +74,7 @@ std::string NSMongoStorage::GetNewsItem(std::string mongoServerAddress, std::str
         newsInstanceJsonString += bsoncxx::to_json(*maybe_result) + "\n";
     }
 
-    return newsInstanceJsonString + "]}";
+    return newsInstanceJsonString + "]}\n";
 }
 
 std::chrono::time_point<std::chrono::system_clock> NSMongoStorage::getDateFromString(std::string &date)
