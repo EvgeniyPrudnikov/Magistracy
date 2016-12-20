@@ -3,16 +3,10 @@
 
 #include <iostream>
 #include <json/json.h>
-#include <cstdint>
 #include <chrono>
-#include <string>
-#include <iostream>
-#include <vector>
 #include <bsoncxx/json.hpp>
 #include <mongocxx/client.hpp>
-#include <mongocxx/stdx.hpp>
-#include <mongocxx/uri.hpp>
-#include <bsoncxx/types.hpp>
+#include <thread>
 
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
@@ -22,7 +16,7 @@ using bsoncxx::builder::stream::open_array;
 using bsoncxx::builder::stream::open_document;
 
 
-std::string GetNewsCollectionForMerge(std::string uriString, int days_diff_to_now)
+void* GetNewsCollectionForMerge(std::string uriString, int days_diff_to_now , std::string & result)
 {
     std::string newsCollJsonString = "{\"items\": [";
     mongocxx::uri uri (uriString);
@@ -45,7 +39,7 @@ std::string GetNewsCollectionForMerge(std::string uriString, int days_diff_to_no
     }
     newsCollJsonString.pop_back();
 
-    return newsCollJsonString + "]}\n";
+    result = newsCollJsonString + "]}\n";
 }
 
 void WriteDiffData(std::string uriString, std::vector<Json::Value>& diff)
@@ -59,7 +53,7 @@ void WriteDiffData(std::string uriString, std::vector<Json::Value>& diff)
     Json::FastWriter writer;
     for(auto item_diff:diff)
     {
-        std::cerr<<item_diff<<std::endl;
+        //std::cerr<<item_diff<<std::endl;
         documents.push_back(bsoncxx::from_json(writer.write(item_diff)));
     }
     coll.insert_many(documents);
@@ -104,11 +98,17 @@ int main(int argc, char* argv[])
 
     if(mongoServerAddressInto == "NULL" || mongoServerAddressFrom == "NULL")
     {
-        throw std::invalid_argument("Wrong mongo address");
+        throw std::invalid_argument("Wrong mongo server  address");
     }
 
-    std::string NewsJsonStrDBInto = GetNewsCollectionForMerge(mongoServerAddressInto, days_diff_to_now);
-    std::string NewsJsonStrDBFrom = GetNewsCollectionForMerge(mongoServerAddressFrom, days_diff_to_now);
+    std::string NewsJsonStrDBInto;
+    std::string NewsJsonStrDBFrom;
+
+    std::thread thxInto (GetNewsCollectionForMerge, mongoServerAddressInto, days_diff_to_now, std::ref(NewsJsonStrDBInto));
+    std::thread thxFrom (GetNewsCollectionForMerge, mongoServerAddressFrom, days_diff_to_now, std::ref(NewsJsonStrDBFrom));
+
+    thxInto.join();
+    thxFrom.join();
 
     Json::Reader reader;
 
