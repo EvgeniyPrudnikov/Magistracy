@@ -1,12 +1,13 @@
+#include <semaphore.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/shm.h>
-#include <sys/sem.h>
 
 int a = -5;
 int b = 5;
+
+
 
 double f(double x)
 {
@@ -16,7 +17,7 @@ double f(double x)
 
 int main(int argc, char *argv[])
 {
-
+    sem_t mutex;
     int pid;
     int left, right;
 
@@ -38,19 +39,18 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int semId = semget((key_t) 123, 2, 0666);
-    if (semId == -1)
-    {
-        fprintf(stderr, "semget failed\n");
-        return 1;
-    }
-
-    struct sembuf operations[2];
-
-
-
     int cntStepsPerProc = ((b - a) % numberOfProcesses) ?
                             (b - a) / numberOfProcesses + 1 : (b - a) / numberOfProcesses;
+
+
+
+
+    /* create, initialize semaphore */
+    if( sem_init(&mutex,1,1) < 0)
+    {
+        perror("semaphore initilization");
+        exit(0);
+    }
 
     for (int procNum = 0; procNum < numberOfProcesses; procNum++)
     {
@@ -80,19 +80,11 @@ int main(int argc, char *argv[])
         }
         sum = (step / 2) * (f(left) + 2 * sum + f(right));
 
-        operations[0].sem_num = 0;
-        operations[0].sem_op = 0;
-        operations[0].sem_flg = 0;
-
-        operations[1].sem_num = 0;
-        operations[1].sem_op = 1;
-        operations[1].sem_flg = 0;
-
+        sem_wait(&mutex);
         write(pipefdls[1], &sum, sizeof(double));
+        sem_post(&mutex);
 
-        operations[0].sem_num = 1;
-        operations[0].sem_op = 1;
-        operations[0].sem_flg = 0;
+        return 0;
 
     } else
     {
@@ -101,25 +93,16 @@ int main(int argc, char *argv[])
         double singleResult;
         double result = 0;
 
-        operations[0].sem_num = 0;
-        operations[0].sem_op = 0;
-        operations[0].sem_flg = 0;
-
-        operations[1].sem_num = 0;
-        operations[1].sem_op = 1;
-        operations[1].sem_flg = 0;
-
         for (int i = 0; i < numberOfProcesses; i++)
         {
+            sem_wait(&mutex);
             read(pipefdls[0], &singleResult, sizeof(double));
+            sem_post(&mutex);
             result += singleResult;
+
         }
 
-        operations[0].sem_num = 1;
-        operations[0].sem_op = 1;
-        operations[0].sem_flg = 0;
-
-        printf("%f", result);
+        printf("%f\n", result);
         wait(NULL);
     }
 
