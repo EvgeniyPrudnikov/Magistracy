@@ -17,7 +17,6 @@ char SEM_NAME[] = "mySem";
 
 int main()
 {
-    char ch;
     int shmid;
     key_t key;
     sem_t *mutex;
@@ -31,7 +30,7 @@ int main()
     {
         perror("reader:unable to execute semaphore");
         sem_close(mutex);
-        exit(-1);
+        return 1;
     }
 
     //create the shared memory segment with this key
@@ -39,12 +38,17 @@ int main()
     if (shmid < 0)
     {
         perror("reader:failure in shmget");
-        exit(-1);
+        return 1;
     }
 
     //attach this segment to virtual memory
     void *sharedMemory = shmat(shmid, NULL, 0);
 
+    if (sharedMemory == NULL)
+    {
+        perror("shmat");
+        return 1;
+    }
 
     while (1)
     {
@@ -54,6 +58,7 @@ int main()
 
         printf("Enter text: ");
         fgets(sharedData->text, BUFSIZ, stdin);
+
         sem_post(mutex);
     }
 }
