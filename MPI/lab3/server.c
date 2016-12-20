@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <zconf.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct shared_data
 {
@@ -45,15 +46,18 @@ int main()
 
     //attach this segment to virtual memory
     void *sharedMemory = shmat(shmid, NULL, 0);
-
     struct shared_data *sharedData = (struct shared_data *) sharedMemory;
+
     //start writing into memory
     while (1)
     {
         sem_trywait(mutex);
 
-        if (sharedData->text)
+        if (sharedData->text[0] != 0)
+        {
             printf("Client: %s", sharedData->text);
+            sharedData->text[0] = 0;
+        }
 
         sem_post(mutex);
         sleep(1);
