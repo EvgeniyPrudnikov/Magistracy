@@ -58,8 +58,6 @@ int main()
             printf("Client: %s", sharedData->text);
             sharedData->text[0] = 0;
         }
-
         sem_post(mutex);
-        sleep(1);
     }
 }
