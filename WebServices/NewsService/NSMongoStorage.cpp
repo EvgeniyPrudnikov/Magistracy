@@ -6,25 +6,27 @@ NSMongoStorage::~NSMongoStorage() = default;
 NSMongoStorage::NSMongoStorage(int fastcgiPort)
 {
     std::string mongoPort;
-
+    std::string mongoServerAddress;
     mongoPort = fastcgiPort == 20011 ? "27017" : fastcgiPort == 20012 ? "27018" : NULL;
 
     if (!mongoPort.empty())
     {
-        this->mongoServerAddress = "mongodb://localhost:" + mongoPort;
+        mongoServerAddress = "mongodb://localhost:" + mongoPort;
 
     }else
     {
         throw std::invalid_argument("NULL port for mongoDB");
     }
+
+    uri = mongocxx::uri(mongoServerAddress);
+    client = mongocxx::client(uri);
 }
 
-std::string NSMongoStorage::GetNewsCollection(std::string mongoServerAddress, std::vector<std::string> &params)
+std::string NSMongoStorage::GetNewsCollection( std::vector<std::string> &params)
 {
     std::string newsCollJsonString = "{\"items\":[ ";
-    mongocxx::uri uri (mongoServerAddress);
-    thread_local mongocxx::client client (uri);
-    mongocxx::database db = client["NewsDB"];
+
+    mongocxx::database db = this->client["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
     std::string start_dt = params[0];
@@ -57,13 +59,11 @@ std::string NSMongoStorage::GetNewsCollection(std::string mongoServerAddress, st
     return newsCollJsonString + "]}\n";
 }
 
-std::string NSMongoStorage::GetNewsItem(std::string mongoServerAddress, std::string &NewsId)
+std::string NSMongoStorage::GetNewsItem(std::string &NewsId)
 {
     std::string newsInstanceJsonString = "{\"items\":[ ";
 
-    mongocxx::uri uri (mongoServerAddress);
-    thread_local mongocxx::client client (uri);
-    mongocxx::database db = client["NewsDB"];
+    mongocxx::database db = this->client["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
     bsoncxx::document::value query_value = document{} << "news_uri" << NewsId << finalize;

@@ -75,7 +75,7 @@ void NewsServiceHandler::RespondNewsCollection(fastcgi::Request *request, NSMong
 {
     std::string response;
 
-    response = mongoStorage->GetNewsCollection( mongoStorage->mongoServerAddress, params);
+    response = mongoStorage->GetNewsCollection(params);
 
     request->write(response.c_str(), response.size());
 
@@ -86,7 +86,7 @@ NewsServiceHandler::RespondNewsInstance(fastcgi::Request *request, NSMongoStorag
 {
     std::string response;
 
-    response = mongoStorage->GetNewsItem(mongoStorage->mongoServerAddress, NewsId);
+    response = mongoStorage->GetNewsItem(NewsId);
 
     request->write(response.c_str(), response.size());
 
