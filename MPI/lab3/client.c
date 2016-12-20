@@ -13,7 +13,7 @@ struct shared_data
     char text[2048];
 };
 
-char SEM_NAME[] = "vik";
+char SEM_NAME[] = "mySem";
 
 int main()
 {
@@ -23,10 +23,8 @@ int main()
     sem_t *mutex;
 
     //name the shared memory segment
-    //key = ftok("file",4684654);
-    int l;
-    sem_close(mutex);
-    sem_getvalue(mutex,&l);
+    key = 99999;
+
     //create & initialize existing semaphore
     mutex = sem_open(SEM_NAME, 0, 0644, 0);
     if (mutex == SEM_FAILED)
@@ -37,7 +35,7 @@ int main()
     }
 
     //create the shared memory segment with this key
-    shmid = shmget(99999, sizeof(struct shared_data), 0666);
+    shmid = shmget(key, sizeof(struct shared_data), 0666);
     if (shmid < 0)
     {
         perror("reader:failure in shmget");

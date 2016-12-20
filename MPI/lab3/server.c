@@ -14,18 +14,17 @@ struct shared_data
     char text[2048];
 };
 
-char SEM_NAME[] = "vik";
+char SEM_NAME[] = "mySem";
 
 int main()
 {
-    char ch;
+
     int shmid;
     key_t key;
-    char *shm, *s;
     sem_t *mutex;
 
     //name the shared memory segment
-    key = 1000;
+    key = 99999;
 
     //create & initialize semaphore
     mutex = sem_open(SEM_NAME, O_CREAT, 0644, 1);
@@ -37,7 +36,7 @@ int main()
     }
 
     //create the shared memory segment with this key
-    shmid = shmget(99999, sizeof(struct shared_data), IPC_CREAT | 0666);
+    shmid = shmget(key, sizeof(struct shared_data), IPC_CREAT | 0666);
     if (shmid < 0)
     {
         perror("failure in shmget");
@@ -52,7 +51,10 @@ int main()
     while (1)
     {
         sem_trywait(mutex);
-        printf("Client: %s", sharedData->text);
+
+        if (sharedData->text)
+            printf("Client: %s", sharedData->text);
+
         sem_post(mutex);
         sleep(1);
     }
