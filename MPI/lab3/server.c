@@ -1,77 +1,59 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
 #include <sys/shm.h>
-#include <sys/sem.h>
-
+#include <stdio.h>
+#include <semaphore.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <zconf.h>
+#include <stdlib.h>
 
 struct shared_data
 {
     char text[2048];
 };
 
-int main() {
+char SEM_NAME[] = "vik";
 
-    int shmid = shmget((key_t)1234, sizeof(struct shared_data), 0666 | IPC_CREAT);
-    if (shmid == -1)
+int main()
+{
+    char ch;
+    int shmid;
+    key_t key;
+    char *shm, *s;
+    sem_t *mutex;
+
+    //name the shared memory segment
+    key = 1000;
+
+    //create & initialize semaphore
+    mutex = sem_open(SEM_NAME, O_CREAT, 0644, 1);
+    if (mutex == SEM_FAILED)
     {
-        fprintf(stderr, "shmget failed\n");
-        return 1;
+        perror("unable to create semaphore");
+        sem_unlink(SEM_NAME);
+        exit(-1);
     }
 
+    //create the shared memory segment with this key
+    shmid = shmget(99999, sizeof(struct shared_data), IPC_CREAT | 0666);
+    if (shmid < 0)
+    {
+        perror("failure in shmget");
+        exit(-1);
+    }
+
+    //attach this segment to virtual memory
     void *sharedMemory = shmat(shmid, NULL, 0);
-    if (sharedMemory == NULL)
-    {
-        fprintf(stderr, "shmat failed\n");
-        return 1;
-    }
 
-    // create sems
-    int semId = semget((key_t) 123, 2, 0666 | IPC_CREAT);
-    if (semId == -1)
-    {
-        fprintf(stderr, "semget failed\n");
-        return 1;
-    }
-
-    // init sems
-    if(semctl( semId, 0, SETVAL, 0) == -1)
-    {
-        fprintf(stderr, "semctl failed for 0 sem\n");
-        return 1;
-    }
-    if(semctl( semId, 1, SETVAL, 0) == -1)
-    {
-        fprintf(stderr, "semctl failed for 1 sem\n");
-        return 1;
-    }
-
-    struct shared_data *sharedData = (struct shared_data *)sharedMemory;
-
-    struct sembuf* operation = (struct sembuf*)malloc(sizeof(struct sembuf));
-
-    printf("Server running...\n");
+    struct shared_data *sharedData = (struct shared_data *) sharedMemory;
+    //start writing into memory
     while (1)
     {
-        operation->sem_num = 1;
-        operation->sem_op = -1;
-        operation->sem_flg = 0;
-
-        printf("Waiting for a client...\n");
-        if (semop( semId, operation, 1 ) == -1) {
-            fprintf(stderr, "semop failed\n");
-            return 1;
-        }
-
+        sem_trywait(mutex);
         printf("Client: %s", sharedData->text);
-
-        operation->sem_num = 0;
-        operation->sem_op = -1;
-        operation->sem_flg = 0;
-
-        if (semop( semId, operation, 1 ) == -1) {
-            fprintf(stderr, "semop failed\n");
-            return 1;
-        }
+        sem_post(mutex);
+        sleep(1);
     }
 }
