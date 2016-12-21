@@ -51,7 +51,7 @@ int main()
 
     struct shared_data *sharedData = (struct shared_data *) sharedMemory;
 
-    //start writing into memory
+    //start read from memory
     printf("Waiting for clients\n");
     while (1)
     {
