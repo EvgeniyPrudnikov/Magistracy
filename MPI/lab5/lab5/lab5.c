@@ -43,17 +43,14 @@ int main(int argc, char** argv)
     {
 		for (int k = 0; k < num_of_blk_per_p; k++)
 		{
-			int buff_send[block_size];
-
 			for (int i = 1; i < rows_per_p; i++)
 			{
 				for (int j = k*block_size, c = 0; j < (k + 1)*block_size, c < block_size; j++, c++)
 				{
 					p_tape[i][j] = p_tape[i - 1][j] + 1;
-					if (i == rows_per_p - 1) buff_send[c] = p_tape[i][j];
 				}
 			}
-			MPI_Send(buff_send, block_size, MPI_INT, proc_rank + 1, k, MPI_COMM_WORLD /*, &req*/);
+			MPI_Isend(p_tape[rows_per_p -1] + k*block_size, block_size, MPI_INT, proc_rank + 1, k, MPI_COMM_WORLD , &req);
 		}
 
 		for (int v = 0; v < rows_per_p; v++)
@@ -104,7 +101,6 @@ int main(int argc, char** argv)
 		for (int k = 0; k < num_of_blk_per_p; k++)
 		{
 			int buff_res[block_size];
-			int buff_send[block_size];
 			MPI_Recv(buff_res, block_size, MPI_INT, proc_rank - 1, k, MPI_COMM_WORLD, &stat);
 
 			for (int i = 0; i < rows_per_p; i++)
@@ -118,11 +114,10 @@ int main(int argc, char** argv)
 					else
 					{
 						p_tape[i][j] = p_tape[i - 1][j] + 1;
-						if (i == rows_per_p - 1) buff_send[c] = p_tape[i][j];
 					}
 				}
 			}
-			MPI_Send(buff_send, block_size, MPI_INT, proc_rank + 1, k, MPI_COMM_WORLD/*, &req*/);
+			MPI_Isend(p_tape[rows_per_p - 1] + k*block_size, block_size, MPI_INT, proc_rank + 1, k, MPI_COMM_WORLD, &req);
 		}
 
 		for (int v = 0; v < rows_per_p; v++)
