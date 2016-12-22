@@ -6,6 +6,8 @@
 
 # User-specific files
 
+.ipynb_checkpoints
+
 token.txt
 
 MPI_Debug
