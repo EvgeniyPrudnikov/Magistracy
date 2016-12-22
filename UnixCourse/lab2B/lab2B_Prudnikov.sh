@@ -1,6 +1,8 @@
 
 #lab 2 Prudnikov
 
+MAINDIR="$HOME"/Downloads/
+
 function cdd {
 
     if [ $# -gt 1 ]; then 
@@ -10,7 +12,7 @@ function cdd {
 
     subdir="${1:-}"
 
-    cd "$HOME"/Downloads/"$subdir"
+    cd "$MAINDIR""$subdir"
 
 }
 
@@ -28,7 +30,7 @@ function mvd {
 
     subdir="${2:-}"
 
-    impDir="$HOME"/Downloads/"$subdir"
+    impDir="$MAINDIR""$subdir"
 
     mkdir "$impDir" 2>/dev/null
 
@@ -50,7 +52,7 @@ function cpd {
 
     subdir="${2:-}"
 
-    impDir="$HOME"/Downloads/"$subdir"
+    impDir="$MAINDIR""$subdir"
 
     mkdir "$impDir" 2>/dev/null
 
@@ -73,7 +75,7 @@ function mvfd {
     sourceSubDir="$1"
     targetSubDir="${2:-.}"
 
-    impDir="$HOME"/Downloads/"$sourceSubDir"
+    impDir="$MAINDIR""$sourceSubDir"
 
     mkdir "$targetSubDir" 2>/dev/null
 
@@ -96,7 +98,7 @@ function cpfd {
     sourceSubDir="$1"
     targetSubDir="${2:-.}"
 
-	impDir="$HOME"/Downloads/"$sourceSubDir"
+	impDir="$MAINDIR""$sourceSubDir"
 
     mkdir "$targetSubDir" 2>/dev/null
 
@@ -105,93 +107,37 @@ function cpfd {
 }
 
 
-_compl_cdd()
-{
-    #set -xue
-    local cur
-    COMPREPLY=()
-    # текущее слово в консоли
-    cur="${COMP_WORDS[COMP_CWORD]}"
-
-    # директория + подкаталог
-    impDir="$HOME"/Downloads/"$cur"
-
-    local tags
-    # генерация  тэгов дополнения 
-    if [[ "$cur" == *"/"* ]] 
-    then 
-        tags="$cur"$(compgen -d -- "$impDir" | awk -F "/" '{ print $NF"/" }')
-    else
-        tags=$(compgen -d -- "$impDir" | awk -F "/" '{ print $NF"/" }')
-    fi
-
-    # добавление в массив вариантов дополнения текущего слова  
-    COMPREPLY=( ${tags} )
+_complete_file() {
+    _init_completion -s || return
+    _filedir
 }
 
-_compl_cp_mv_d()
-{
-    #set -xue
-    local cur
-    COMPREPLY=()
-    # текущее слово в консоли
-    cur="${COMP_WORDS[COMP_CWORD]}"
-
-    # директория + подкаталог
-    # если вводится первый аргумент
-    if [[ ${COMP_CWORD} == 1 ]] ; then
-        impDir="$cur"
-    # если второй
-    elif [[ ${COMP_CWORD} == 2 ]]; then
-        impDir="$HOME"/Downloads/"$cur"
-    fi
-
-    local tags
-    # генерация  тэгов дополнения 
-    if [[ "$cur" == *"/"* ]]; then 
-        tags="$cur"$(compgen -d -- "$impDir" | awk -F "/" '{ print $NF"/" }')
-    else
-        tags=$(compgen -d -- "$impDir" | awk -F "/" '{ print $NF"/" }')
-    fi
-
-    # добавление в массив вариантов дополнения текущего слова  
-    COMPREPLY=( ${tags} )
+_compl_cd() {
+    CDPATH="$MAINDIR" _cd
 }
 
-_compl_cpf_mvf_d()
-{
-    #set -xue
-    local cur
-    COMPREPLY=()
-    # текущее слово в консоли
-    cur="${COMP_WORDS[COMP_CWORD]}"
-
-    # директория + подкаталог
-    # если вводится первый аргумент
-    if [[ ${COMP_CWORD} == 2 ]] ; then
-        impDir="$cur"
-    # если второй
-    elif [[ ${COMP_CWORD} == 1 ]]; then
-        impDir="$HOME"/Downloads/"$cur"
-    fi
-
-    local tags
-    # генерация  тэгов дополнения 
-    if [[ "$cur" == *"/"* ]]; then 
-        tags="$cur"$(compgen -d -- "$impDir" | awk -F "/" '{ print $NF"/" }')
+_compl_mvcp() {
+    if [[ "$COMP_CWORD" == "$1" ]] ; then
+        _cur_pwd="$(pwd)"
+        cd "$MAINDIR" && _complete_file
+        cd "$_cur_pwd"
     else
-        tags=$(compgen -d -- "$impDir" | awk -F "/" '{ print $NF"/" }')
+        _complete_file
     fi
-
-    # добавление в массив вариантов дополнения текущего слова  
-    COMPREPLY=( ${tags} )
 }
 
+_compl_mvh() {
+    _compl_mvcp 2
+}
+
+_compl_mvfh() {
+    _compl_mvcp 1
+}
 
 # подключаем функции _compl_... к нашим функциям
-complete -o nospace -F _compl_cdd cdd
-complete -o nospace -F _compl_cp_mv_d cpd
-complete -o nospace -F _compl_cp_mv_d mvd
-complete -o nospace -F _compl_cpf_mvf_d cpfd
-complete -o nospace -F _compl_cpf_mvf_d mvfd
+complete -o nospace -F _compl_cd cdd
+complete -o nospace -F _compl_mvh cpd
+complete -o nospace -F _compl_mvh mvd
+complete -o nospace -F _compl_mvfh cpfd
+complete -o nospace -F _compl_mvfh mvfd
 
