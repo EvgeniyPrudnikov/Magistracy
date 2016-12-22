@@ -1,6 +1,8 @@
 
 #include "NSMongoStorage.h"
 
+boost::thread_specific_ptr<mongocxx::client> NSMongoStorage::client;
+
 NSMongoStorage::~NSMongoStorage() = default;
 
 NSMongoStorage::NSMongoStorage(int fastcgiPort)
@@ -19,14 +21,16 @@ NSMongoStorage::NSMongoStorage(int fastcgiPort)
     }
 
     uri = mongocxx::uri(mongoServerAddress);
-    client = mongocxx::client(uri);
+    client.reset(new mongocxx::client(uri));
 }
 
 std::string NSMongoStorage::GetNewsCollection( std::vector<std::string> &params)
 {
     std::string newsCollJsonString = "{\"items\":[ ";
 
-    mongocxx::database db = this->client["NewsDB"];
+    mongocxx::client& locClient = getClient();
+
+    mongocxx::database db = locClient["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
     std::string start_dt = params[0];
@@ -63,7 +67,9 @@ std::string NSMongoStorage::GetNewsItem(std::string &NewsId)
 {
     std::string newsInstanceJsonString = "{\"items\":[ ";
 
-    mongocxx::database db = this->client["NewsDB"];
+    mongocxx::client& localClient = getClient();
+
+    mongocxx::database db = localClient["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
     bsoncxx::document::value query_value = document{} << "news_uri" << NewsId << finalize;

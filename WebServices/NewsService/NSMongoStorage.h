@@ -16,6 +16,8 @@ using bsoncxx::builder::stream::finalize;
 using bsoncxx::builder::stream::open_array;
 using bsoncxx::builder::stream::open_document;
 
+#include <boost/thread/tss.hpp>
+
 
 class NSMongoStorage
 {
@@ -31,8 +33,15 @@ public:
 
 private:
 
+    mongocxx::client& getClient()
+    {
+        if (!client.get())
+            client.reset (new mongocxx::client(uri));
+        return *client.get();
+    }
+
     mongocxx::uri uri;
-    thread_local static mongocxx::client client;
+    static boost::thread_specific_ptr<mongocxx::client> client;
     std::chrono::time_point<std::chrono::system_clock> getDateFromString(std::string& date);
 
 };
