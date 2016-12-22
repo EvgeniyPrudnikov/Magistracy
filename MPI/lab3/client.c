@@ -7,13 +7,14 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <time.h>
 
 struct shared_data
 {
     char text[2048];
 };
 
-char SEM_NAME[] = "mySem";
+char SEM_NAME[] = "mySem6";
 
 int main()
 {
@@ -22,7 +23,7 @@ int main()
     sem_t *mutex;
 
     //name the shared memory segment
-    key = 99999;
+    key = 99996;
 
     //create & initialize existing semaphore
     mutex = sem_open(SEM_NAME, 0, 0644, 0);
@@ -52,13 +53,11 @@ int main()
 
     while (1)
     {
-        sem_trywait(mutex);
-
+        sem_wait(mutex);
         struct shared_data *sharedData = (struct shared_data *) sharedMemory;
-
         printf("Enter text: ");
         fgets(sharedData->text, BUFSIZ, stdin);
-
         sem_post(mutex);
+        usleep(100);
     }
 }

@@ -5,13 +5,15 @@
 #include <semaphore.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <zconf.h>
+#include <time.h>
 
 struct shared_data
 {
     char text[2048];
 };
 
-char SEM_NAME[] = "mySem";
+char SEM_NAME[] = "mySem6";
 
 int main()
 {
@@ -21,7 +23,7 @@ int main()
     sem_t *mutex;
 
     //name the shared memory segment
-    key = 99999;
+    key = 99996;
 
     //create & initialize semaphore
     mutex = sem_open(SEM_NAME, O_CREAT, 0644, 1);
@@ -55,13 +57,13 @@ int main()
     printf("Waiting for clients\n");
     while (1)
     {
-        sem_trywait(mutex);
-
+        sem_wait(mutex);
         if (sharedData->text[0] != '\0')
         {
             printf("Client: %s", sharedData->text);
             sharedData->text[0] = '\0';
         }
         sem_post(mutex);
+        usleep(100);
     }
 }
