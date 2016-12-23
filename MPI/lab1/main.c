@@ -105,6 +105,6 @@ int main(int argc, char *argv[])
         printf("%f\n", result);
         wait(NULL);
     }
-
+    sem_close(&mutex);
     return 0;
 }
