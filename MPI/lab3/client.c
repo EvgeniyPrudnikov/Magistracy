@@ -8,16 +8,34 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <time.h>
+#include <signal.h>
+#include <string.h>
+
+
+volatile sig_atomic_t exit_sig = 0;
+
+void sig_handler(int signo)
+{
+    if (signo == SIGTERM || signo == SIGINT)
+        exit_sig = 1;
+}
 
 struct shared_data
 {
     char text[2048];
 };
 
-char SEM_NAME[] = "mySem6";
+char SEM_NAME[] = "Sem";
 
 int main()
 {
+
+    struct sigaction action;
+    memset(&action, 0, sizeof(struct sigaction));
+    action.sa_handler = sig_handler;
+    sigaction(SIGTERM, &action, NULL);
+    sigaction(SIGINT, &action, NULL);
+
     int shmid;
     key_t key;
     sem_t *mutex;
@@ -59,5 +77,11 @@ int main()
         fgets(sharedData->text, BUFSIZ, stdin);
         sem_post(mutex);
         usleep(100);
+
+        if (exit_sig)
+        {
+            sem_close(mutex);
+            return 0;
+        }
     }
 }
