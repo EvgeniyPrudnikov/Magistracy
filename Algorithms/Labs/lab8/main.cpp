@@ -15,7 +15,7 @@ void simpleSample(int n, int m, int rep, std::string filename)
     std::vector<int> stream(n);
     for (int j = 0; j < n; ++j)
     {
-        stream[j] = j;
+        stream[j] = j + 1;
     }
 
     std::random_shuffle(stream.begin(), stream.end());
@@ -84,7 +84,7 @@ void weightSample(int n, int m, int rep, int w_pow, std::string filename)
     std::vector<weight_elem> stream(n);
     for (int j = 0; j < n; ++j)
     {
-        stream[j] = {j, (int) pow(j, w_pow)};
+        stream[j] = {j, (int) pow(j+1, w_pow)};
     }
 
     std::random_shuffle(stream.begin(), stream.end());
