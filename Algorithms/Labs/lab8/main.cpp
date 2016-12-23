@@ -8,7 +8,7 @@
 
 void simpleSample(int n, int m, int rep, std::string filename)
 {
-    std::vector<int> hist_v(n, 0);
+    std::vector<int> hist_v(n+1, 0);
 
     srand((unsigned int) time(NULL));
 
@@ -50,7 +50,7 @@ void simpleSample(int n, int m, int rep, std::string filename)
     }
 
     std::ofstream f(filename, std::ios::out | std::ios::trunc);
-    std::copy(hist_v.begin(), hist_v.end(), std::ostream_iterator<int>(f, " "));
+    std::copy(hist_v.begin()+1, hist_v.end(), std::ostream_iterator<int>(f, " "));
     f.close();
 }
 
