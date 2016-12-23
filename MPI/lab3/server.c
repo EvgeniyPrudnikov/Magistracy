@@ -23,7 +23,8 @@ struct shared_data
     char text[2048];
 };
 
-char SEM_NAME[] = "Sem";
+char SEM_NAME_READ[] = "SemR";
+char SEM_NAME_WRITE[] = "SemW";
 
 int main()
 {
@@ -38,19 +39,29 @@ int main()
 
     int shmid;
     key_t key;
-    sem_t *mutex;
+    sem_t *mutex_read;
+    sem_t *mutex_write;
 
     //name the shared memory segment
     key = 99996;
 
     //create & initialize semaphore
-    mutex = sem_open(SEM_NAME, O_CREAT, 0644, 1);
-    if (mutex == SEM_FAILED)
+    mutex_read = sem_open(SEM_NAME_READ, O_CREAT, 0644, 0);
+    if (mutex_read == SEM_FAILED)
     {
         perror("unable to create semaphore");
-        sem_unlink(SEM_NAME);
+        sem_unlink(SEM_NAME_READ);
         return 1;
     }
+
+    mutex_write = sem_open(SEM_NAME_WRITE, O_CREAT, 0644, 1);
+    if (mutex_write == SEM_FAILED)
+    {
+        perror("unable to create semaphore");
+        sem_unlink(SEM_NAME_WRITE);
+        return 1;
+    }
+
 
     //create the shared memory segment with this key
     shmid = shmget(key, sizeof(struct shared_data), IPC_CREAT | 0666);
@@ -72,21 +83,23 @@ int main()
     struct shared_data *sharedData = (struct shared_data *) sharedMemory;
 
     //start read from memory
-    printf("Waiting for clients\n");
+    printf("Waiting for client\n");
     while (1)
     {
-        sem_wait(mutex);
+        sem_wait(mutex_read);
         if (sharedData->text[0] != '\0')
         {
             printf("Client: %s", sharedData->text);
             sharedData->text[0] = '\0';
         }
-        sem_post(mutex);
+        sem_post(mutex_write);
         usleep(100);
 
         if (exit_sig)
         {
-            sem_close(mutex);
+            sem_close(mutex_read);
+            sem_close(mutex_write);
+            shmdt(sharedMemory);
             return 0;
         }
     }

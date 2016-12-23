@@ -4,8 +4,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-int a = -5;
-int b = 5;
+int a = 1;
+int b = 100;
 
 
 
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
         {
             sum += f(i);
         }
-        sum = (step / 2) * (f(left) + 2 * sum + f(right));
+        sum = (step / 2) * (f(left) + 2*sum + f(right));
 
         sem_wait(&mutex);
         write(pipefdls[1], &sum, sizeof(double));

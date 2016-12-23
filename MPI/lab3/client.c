@@ -25,7 +25,8 @@ struct shared_data
     char text[2048];
 };
 
-char SEM_NAME[] = "Sem";
+char SEM_NAME_READ[] = "SemR";
+char SEM_NAME_WRITE[] = "SemW";
 
 int main()
 {
@@ -38,17 +39,26 @@ int main()
 
     int shmid;
     key_t key;
-    sem_t *mutex;
+    sem_t *mutex_read;
+    sem_t *mutex_write;
 
     //name the shared memory segment
     key = 99996;
 
     //create & initialize existing semaphore
-    mutex = sem_open(SEM_NAME, 0, 0644, 0);
-    if (mutex == SEM_FAILED)
+    mutex_read = sem_open(SEM_NAME_READ, 0, 0644, 0);
+    if (mutex_read == SEM_FAILED)
     {
-        perror("reader:unable to execute semaphore");
-        sem_close(mutex);
+        perror("unable to create semaphore");
+        sem_unlink(SEM_NAME_READ);
+        return 1;
+    }
+
+    mutex_write = sem_open(SEM_NAME_WRITE, 0, 0644, 1);
+    if (mutex_write == SEM_FAILED)
+    {
+        perror("unable to create semaphore");
+        sem_unlink(SEM_NAME_WRITE);
         return 1;
     }
 
@@ -71,16 +81,18 @@ int main()
 
     while (1)
     {
-        sem_wait(mutex);
+        sem_wait(mutex_write);
         struct shared_data *sharedData = (struct shared_data *) sharedMemory;
         printf("Enter text: ");
         fgets(sharedData->text, BUFSIZ, stdin);
-        sem_post(mutex);
+        sem_post(mutex_read);
         usleep(100);
 
         if (exit_sig)
         {
-            sem_close(mutex);
+            sem_close(mutex_read);
+            sem_close(mutex_write);
+            shmdt(sharedMemory);
             return 0;
         }
     }
