@@ -3,29 +3,29 @@
 #include <algorithm>
 #include <fstream>
 #include <queue>
+#include <iterator>
 
 
-void simpleSample(int n, int m, int rep, char *filename)
+void simpleSample(int n, int m, int rep, std::string filename)
 {
     std::vector<int> hist_v(n, 0);
 
     srand((unsigned int) time(NULL));
 
+    std::vector<int> stream(n);
+    for (int j = 0; j < n; ++j)
+    {
+        stream[j] = j;
+    }
+
+    std::random_shuffle(stream.begin(), stream.end());
+
     for (int l = 0; l < rep; ++l)
     {
-        std::vector<int> stream(n);
-        for (int j = 0; j < n; ++j)
-        {
-            stream[j] = j;
-        }
-
-        std::random_shuffle(stream.begin(), stream.end());
-
         std::vector<int> sample;
 
         for (int i = 0; i < n; ++i)
         {
-
             if (i < m)
             {
                 sample.push_back(stream[i]);
@@ -34,12 +34,11 @@ void simpleSample(int n, int m, int rep, char *filename)
                 double probInsert = (double) m / (i + 1);
                 double r = (double) rand() / RAND_MAX;
 
-                if (r < probInsert)
+                if (r <= probInsert)
                 {
                     int del_idx = rand() % m;
                     sample.erase(sample.begin() + del_idx);
                     sample.push_back(stream[i]);
-
                 }
             }
         }
@@ -51,12 +50,7 @@ void simpleSample(int n, int m, int rep, char *filename)
     }
 
     std::ofstream f(filename, std::ios::out);
-    for (int p = 0; p < n; ++p)
-    {
-        f << p << "\t" << hist_v[p] << "\n";
-    }
-    f.flush();
-
+    std::copy(hist_v.begin(), hist_v.end(), std::ostream_iterator<int>(f, " "));
     f.close();
 }
 
@@ -81,22 +75,22 @@ struct compare
     }
 };
 
-void weightSample(int n, int m, int rep, char *filename)
+void weightSample(int n, int m, int rep, int w_pow, std::string filename)
 {
     std::vector<int> hist_v(n, 0);
 
     srand((unsigned int) time(NULL));
 
+    std::vector<weight_elem> stream(n);
+    for (int j = 0; j < n; ++j)
+    {
+        stream[j] = {j, (int) pow(j, w_pow)};
+    }
+
+    std::random_shuffle(stream.begin(), stream.end());
+
     for (int l = 0; l < rep; ++l)
     {
-        std::vector<weight_elem> stream(n);
-        for (int j = 0; j < n; ++j)
-        {
-            stream[j] = {j, j*j};
-        }
-
-        std::random_shuffle(stream.begin(), stream.end());
-
         std::priority_queue<KeyValue, std::vector<KeyValue>, compare> sample;
 
         for (int i = 0; i < n; ++i)
@@ -117,7 +111,6 @@ void weightSample(int n, int m, int rep, char *filename)
             }
         }
 
-
         for (int k = 0; k < m; ++k)
         {
             hist_v[sample.top().value]++;
@@ -126,12 +119,7 @@ void weightSample(int n, int m, int rep, char *filename)
     }
 
     std::ofstream f(filename, std::ios::out);
-    for (int p = 0; p < n; ++p)
-    {
-        f << p << "\t" << hist_v[p] << "\n";
-    }
-    f.flush();
-
+    std::copy(hist_v.begin(), hist_v.end(), std::ostream_iterator<int>(f, " "));
     f.close();
 }
 
@@ -144,7 +132,8 @@ int main(int argc, char *argv[])
     int rep = atoi(argv[3]);
 
     simpleSample(n, m, rep, "hist.txt");
-    weightSample(n, m, rep, "hist_weight.txt");
+    weightSample(n, m, rep, 1, "hist_weight_i1.txt");
+    weightSample(n, m, rep, 2, "hist_weight_i2.txt");
 
     return 0;
 }
