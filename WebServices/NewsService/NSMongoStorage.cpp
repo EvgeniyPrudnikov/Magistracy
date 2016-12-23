@@ -3,13 +3,15 @@
 
 boost::thread_specific_ptr<mongocxx::client> NSMongoStorage::client;
 
+
+
 NSMongoStorage::~NSMongoStorage() = default;
 
 NSMongoStorage::NSMongoStorage(int fastcgiPort)
 {
     std::string mongoPort;
     std::string mongoServerAddress;
-    mongoPort = fastcgiPort == 20011 ? "27017" : fastcgiPort == 20012 ? "27018" : NULL;
+    mongoPort = fastcgiPort == 20011 ? "27017" : fastcgiPort == 20012 ? "27018" : "";
 
     if (!mongoPort.empty())
     {
@@ -28,25 +30,24 @@ std::string NSMongoStorage::GetNewsCollection( std::vector<std::string> &params)
 {
     std::string newsCollJsonString = "{\"items\":[ ";
 
-    mongocxx::client& locClient = getClient();
-
-    mongocxx::database db = locClient["NewsDB"];
+    mongocxx::client& localClient = getClient();
+    mongocxx::database db = localClient["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 
     std::string start_dt = params[0];
     int days_diff = std::stoi(params[1]);
-    std::string source_id = params[2];
+    std::string source_uri = params[2];
 
     std::chrono::time_point<std::chrono::system_clock> lowerDate =
             getDateFromString(start_dt) + std::chrono::hours(24 * days_diff);
 
     bsoncxx::document::value *query_value;
-    if (!source_id.empty())
+    if (!source_uri.empty())
     {
         query_value = new bsoncxx::document::value(
                 document{} << "news_date" << open_document << "$gt" << bsoncxx::types::b_date{lowerDate}
                            << close_document
-                           << "source_uri" << open_document << "$eq" << source_id << close_document << finalize);
+                           << "source_uri" << open_document << "$eq" << source_uri << close_document << finalize);
     } else
     {
         query_value = new bsoncxx::document::value(
@@ -68,7 +69,6 @@ std::string NSMongoStorage::GetNewsItem(std::string &NewsId)
     std::string newsInstanceJsonString = "{\"items\":[ ";
 
     mongocxx::client& localClient = getClient();
-
     mongocxx::database db = localClient["NewsDB"];
     mongocxx::collection coll = db["NewsCollection"];
 

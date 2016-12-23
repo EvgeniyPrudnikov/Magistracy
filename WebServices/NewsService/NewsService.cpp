@@ -26,7 +26,7 @@ public:
 
     virtual void handleRequest(fastcgi::Request *request, fastcgi::HandlerContext *context)
     {
-        NSHandle->ScheduleRequest(request, context);
+        NSHandle->ScheduleRequest(request);
     }
 
 private:

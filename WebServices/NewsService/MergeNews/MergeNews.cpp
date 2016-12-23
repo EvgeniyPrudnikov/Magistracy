@@ -98,7 +98,8 @@ int main(int argc, char* argv[])
 
     if(mongoServerAddressInto == "NULL" || mongoServerAddressFrom == "NULL")
     {
-        throw std::invalid_argument("Wrong mongo server  address");
+        std::cerr<<"Wrong mongo server  address"<<std::endl;
+        return 2;
     }
 
     std::string NewsJsonStrDBInto;

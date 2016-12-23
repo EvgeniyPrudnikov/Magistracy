@@ -12,16 +12,18 @@ class NewsServiceHandler
 {
 public:
 
-    NSMongoStorage* mongoStorage;
+
 
     NewsServiceHandler(fastcgi::ComponentContext *context);
     ~NewsServiceHandler();
 
-    void ScheduleRequest(fastcgi::Request *request, fastcgi::HandlerContext *context);
+    void ScheduleRequest(fastcgi::Request *request);
 
 private:
 
-    void RespondNewsCollection(fastcgi::Request *request, NSMongoStorage* mongoStorage, std::vector<std::string>& params);
-    void RespondNewsInstance(fastcgi::Request *request, NSMongoStorage* mongoStorage, std::string& NewsId);
+    NSMongoStorage* mongoStorage;
+
+    void RespondNewsCollection(fastcgi::Request *request, std::vector<std::string>& params);
+    void RespondNewsInstance(fastcgi::Request *request, std::string& NewsId);
 
 };
