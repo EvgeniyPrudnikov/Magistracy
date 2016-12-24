@@ -46,7 +46,7 @@ GET /news?start_dt=current_date&days_diff=-2&source_uri=
 		]
 }
 ```
-#### Получаение отдельной статьи:
+#### Получение отдельной статьи:
 
 Я не делал отдельную коллекцию для новостей, то есть сейчас этот запрос идет на коллекцию выше и ответ немного изменился в отличие от первоначального API
 
@@ -85,7 +85,7 @@ GET /news/{news_id}
 
 Реализованна арихитектура для AP системы (см CAP теорему) 
 
-![alt tag](https://github.com/EvgeniyPrudnikov/Magistracy/blob/master/WebServices/CAP/src/web5.PNG)
+![alt tag](https://github.com/EvgeniyPrudnikov/Magistracy/blob/master/WebServices/CAP/src/web5.png)
 
 ####Принцип работы
 
