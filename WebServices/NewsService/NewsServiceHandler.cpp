@@ -1,7 +1,7 @@
 
 #include "NewsServiceHandler.h"
 
-const unsigned long NEWS_PREFIX_SIZE = sizeof("/news/") - 2;
+const unsigned long NEWS_PREFIX_SIZE = sizeof("/news/") - 1;
 
 bool IstNewsCollection(const std::string &path, const std::string &method)
 {
@@ -59,6 +59,7 @@ void NewsServiceHandler::ScheduleRequest(fastcgi::Request *request)
     {
         if (!NewsId.empty())
         {
+
             RespondNewsInstance(request, NewsId);
 
         } else
