@@ -117,38 +117,38 @@ GET /news/{news_id}
 
 Стрельба на разладку:
 
-[rpc 1 - 3000, line, analysis!](https://overload.yandex.net/4898#tab=test_data&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482661921&slider_end=1482662113&compress_ratio=1)
+[rpc 1 - 3000, line, analysis](https://overload.yandex.net/4898#tab=test_data&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482661921&slider_end=1482662113&compress_ratio=1)
 
-[rpc 1 - 3000, line, monitoring!](https://overload.yandex.net/4898#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482661921&slider_end=1482662113&compress_ratio=1)
+[rpc 1 - 3000, line, monitoring](https://overload.yandex.net/4898#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482661921&slider_end=1482662113&compress_ratio=1)
 
 Видно, что где-то на 1500 - 1600 rpc процессор загружен почти на 100%, и на графиках анализа видно, что квантили времени начинают ползти вверх и появляются сетевые и http ошибки
 
 Уменьшим rpc до 1500 
 
-[rpc 1500 analysis!](https://overload.yandex.net/4904#tab=test_data&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482663922&slider_end=1482664341&compress_ratio=1)
+[rpc 1500 analysis](https://overload.yandex.net/4904#tab=test_data&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482663922&slider_end=1482664341&compress_ratio=1)
 
-[rpc 1500 monitoring!](https://overload.yandex.net/4904#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482663922&slider_end=1482664341&compress_ratio=1)
+[rpc 1500 monitoring](https://overload.yandex.net/4904#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482663922&slider_end=1482664341&compress_ratio=1)
 
 Получается все равно много, иногда процессор поднимается до ~100% 
 Уменьшим до 1300 
 
-[rpc 1300 analysis!](https://overload.yandex.net/4910#tab=test_data&tags=&plot_groups=main&machines=&metrics=&slider_start=1482665115&slider_end=1482665533)
+[rpc 1300 analysis](https://overload.yandex.net/4910#tab=test_data&tags=&plot_groups=main&machines=&metrics=&slider_start=1482665115&slider_end=1482665533)
 
-[rpc 1300 monitoring!](https://overload.yandex.net/4910#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482665116&slider_end=1482665533&compress_ratio=1)
+[rpc 1300 monitoring](https://overload.yandex.net/4910#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482665116&slider_end=1482665533&compress_ratio=1)
 
 Все равно процессор подводит :( 
 
 Уменьшим до 1100
 
-[rpc 1100 analysis!](https://overload.yandex.net/4917#tab=test_data&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482666495&slider_end=1482666912&compress_ratio=1)
+[rpc 1100 analysis](https://overload.yandex.net/4917#tab=test_data&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482666495&slider_end=1482666912&compress_ratio=1)
 
-[rpc 1100 monitoring!](https://overload.yandex.net/4917#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482666495&slider_end=1482666912&compress_ratio=1)
+[rpc 1100 monitoring](https://overload.yandex.net/4917#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482666495&slider_end=1482666912&compress_ratio=1)
 
 Видно, что уже ситуация получше, есть скачки процессора(возможно из-за системных штук)
 Можно говорить, что этот уровень - оптимальный
 
-По распределению времен ответа видно, что большинство ответов приходят за 1 - 5 ms
-[responce times distribution!](https://overload.yandex.net/4917#tab=test_data&tags=&plot_groups=additional&machines=171&metrics=&slider_start=1482666495&slider_end=1482666912&compress_ratio=1)
+По распределению времен ответа видно, что большинство ответов приходят за 1 - 5 ms 
+[responce times distribution](https://overload.yandex.net/4917#tab=test_data&tags=&plot_groups=additional&machines=171&metrics=&slider_start=1482666495&slider_end=1482666912&compress_ratio=1)
 
-По таблице квантилей ответа [responce times distribution!](https://overload.yandex.net/4917#tab=test_data&tags=&plot_groups=tables&machines=171&metrics=&slider_start=1482666495&slider_end=1482666912&compress_ratio=1)
- видно, что квантиль в 92% - отвечает за 5ms, 98% - 10 ms, 99% - 20 ms, ну и конечно есть какие-то выбросы, например в 40 - 80 ms, однако это всего 0.065% (то есть примерно ~половина 1 десятой процента) от общего числа запросов, возможно это связано с активностями системы.
+По таблице квантилей ответа [responce times distribution](https://overload.yandex.net/4917#tab=test_data&tags=&plot_groups=tables&machines=171&metrics=&slider_start=1482666495&slider_end=1482666912&compress_ratio=1) 
+видно, что квантиль в 92% - отвечает за 5ms, 98% - 10 ms, 99% - 20 ms, ну и конечно есть какие-то выбросы, например в 40 - 80 ms, однако это всего 0.065% (то есть примерно ~половина 1 десятой процента) от общего числа запросов, возможно это связано с активностями системы.
