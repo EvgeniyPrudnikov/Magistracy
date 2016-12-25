@@ -70,7 +70,7 @@ std::string NSMongoStorage::GetNewsItem(std::string &NewsId)
 
     mongocxx::client& localClient = getClient();
     mongocxx::database db = localClient["NewsDB"];
-    mongocxx::collection coll = db["NewsCollection"];
+    mongocxx::collection coll = db["NewsItemCollection"];
 
     bsoncxx::document::value query_value = document{} << "news_uri" << NewsId << finalize;
     mongocxx::stdx::optional<bsoncxx::document::value> maybe_result = coll.find_one(query_value.view());
