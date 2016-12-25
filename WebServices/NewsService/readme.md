@@ -122,5 +122,20 @@ https://overload.yandex.net/4898#tab=monitoring&tags=&plot_groups=main&machines=
 
 Уменьшим rpc до 1500 
 
+https://overload.yandex.net/4904#tab=test_data&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482663922&slider_end=1482664341&compress_ratio=1
+
+https://overload.yandex.net/4904#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482663922&slider_end=1482664341&compress_ratio=1
+
+Получается все равно много, иногда процессор поднимается до ~100% 
+Уменьшим до 1300 
+
+https://overload.yandex.net/4910#tab=test_data&tags=&plot_groups=main&machines=&metrics=&slider_start=1482665115&slider_end=1482665533
+
+https://overload.yandex.net/4910#tab=monitoring&tags=&plot_groups=main&machines=171&metrics=&slider_start=1482665116&slider_end=1482665533&compress_ratio=1
+
+Все равно процессор подводит :( 
+
+Уменьшим до 1100
+
 
 
