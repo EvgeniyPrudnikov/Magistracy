@@ -8,7 +8,6 @@ int a = 1;
 int b = 100;
 
 
-
 double f(double x)
 {
     return x * x;
@@ -18,8 +17,9 @@ double f(double x)
 int main(int argc, char *argv[])
 {
     sem_t mutex;
-    int pid;
+    pid_t pid;
     int left, right;
+
 
     if (argc != 3)
     {
@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 
     int numberOfProcesses = atoi(argv[1]);
     int n = atoi(argv[2]);
+    pid_t children[numberOfProcesses];
 
     double step = (b - a) / (double) n;
 
@@ -40,13 +41,13 @@ int main(int argc, char *argv[])
     }
 
     int cntStepsPerProc = ((b - a) % numberOfProcesses) ?
-                            (b - a) / numberOfProcesses + 1 : (b - a) / numberOfProcesses;
+                          (b - a) / numberOfProcesses + 1 : (b - a) / numberOfProcesses;
 
 
 
 
     /* create, initialize semaphore */
-    if( sem_init(&mutex,1,1) < 0)
+    if (sem_init(&mutex, 1, 1) < 0)
     {
         perror("semaphore initilization");
         exit(0);
@@ -62,9 +63,14 @@ int main(int argc, char *argv[])
         {
             perror("fork");
             return 1;
+
         } else if (pid == 0)
         {
             break;
+
+        } else
+        {
+            children[procNum] = pid;
         }
     }
 
@@ -78,7 +84,7 @@ int main(int argc, char *argv[])
         {
             sum += f(i);
         }
-        sum = (step / 2) * (f(left) + 2*sum + f(right));
+        sum = (step / 2) * (f(left) + 2 * sum + f(right));
 
         sem_wait(&mutex);
         write(pipefdls[1], &sum, sizeof(double));
@@ -86,25 +92,37 @@ int main(int argc, char *argv[])
 
         return 0;
 
-    } else
-    {
-        close(pipefdls[1]);
-
-        double singleResult;
-        double result = 0;
-
-        for (int i = 0; i < numberOfProcesses; i++)
-        {
-            sem_wait(&mutex);
-            read(pipefdls[0], &singleResult, sizeof(double));
-            sem_post(&mutex);
-            result += singleResult;
-
-        }
-
-        printf("%f\n", result);
-        wait(NULL);
     }
+
+    close(pipefdls[1]);
+
+    double singleResult;
+    double result = 0;
+
+    for (int i = 0; i < numberOfProcesses; i++)
+    {
+        read(pipefdls[0], &singleResult, sizeof(double));
+        result += singleResult;
+
+    }
+
+    printf("%f\n", result);
+
+
+    int exitCode = 0;
+    int status;
+    for (int i = 0; i < numberOfProcesses; ++i)
+    {
+        waitpid(children[i], &status, 0);
+        if (WIFEXITED(status))
+        {
+            if (WEXITSTATUS(status) != 0)
+            {
+                exitCode = 1;
+            }
+        }
+    }
+
     sem_close(&mutex);
-    return 0;
+    return exitCode;
 }
