@@ -43,7 +43,7 @@ int main()
     sem_t *mutex_write;
 
     //name the shared memory segment
-    key = 99996;
+    key = key = ftok("file_for_key.txt", 12345);
 
     //create & initialize existing semaphore
     mutex_read = sem_open(SEM_NAME_READ, 0, 0644, 0);
