@@ -125,12 +125,10 @@ int main(int argc, char *argv[])
 
                 char **args = commands[i].data();
 
-
                 if (i == 0)
                 {
-
-                    dup2(pipefds[curr_pipe][1], 1);
                     close(pipefds[curr_pipe][0]);
+                    dup2(pipefds[curr_pipe][1], 1);
 
                 } else if (i == cmd_cnt - 1)
                 {
@@ -173,10 +171,8 @@ int main(int argc, char *argv[])
 
         for (int l = 0; l < cmd_cnt - 1; ++l)
         {
-            for (int i = 0; i < 2; ++i)
-            {
-                close(pipefds[l][i]);
-            }
+            close(pipefds[l][0]);
+            close(pipefds[l][1]);
         }
     }
     int exitCode = 0;

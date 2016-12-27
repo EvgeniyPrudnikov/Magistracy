@@ -6,6 +6,8 @@
 
 # User-specific files
 
+cmake-build-debug
+
 .ipynb_checkpoints
 
 token.txt
