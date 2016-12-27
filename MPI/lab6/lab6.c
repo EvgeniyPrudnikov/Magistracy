@@ -1,9 +1,66 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <zconf.h>
+
+void InitMatrix(int *matr, int n)
+{
+    srand((unsigned) time(NULL));
+    int c = 1;
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            matr[i * n + j] = c++;
+        }
+    }
+}
+
+void PrintMatrix(int *matr, int n)
+{
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            printf("%d ", matr[i * n + j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
 
 
-int main(int argc, char** argv)
+void PrintTape(int *T_local, int m, int n)
+{
+    for (int v = 0; v < m; v++)
+    {
+        for (int u = 0; u < n; u++)
+        {
+            printf("%d ", T_local[v * n + u]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+
+void Mult(const int *__restrict a, const int *__restrict b, int *__restrict c, int m, int n)
+{
+    for (int i = 0; i < m; ++i)
+    {
+        for (int j = 0; j < m; ++j)
+        {
+            for (int k = 0; k < n; ++k)
+            {
+                c[i * m + j] += a[i * n + k] * b[j + k * m];
+            }
+        }
+    }
+}
+
+
+int main(int argc, char **argv)
 {
     int N = atoi(argv[1]);
 
@@ -16,93 +73,65 @@ int main(int argc, char** argv)
     MPI_Comm_size(MPI_COMM_WORLD, &num_of_procs);
     MPI_Comm_rank(MPI_COMM_WORLD, &proc_rank);
 
-    /*int **p_tape = (int **)calloc(rows_per_p, sizeof(int));
-    if (!p_tape)
-    {
-        printf("bad alloc");
-        return 2;
-    }
-    for (int i = 0; i < rows_per_p; i++)
-    {
-        p_tape[i] = (int *)calloc(N2, sizeof(int));
+    int rows_per_p = N / num_of_procs; // 2
 
-        if (!p_tape[i])
-        {
-            printf("bad alloc");
-            return 2;
-        }
-    }
-*/
+    int *A_local = (int *) calloc(N * rows_per_p, sizeof(int));
+    int *B_local = (int *) calloc(N * rows_per_p, sizeof(int));
+    int *C_local = (int *) calloc(rows_per_p * rows_per_p, sizeof(int));
+
+
+    MPI_Datatype acol, acoltype, bcol, bcoltype;
+
     if (proc_rank == 0)
     {
 
-    }
-    else if (proc_rank == num_of_procs - 1)
-    {
-        for (int k = 0; k < num_of_blk_per_p; k++)
-        {
-            int buff_res[block_size];
-            MPI_Recv(buff_res, block_size, MPI_INT, proc_rank - 1, k, MPI_COMM_WORLD, &stat);
+        int *A = (int *) malloc(N * N * sizeof(int));
+        int *B = (int *) malloc(N * N * sizeof(int));
+        int *C = (int *) calloc(N * N, sizeof(int));
 
-            for (int i = 0; i < rows_per_p; i++)
-            {
-                for (int j = k*block_size, c = 0; j < (k + 1)*block_size, c < block_size; j++, c++)
-                {
-                    if (i == 0)
-                    {
-                        p_tape[i][j] = buff_res[c] + 1;
-                    }
-                    else
-                    {
-                        p_tape[i][j] = p_tape[i - 1][j] + 1;
-                    }
-                }
-            }
-        }
+        InitMatrix(A, N);
+        InitMatrix(B, N);
 
-        for (int v = 0; v < rows_per_p; v++)
-        {
-            for (int u = 0; u < N2; u++)
-            {
-                printf("%d ", p_tape[v][u]);
-            }
-            printf("\n");
-        }
+
+        Mult(A,B,C,N,N);
+        PrintMatrix(C, N);
+
+
+        MPI_Type_vector(N, 1, N, MPI_INT, &acol);
+        MPI_Type_commit(&acol);
+        MPI_Type_create_resized(acol, 0, 1 * sizeof(int), &acoltype);
+
+
+        MPI_Type_vector(N, 1, rows_per_p, MPI_INT, &bcol);
+
+        MPI_Type_commit(&bcol);
+        MPI_Type_create_resized(bcol, 0, 1 * sizeof(int), &bcoltype);
+        MPI_Type_commit(&bcoltype);
+
+
+        MPI_Scatter(B, rows_per_p, acoltype, B_local, rows_per_p, bcoltype, 0, MPI_COMM_WORLD);
+        MPI_Scatter(A, N * rows_per_p, MPI_INT, A_local, N * rows_per_p, MPI_INT, 0, MPI_COMM_WORLD);
+
         printf("\n");
-    }
-    else
+
+    } else
     {
-        for (int k = 0; k < num_of_blk_per_p; k++)
-        {
-            int buff_res[block_size];
-            MPI_Recv(buff_res, block_size, MPI_INT, proc_rank - 1, k, MPI_COMM_WORLD, &stat);
+        MPI_Type_vector(N, 1, rows_per_p, MPI_FLOAT, &bcol);
 
-            for (int i = 0; i < rows_per_p; i++)
-            {
-                for (int j = k*block_size, c = 0; j < (k + 1)*block_size, c < block_size; j++, c++)
-                {
-                    if (i == 0)
-                    {
-                        p_tape[i][j] = buff_res[c] + 1;
-                    }
-                    else
-                    {
-                        p_tape[i][j] = p_tape[i - 1][j] + 1;
-                    }
-                }
-            }
-            MPI_Isend(p_tape[rows_per_p - 1] + k*block_size, block_size, MPI_INT, proc_rank + 1, k, MPI_COMM_WORLD, &req);
-        }
+        MPI_Type_commit(&bcol);
+        MPI_Type_create_resized(bcol, 0, 1 * sizeof(int), &bcoltype);
+        MPI_Type_commit(&bcoltype);
 
-        for (int v = 0; v < rows_per_p; v++)
-        {
-            for (int u = 0; u < N2; u++)
-            {
-                printf("%d ", p_tape[v][u]);
-            }
-            printf("\n");
-        }
-        printf("\n");
+        MPI_Scatter(NULL, rows_per_p, acoltype, B_local, rows_per_p, bcoltype, 0, MPI_COMM_WORLD);
+
+        MPI_Scatter(NULL, N * rows_per_p, MPI_INT, A_local, N * rows_per_p, MPI_INT, 0, MPI_COMM_WORLD);
+        PrintTape(B_local, rows_per_p, N);
+        PrintTape(A_local, rows_per_p, N);
+
+        Mult(A_local,B_local,C_local,rows_per_p,N);
+
+        PrintMatrix(C_local,rows_per_p);
+
     }
     MPI_Finalize();
     return 0;
