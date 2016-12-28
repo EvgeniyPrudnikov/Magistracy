@@ -4,26 +4,27 @@
 #include <time.h>
 #include <zconf.h>
 
-void InitMatrix(int *matr, int n)
+
+void InitMatrix(double *matr, int n)
 {
-    srand((unsigned) time(NULL));
+
     int c = 1;
     for (int i = 0; i < n; ++i)
     {
         for (int j = 0; j < n; ++j)
         {
-            matr[i * n + j] = c++;
+            matr[i * n + j] = rand()%1000;
         }
     }
 }
 
-void PrintMatrix(int *matr, int n)
+void PrintMatrix(double *matr, int n)
 {
     for (int i = 0; i < n; ++i)
     {
         for (int j = 0; j < n; ++j)
         {
-            printf("%d ", matr[i * n + j]);
+            printf("%10.2f ", matr[i * n + j]);
         }
         printf("\n");
     }
@@ -31,13 +32,13 @@ void PrintMatrix(int *matr, int n)
 }
 
 
-void PrintTape(int *T_local, int m, int n)
+void PrintTape(double *T_local, int m, int n)
 {
     for (int v = 0; v < m; v++)
     {
         for (int u = 0; u < n; u++)
         {
-            printf("%d ", T_local[v * n + u]);
+            printf("%8.2f ", T_local[v * n + u]);
         }
         printf("\n");
     }
@@ -45,15 +46,15 @@ void PrintTape(int *T_local, int m, int n)
 }
 
 
-void Mult(const int *__restrict a, const int *__restrict b, int *__restrict c, int m, int n)
+void Mult(const double *__restrict a, const double *__restrict b, double *__restrict c, int disp, int m, int n)
 {
     for (int i = 0; i < m; ++i)
     {
-        for (int j = 0; j < m; ++j)
+        for (int j = 0, d = disp * m; j < m, d < m * (disp + 1); ++j, ++d)
         {
             for (int k = 0; k < n; ++k)
             {
-                c[i * m + j] += a[i * n + k] * b[j + k * m];
+                c[i * n + d] += a[i * n + k] * b[j + k * m];
             }
         }
     }
@@ -67,7 +68,6 @@ int main(int argc, char **argv)
     int num_of_procs;
     int proc_rank;
     MPI_Status stat;
-    int *gdispls, *reccount;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &num_of_procs);
@@ -75,77 +75,73 @@ int main(int argc, char **argv)
 
 
     int max_rank = num_of_procs - 1;
-    int rows_per_p = N / num_of_procs;
+    int rows_cols_per_p = N / num_of_procs;
 
-    int *A;
-    int *B;
-    int *C;
+    double *Matrix_A;
+    double *Matrix_B;
+    double *Matrix_C;
 
+    double *Matrix_A_local = (double *) malloc(N * rows_cols_per_p * sizeof(double));
+    double *Matrix_B_local = (double *) malloc(N * rows_cols_per_p * sizeof(double));
+    double *Matrix_C_local = (double *) calloc((size_t) rows_cols_per_p * N, sizeof(double));
 
-    int *A_local = (int *) malloc(N * rows_per_p * sizeof(int));
-    int *B_local = (int *) malloc(N * rows_per_p * sizeof(int));
-    int *C_local = (int *) calloc((size_t) rows_per_p * rows_per_p, sizeof(int));
-
-    MPI_Datatype acol, acoltype, bcol, bcoltype;
+    MPI_Datatype full_col, full_col_type, blk_col, blk_col_type;
 
     if (proc_rank == 0)
     {
-        A = (int *) malloc(N * N * sizeof(int));
-        B = (int *) malloc(N * N * sizeof(int));
-        C = (int *) calloc((size_t) N * N, sizeof(int));
+        Matrix_A = (double *) malloc(N * N * sizeof(double));
+        Matrix_B = (double *) malloc(N * N * sizeof(double));
+        Matrix_C = (double *) calloc((size_t) N * N, sizeof(double));
 
-        InitMatrix(A, N);
-        InitMatrix(B, N);
+        srand((unsigned) time(NULL));
+        InitMatrix(Matrix_A, N);
+        InitMatrix(Matrix_B, N);
+        
+        printf("Matrix A:\n");
+        PrintMatrix(Matrix_A, N);
+        printf("Matrix B:\n");
+        PrintMatrix(Matrix_B, N);
 
-        MPI_Type_vector(N, 1, N, MPI_INT, &acol);
-        MPI_Type_commit(&acol);
-        MPI_Type_create_resized(acol, 0, 1 * sizeof(int), &acoltype);
-        MPI_Type_commit(&acoltype);
-
-        /*gdispls = (int *) calloc(num_of_procs, sizeof(int));
-        gdispls[0] = 0;
-        gdispls[1] = N;
-        reccount = (int *) calloc(num_of_procs, sizeof(int));
-        reccount[0] = rows_per_p*rows_per_p;
-        reccount[1] = rows_per_p*rows_per_p;
-         */
+        MPI_Type_vector(N, 1, N, MPI_DOUBLE, &full_col);
+        MPI_Type_commit(&full_col);
+        MPI_Type_create_resized(full_col, 0, 1 * sizeof(double), &full_col_type);
+        MPI_Type_commit(&full_col_type);
     }
 
-    MPI_Type_vector(N, 1, rows_per_p, MPI_FLOAT, &bcol);
-    MPI_Type_commit(&bcol);
-    MPI_Type_create_resized(bcol, 0, 1 * sizeof(int), &bcoltype);
-    MPI_Type_commit(&bcoltype);
+    MPI_Type_vector(N, 1, rows_cols_per_p, MPI_DOUBLE, &blk_col);
+    MPI_Type_commit(&blk_col);
+    MPI_Type_create_resized(blk_col, 0, 1 * sizeof(double), &blk_col_type);
+    MPI_Type_commit(&blk_col_type);
 
 
-    MPI_Scatter(B, rows_per_p, acoltype, B_local, rows_per_p, bcoltype, 0, MPI_COMM_WORLD);
-    MPI_Scatter(A, N * rows_per_p, MPI_INT, A_local, N * rows_per_p, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Scatter(Matrix_B, rows_cols_per_p, full_col_type, Matrix_B_local, rows_cols_per_p, blk_col_type, 0, MPI_COMM_WORLD);
+    MPI_Scatter(Matrix_A, N * rows_cols_per_p, MPI_DOUBLE, Matrix_A_local, N * rows_cols_per_p, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    Mult(A_local, B_local, C_local, rows_per_p, N);
+    Mult(Matrix_A_local, Matrix_B_local, Matrix_C_local, proc_rank, rows_cols_per_p, N);
 
-    //MPI_Gatherv(C_local, rows_per_p * rows_per_p, MPI_INT, C, reccount, gdispls, MPI_INT, 0, MPI_COMM_WORLD);
 
-    if (proc_rank == 0){
-        PrintMatrix(C,N);
-    }
+    int next_proc = proc_rank == max_rank ? 0 : proc_rank + 1;
+    int prev_proc = proc_rank == 0 ? max_rank : proc_rank - 1;
+    int proc_disp = prev_proc;
 
     for (int i = 0; i < num_of_procs - 1; ++i)
     {
+        MPI_Send(Matrix_B_local, N * rows_cols_per_p, MPI_DOUBLE, next_proc, i, MPI_COMM_WORLD);
 
-        int next_proc = proc_rank + 1;
-        int prev_proc = proc_rank - 1;
+        MPI_Recv(Matrix_B_local, N * rows_cols_per_p, MPI_DOUBLE, prev_proc, i, MPI_COMM_WORLD, &stat);
 
-        MPI_Send(B_local, N * rows_per_p, MPI_INT, proc_rank == max_rank ? 0 : next_proc, i,
-                 MPI_COMM_WORLD);
+        Mult(Matrix_A_local, Matrix_B_local, Matrix_C_local, proc_disp, rows_cols_per_p, N);
 
-        MPI_Recv(B_local, N * rows_per_p, MPI_INT, proc_rank == 0 ? max_rank : prev_proc, MPI_ANY_TAG,
-                 MPI_COMM_WORLD, &stat);
-
-        /*if (proc_rank == 1)
-        {
-            PrintTape(B_local, rows_per_p, N);
-        }*/
+        proc_disp = proc_disp == 0 ? max_rank : proc_disp - 1;
     }
 
+    MPI_Gather(Matrix_C_local, N * rows_cols_per_p, MPI_DOUBLE, Matrix_C, N * rows_cols_per_p, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    if (proc_rank == 0)
+    {
+        printf("Result matrix C:\n");
+        PrintMatrix(Matrix_C, N);
+    }
 
     MPI_Finalize();
     return 0;
