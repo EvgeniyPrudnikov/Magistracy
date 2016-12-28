@@ -1,3 +1,6 @@
+
+#define ROOT 0
+
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -74,7 +77,7 @@ int main(int argc, char **argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &proc_rank);
 
 
-    int max_rank = num_of_procs - 1;
+    int MAX_RANK = num_of_procs - 1;
     int rows_cols_per_p = N / num_of_procs;
 
     double *Matrix_A;
@@ -87,7 +90,7 @@ int main(int argc, char **argv)
 
     MPI_Datatype full_col, full_col_type, blk_col, blk_col_type;
 
-    if (proc_rank == 0)
+    if (proc_rank == ROOT)
     {
         Matrix_A = (double *) malloc(N * N * sizeof(double));
         Matrix_B = (double *) malloc(N * N * sizeof(double));
@@ -114,14 +117,14 @@ int main(int argc, char **argv)
     MPI_Type_commit(&blk_col_type);
 
 
-    MPI_Scatter(Matrix_B, rows_cols_per_p, full_col_type, Matrix_B_local, rows_cols_per_p, blk_col_type, 0, MPI_COMM_WORLD);
-    MPI_Scatter(Matrix_A, N * rows_cols_per_p, MPI_DOUBLE, Matrix_A_local, N * rows_cols_per_p, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Scatter(Matrix_B, rows_cols_per_p, full_col_type, Matrix_B_local, rows_cols_per_p, blk_col_type, ROOT, MPI_COMM_WORLD);
+    MPI_Scatter(Matrix_A, N * rows_cols_per_p, MPI_DOUBLE, Matrix_A_local, N * rows_cols_per_p, MPI_DOUBLE, ROOT, MPI_COMM_WORLD);
 
     Mult(Matrix_A_local, Matrix_B_local, Matrix_C_local, proc_rank, rows_cols_per_p, N);
 
 
-    int next_proc = proc_rank == max_rank ? 0 : proc_rank + 1;
-    int prev_proc = proc_rank == 0 ? max_rank : proc_rank - 1;
+    int next_proc = proc_rank == MAX_RANK ? ROOT : proc_rank + 1;
+    int prev_proc = proc_rank == ROOT ? MAX_RANK : proc_rank - 1;
     int proc_disp = prev_proc;
 
     for (int i = 0; i < num_of_procs - 1; ++i)
@@ -132,12 +135,12 @@ int main(int argc, char **argv)
 
         Mult(Matrix_A_local, Matrix_B_local, Matrix_C_local, proc_disp, rows_cols_per_p, N);
 
-        proc_disp = proc_disp == 0 ? max_rank : proc_disp - 1;
+        proc_disp = proc_disp == ROOT ? MAX_RANK : proc_disp - 1;
     }
 
-    MPI_Gather(Matrix_C_local, N * rows_cols_per_p, MPI_DOUBLE, Matrix_C, N * rows_cols_per_p, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Gather(Matrix_C_local, N * rows_cols_per_p, MPI_DOUBLE, Matrix_C, N * rows_cols_per_p, MPI_DOUBLE, ROOT, MPI_COMM_WORLD);
 
-    if (proc_rank == 0)
+    if (proc_rank == ROOT)
     {
         printf("Result matrix C:\n");
         PrintMatrix(Matrix_C, N);
