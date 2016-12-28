@@ -86,7 +86,7 @@ int main(int argc, char **argv)
     double *Matrix_B_local = (double *) malloc(N * rows_cols_per_p * sizeof(double));
     double *Matrix_C_local = (double *) calloc((size_t) rows_cols_per_p * N, sizeof(double));
 
-    MPI_Datatype full_col, full_col_type, blk_col, blk_col_type;
+    MPI_Datatype column_t, column_t_res;
 
     if (proc_rank == ROOT)
     {
@@ -103,19 +103,13 @@ int main(int argc, char **argv)
         printf("Matrix B:\n");
         PrintMatrix(Matrix_B, N);
 
-        MPI_Type_vector(N, 1, N, MPI_DOUBLE, &full_col);
-        MPI_Type_commit(&full_col);
-        MPI_Type_create_resized(full_col, 0, 1 * sizeof(double), &full_col_type);
-        MPI_Type_commit(&full_col_type);
+        MPI_Type_vector(N, 1, N, MPI_DOUBLE, &column_t);
+        MPI_Type_commit(&column_t);
+        MPI_Type_create_resized(column_t, 0, 1 * sizeof(double), &column_t_res);
+        MPI_Type_commit(&column_t_res);
     }
 
-    MPI_Type_vector(N, 1, rows_cols_per_p, MPI_DOUBLE, &blk_col);
-    MPI_Type_commit(&blk_col);
-    MPI_Type_create_resized(blk_col, 0, 1 * sizeof(double), &blk_col_type);
-    MPI_Type_commit(&blk_col_type);
-
-
-    MPI_Scatter(Matrix_B, rows_cols_per_p, full_col_type, Matrix_B_local, rows_cols_per_p, blk_col_type, ROOT, MPI_COMM_WORLD);
+    MPI_Scatter(Matrix_B, rows_cols_per_p, column_t_res, Matrix_B_local, N*rows_cols_per_p, MPI_DOUBLE, ROOT, MPI_COMM_WORLD);
     MPI_Scatter(Matrix_A, N * rows_cols_per_p, MPI_DOUBLE, Matrix_A_local, N * rows_cols_per_p, MPI_DOUBLE, ROOT, MPI_COMM_WORLD);
 
     Mult(Matrix_A_local, Matrix_B_local, Matrix_C_local, proc_rank, rows_cols_per_p, N);
