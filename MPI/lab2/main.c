@@ -1,18 +1,19 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-long a = -5;
-long b = 5;
-double step;
+double a = 1;
+double b = 101;
+//double step;
 double result;
 
 pthread_mutex_t mutex;
 
 struct thdata {
-    long left;
-    long right;
-    double step;
+    double left;
+    double right;
+    long numn;
 };
 
 double f (double x)
@@ -24,16 +25,24 @@ void* worker(void *ptrData)
 {
     struct thdata *data = (struct thdata *)ptrData;
 
+    double step = (data->right - data->left)/data->numn;
     double sum = 0.;
-    for (double i = data->left; i < data->right; i+=data->step)
+
+    for (double i = data->left + step; i < data->right; i+=step)
     {
         sum+= f(i);
     }
     sum = (step/2) * (f(data->left) + 2*sum + f(data->right));
 
-    pthread_mutex_lock(&mutex);
+    if (pthread_mutex_lock(&mutex)) {
+        perror("pthread_mutex_lock");
+    }
+
     result += sum;
-    pthread_mutex_unlock(&mutex);
+
+    if (pthread_mutex_unlock(&mutex)) {
+        perror("pthread_mutex_unlock");
+    }
 
     pthread_exit(NULL);
 }
@@ -42,40 +51,48 @@ int main(int argc, char **argv)
 {
 
     int numberOfThreads = atoi(argv[1]);
-    int n = atoi(argv[2]);
-
-    step = (b-a)/(double)n;
+    long n = atol(argv[2]);
 
     result = 0;
 
     pthread_t threads[numberOfThreads];
-    int rc;
+
     struct thdata thr_data[numberOfThreads];
 
-    pthread_mutex_init(&mutex,NULL);
+    if (pthread_mutex_init(&mutex, NULL)) {
+        perror("pthread_mutex_init");
+        return 1;
+    }
 
-    long cntStepsPerThread = ((b - a) % numberOfThreads) ?
-                            (b - a) / numberOfThreads + 1 : (b - a) / numberOfThreads;
+    double cntStepsPerThread = ((b - a) / (double)numberOfThreads);
 
     for (int i = 0; i < numberOfThreads; ++i)
     {
-        thr_data[i].step = step;
+        thr_data[i].numn = n;
         thr_data[i].left = a + i * cntStepsPerThread;
         thr_data[i].right = (a + (i + 1) * cntStepsPerThread < b) ? a + (i + 1) * cntStepsPerThread : b;
 
-        if((rc = pthread_create(&threads[i],NULL,worker,&thr_data[i])))
+        if((pthread_create(&threads[i],NULL,worker,&thr_data[i])))
         {
-            fprintf(stderr, "can not create thread, rc %d\n", rc);
+            perror("pthread_create");
             return 2;
         }
     }
 
     for (int j = 0; j <numberOfThreads; ++j)
     {
-        pthread_join(threads[j],NULL);
+        if (pthread_join(threads[j], NULL)) {
+            perror("pthread_join");
+            return 2;
+        }
     }
 
     printf("%f",result);
+
+    if (pthread_mutex_destroy(&mutex)) {
+        perror("pthread_mutex_destroy");
+        return 2;
+    }
 
 
     return 0;

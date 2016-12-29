@@ -10,11 +10,12 @@
 
 void InitMatrix(double *matr, int n)
 {
+    int c = 1;
     for (int i = 0; i < n; ++i)
     {
         for (int j = 0; j < n; ++j)
         {
-            matr[i * n + j] = rand()%1000;
+            matr[i * n + j] = c;
         }
     }
 }
@@ -97,7 +98,7 @@ int main(int argc, char **argv)
         srand((unsigned) time(NULL));
         InitMatrix(Matrix_A, N);
         InitMatrix(Matrix_B, N);
-        
+
         printf("Matrix A:\n");
         PrintMatrix(Matrix_A, N);
         printf("Matrix B:\n");
@@ -109,7 +110,7 @@ int main(int argc, char **argv)
         MPI_Type_commit(&column_t_res);
     }
 
-    MPI_Scatter(Matrix_B, rows_cols_per_p, column_t_res, Matrix_B_local, N*rows_cols_per_p, MPI_DOUBLE, ROOT, MPI_COMM_WORLD);
+    MPI_Scatter(Matrix_B, rows_cols_per_p, column_t_res, Matrix_B_local, N * rows_cols_per_p, MPI_DOUBLE, ROOT, MPI_COMM_WORLD);
     MPI_Scatter(Matrix_A, N * rows_cols_per_p, MPI_DOUBLE, Matrix_A_local, N * rows_cols_per_p, MPI_DOUBLE, ROOT, MPI_COMM_WORLD);
 
     Mult(Matrix_A_local, Matrix_B_local, Matrix_C_local, proc_rank, rows_cols_per_p, N);
@@ -121,9 +122,7 @@ int main(int argc, char **argv)
 
     for (int i = 0; i < num_of_procs - 1; ++i)
     {
-        MPI_Send(Matrix_B_local, N * rows_cols_per_p, MPI_DOUBLE, next_proc, i, MPI_COMM_WORLD);
-
-        MPI_Recv(Matrix_B_local, N * rows_cols_per_p, MPI_DOUBLE, prev_proc, i, MPI_COMM_WORLD, &stat);
+        MPI_Sendrecv_replace(Matrix_B_local, N * rows_cols_per_p, MPI_DOUBLE, next_proc, i, prev_proc, i, MPI_COMM_WORLD, &stat);
 
         Mult(Matrix_A_local, Matrix_B_local, Matrix_C_local, proc_disp, rows_cols_per_p, N);
 

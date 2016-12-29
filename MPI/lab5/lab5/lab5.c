@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 
-void PrintMatrix(int *matr, int n,int m)
+void PrintMatrix(int *matr, int n, int m)
 {
     for (int i = 0; i < n; ++i)
     {
@@ -37,12 +37,12 @@ int main(int argc, char **argv)
     int num_of_blk_per_p = N2 / block_size; //5
 
     int *Matrix;
-    int *p_tape = (int *) calloc(N2 * rows_per_p, sizeof(int));
+    int *p_tape = (int *) calloc((size_t) N2 * rows_per_p, sizeof(int));
 
 
     if (proc_rank == 0)
     {
-        Matrix = (int *) calloc(N1 * N2, sizeof(int));
+        Matrix = (int *) calloc((size_t) N1 * N2, sizeof(int));
 
         for (int k = 0; k < num_of_blk_per_p; k++)
         {
@@ -53,8 +53,7 @@ int main(int argc, char **argv)
                     p_tape[i * N2 + j] = p_tape[(i - 1) * N2 + j] + 1;
                 }
             }
-            MPI_Isend(&(p_tape[(rows_per_p - 1) * N2]) + k * block_size, block_size, MPI_INT, proc_rank + 1, k,
-                      MPI_COMM_WORLD, &req);
+            MPI_Isend(&(p_tape[(rows_per_p - 1) * N2]) + k * block_size, block_size, MPI_INT, proc_rank + 1, k, MPI_COMM_WORLD, &req);
         }
 
     } else if (proc_rank == num_of_procs - 1)
@@ -71,6 +70,7 @@ int main(int argc, char **argv)
                     if (i == 0)
                     {
                         p_tape[i * N2 + j] = buff_res[c] + 1;
+
                     } else
                     {
                         p_tape[i * N2 + j] = p_tape[(i - 1) * N2 + j] + 1;
@@ -100,8 +100,7 @@ int main(int argc, char **argv)
                     }
                 }
             }
-            MPI_Isend(&p_tape[(rows_per_p - 1) * N2] + k * block_size, block_size, MPI_INT, proc_rank + 1, k,
-                      MPI_COMM_WORLD, &req);
+            MPI_Isend(&p_tape[(rows_per_p - 1) * N2] + k * block_size, block_size, MPI_INT, proc_rank + 1, k, MPI_COMM_WORLD, &req);
         }
     }
 
