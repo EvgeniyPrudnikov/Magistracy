@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     vector<vector<char *>> commands;
 
-    char *sep = (char *) "|";
+    const char *sep = "|";
 
     int param_pos = 1;
     int sep_pos = 0;
