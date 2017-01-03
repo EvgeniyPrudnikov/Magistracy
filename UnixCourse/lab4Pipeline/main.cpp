@@ -8,7 +8,8 @@
 using namespace std;
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     vector<vector<char *>> commands;
 
     const char *sep = "|";
@@ -89,7 +90,6 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
         }
-
 
         for (int i = 0; i < cmd_cnt; ++i) {
             int curr_pipe = i == 0 ? 0 : i - 1;
