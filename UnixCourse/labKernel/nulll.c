@@ -3,6 +3,7 @@
 #include <linux/init.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
+#include <asm/uaccess.h>
 #include <linux/miscdevice.h>
 #include <linux/sched.h>
 #include <linux/mutex.h>
@@ -46,11 +47,12 @@ static ssize_t device_write( struct file *file, const char __user * in, size_t s
     return size;
 }
 
-static long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long *ioctl_param) {
+static long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl_param) {
     if (ioctl_num == BLKGETSIZE64) {
-        *ioctl_param = bytes_counter;
+        copy_to_user((void __user *)ioctl_param, (const void *)&bytes_counter, sizeof(unsigned long));
+        return SUCCESS;
     }
-   	return SUCCESS;
+   	return -ENOTTY;
 }
 
 static struct file_operations nulll_fops = {
