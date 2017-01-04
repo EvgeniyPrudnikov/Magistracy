@@ -34,20 +34,15 @@ static int device_release( struct inode *inode, struct file *file ) {
 static ssize_t device_write( struct file *file, const char __user * in, size_t size, loff_t * off ) {
     if (mutex_lock_interruptible(&lock)) {
         return -ERESTARTSYS;
-		goto out;
 	}
     bytes_counter += size;
     if ( capacity > 0 && bytes_counter > capacity) {
         bytes_counter = capacity;
-        goto out_err;
+        mutex_unlock(&lock);
+        return -ENOSPC;
 	}
     mutex_unlock(&lock);
- out:
     return size;
-out_err:
-    mutex_unlock(&lock);
-    return -ENOSPC;
-
 }
 
 static long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl_param) {
