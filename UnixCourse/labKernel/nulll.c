@@ -47,8 +47,12 @@ static ssize_t device_write( struct file *file, const char __user * in, size_t s
 
 static long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl_param) {
     if (ioctl_num == BLKGETSIZE64) {
-        copy_to_user((void __user *)ioctl_param, (const void *)&bytes_counter, sizeof(unsigned long));
-        return SUCCESS;
+        unsigned long res;
+        res = copy_to_user((void __user *)ioctl_param, (const void *)&bytes_counter, sizeof(unsigned long));
+        if (res == 0) {
+            return SUCCESS;
+        }
+        return -EFAULT;
     }
    	return -ENOTTY;
 }
