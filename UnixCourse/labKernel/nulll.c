@@ -39,12 +39,15 @@ static ssize_t device_write( struct file *file, const char __user * in, size_t s
     bytes_counter += size;
     if ( capacity > 0 && bytes_counter > capacity) {
         bytes_counter = capacity;
-		return -ENOSPC;
-		goto out;
+        goto out_err;
 	}
     mutex_unlock(&lock);
  out:
     return size;
+out_err:
+    mutex_unlock(&lock);
+    return -ENOSPC;
+
 }
 
 static long device_ioctl(struct file *file, unsigned int ioctl_num, unsigned long ioctl_param) {
