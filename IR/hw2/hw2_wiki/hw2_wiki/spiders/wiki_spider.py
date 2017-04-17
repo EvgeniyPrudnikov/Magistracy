@@ -33,14 +33,12 @@ class WikiSpider(scrapy.Spider):
         linked_links = [response.urljoin(link) for link in response.xpath(self.body_link_selector).extract() if
                         link[0] != '#']
 
-        if (len(self.visited_urls) + len(linked_links)) < 10**4:
-            item['linked_urls'] = linked_links
+        item['linked_urls'] = linked_links
 
         yield item
 
         self.visited_urls.add(response.url)
 
-        if (len(self.visited_urls) + len(linked_links)) < 10 ** 4:
-            for next_url in linked_links:
-                if self.allowed_re.match(next_url) and next_url not in self.visited_urls:
-                    yield scrapy.Request(next_url, callback=self.parse) # , headers={'referer': response.url})
+        for next_url in linked_links:
+            if self.allowed_re.match(next_url) and next_url not in self.visited_urls:
+                yield scrapy.Request(next_url, callback=self.parse) # , headers={'referer': response.url})

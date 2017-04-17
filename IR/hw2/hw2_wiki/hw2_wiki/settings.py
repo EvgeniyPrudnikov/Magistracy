@@ -14,7 +14,7 @@ BOT_NAME = 'hw2_wiki'
 SPIDER_MODULES = ['hw2_wiki.spiders']
 NEWSPIDER_MODULE = 'hw2_wiki.spiders'
 FEED_FORMAT="jsonlines"
-FEED_URI="sitegraph3.json"
+FEED_URI="sitegraph.json"
 CLOSESPIDER_PAGECOUNT = 10000
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'hw2_wiki (+http://www.yourdomain.com)'
