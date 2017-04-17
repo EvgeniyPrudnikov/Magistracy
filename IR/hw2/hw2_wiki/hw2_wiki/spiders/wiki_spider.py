@@ -30,14 +30,17 @@ class WikiSpider(scrapy.Spider):
         item['snippet'] = BeautifulSoup(response.xpath('//div[ @ id = "mw-content-text"] / p[1]').extract_first(),
                                         'lxml').get_text()[:255].encode('utf-8') + '...'
 
-        item['linked_urls'] = response.request.headers.get('referer', None)
+        linked_links = [response.urljoin(link) for link in response.xpath(self.body_link_selector).extract() if
+                        link[0] != '#']
+
+        if (len(self.visited_urls) + len(linked_links)) < 10**4:
+            item['linked_urls'] = linked_links
 
         yield item
 
         self.visited_urls.add(response.url)
-        linked_links = [response.urljoin(link) for link in response.xpath(self.body_link_selector).extract() if
-                        link[0] != '#']
 
-        for next_url in linked_links:
-            if self.allowed_re.match(next_url) and next_url not in self.visited_urls:
-                yield scrapy.Request(next_url, callback=self.parse, headers={'referer': response.url})
+        if (len(self.visited_urls) + len(linked_links)) < 10 ** 4:
+            for next_url in linked_links:
+                if self.allowed_re.match(next_url) and next_url not in self.visited_urls:
+                    yield scrapy.Request(next_url, callback=self.parse) # , headers={'referer': response.url})
