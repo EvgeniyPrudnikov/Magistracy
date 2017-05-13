@@ -2,27 +2,13 @@ import gc
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-<<<<<<< HEAD
-=======
 from sklearn.cross_validation import StratifiedKFold
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
 from sklearn.metrics import matthews_corrcoef
 from operator import itemgetter
 
 # per raddar, all date features except for stations 24+25 are identical
 
 def get_date_features():
-<<<<<<< HEAD
-    directory = '../../../diploma_data/'
-    trainfile = 'train_date.csv'
-
-    for i, chunk in enumerate(pd.read_csv(directory + trainfile,
-                                          chunksize=1,
-                                          low_memory=False)):
-        features = list(chunk.columns)
-        break
-
-=======
     directory = '../input/'
     trainfile = 'train_date.csv'
     
@@ -32,39 +18,12 @@ def get_date_features():
         features = list(chunk.columns)
         break
 
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
     seen = np.zeros(52)
     rv = []
     for f in features:
         if f == 'Id' or 'S24' in f or 'S25' in f:
             rv.append(f)
             continue
-<<<<<<< HEAD
-
-        station = int(f.split('_')[1][1:])
-        #print station
-
-        if seen[station]:
-            continue
-
-        seen[station] = 1
-        rv.append(f)
-
-    return rv
-
-
-usefuldatefeatures = get_date_features()
-
-
-def get_mindate():
-    directory = '../../../diploma_data/'
-    trainfile = 'train_date.csv'
-    testfile = 'test_date.csv'
-
-    features = None
-    subset = None
-
-=======
             
         station = int(f.split('_')[1][1:])
 #        print(station)
@@ -87,22 +46,11 @@ def get_mindate():
     features = None
     subset = None
     
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
     for i, chunk in enumerate(pd.read_csv(directory + trainfile,
                                           usecols=usefuldatefeatures,
                                           chunksize=50000,
                                           low_memory=False)):
         print(i)
-<<<<<<< HEAD
-
-        if features is None:
-            features = list(chunk.columns)
-            features.remove('Id')
-
-        df_mindate_chunk = chunk[['Id']].copy()
-        df_mindate_chunk['mindate'] = chunk[features].min(axis=1).values
-
-=======
         
         if features is None:
             features = list(chunk.columns)
@@ -111,16 +59,11 @@ def get_mindate():
         df_mindate_chunk = chunk[['Id']].copy()
         df_mindate_chunk['mindate'] = chunk[features].min(axis=1).values
         
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
         if subset is None:
             subset = df_mindate_chunk.copy()
         else:
             subset = pd.concat([subset, df_mindate_chunk])
-<<<<<<< HEAD
-
-=======
             
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
         del chunk
         gc.collect()
 
@@ -129,16 +72,6 @@ def get_mindate():
                                           chunksize=50000,
                                           low_memory=False)):
         print(i)
-<<<<<<< HEAD
-
-        df_mindate_chunk = chunk[['Id']].copy()
-        df_mindate_chunk['mindate'] = chunk[features].min(axis=1).values
-        subset = pd.concat([subset, df_mindate_chunk])
-
-        del chunk
-        gc.collect()
-
-=======
         
         df_mindate_chunk = chunk[['Id']].copy()
         df_mindate_chunk['mindate'] = chunk[features].min(axis=1).values
@@ -147,7 +80,6 @@ def get_mindate():
         del chunk
         gc.collect()      
         
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
     return subset
 
 
@@ -162,10 +94,6 @@ midr[0:-1] = -df_mindate.mindate_id_diff.values[1:]
 
 df_mindate['mindate_id_diff_reverse'] = midr
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
 def mcc(tp, tn, fp, fn):
     sup = tp * tn - fp * fn
     inf = (tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)
@@ -232,11 +160,7 @@ def LeaveOneOut(data1, data2, columnName, useLOO=False):
     grpOutcomes = data1.groupby(columnName)['Response'].mean().reset_index()
     grpCount = data1.groupby(columnName)['Response'].count().reset_index()
     grpOutcomes['cnt'] = grpCount.Response
-<<<<<<< HEAD
-    if (useLOO):
-=======
     if(useLOO):
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
         grpOutcomes = grpOutcomes[grpOutcomes.cnt > 1]
     grpOutcomes.drop('cnt', inplace=True, axis=1)
     outcomes = data2['Response'].values
@@ -245,23 +169,14 @@ def LeaveOneOut(data1, data2, columnName, useLOO=False):
                  how='left',
                  on=columnName,
                  left_index=True)['Response']
-<<<<<<< HEAD
-    if (useLOO):
-        x = ((x * x.shape[0]) - outcomes) / (x.shape[0] - 1)
-=======
     if(useLOO):
         x = ((x*x.shape[0])-outcomes)/(x.shape[0]-1)
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
         #  x = x + np.random.normal(0, .01, x.shape[0])
     return x.fillna(x.mean())
 
 
 def GrabData():
-<<<<<<< HEAD
-    directory = '../../../diploma_data/'
-=======
     directory = '../input/'
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
     trainfiles = ['train_categorical.csv',
                   'train_date.csv',
                   'train_numeric.csv']
@@ -328,17 +243,10 @@ def GrabData():
             testdata = pd.merge(testdata, subset.copy(), on="Id")
         del subset
         gc.collect()
-<<<<<<< HEAD
-
-    traindata = traindata.merge(df_mindate, on='Id')
-    testdata = testdata.merge(df_mindate, on='Id')
-
-=======
         
     traindata = traindata.merge(df_mindate, on='Id')
     testdata = testdata.merge(df_mindate, on='Id')
         
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
     testdata['Response'] = 0  # Add Dummy Value
     visibletraindata = traindata[::2]
     blindtraindata = traindata[1::2]
@@ -379,10 +287,6 @@ def Train():
     trainpredictions = None
     testpredictions = None
 
-<<<<<<< HEAD
-    dvisibletrain = xgb.DMatrix(train[features],train.Response,silent=True)
-    dtest = xgb.DMatrix(test[features],silent=True)
-=======
     dvisibletrain = \
         xgb.DMatrix(train[features],
                     train.Response,
@@ -390,7 +294,6 @@ def Train():
     dtest = \
         xgb.DMatrix(test[features],
                     silent=True)
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
 
     folds = 1
     for i in range(folds):
@@ -404,11 +307,7 @@ def Train():
                         feval=mcc_eval,
                         maximize=True
                         )
-<<<<<<< HEAD
-        limit = clf.best_iteration + 1
-=======
         limit = clf.best_iteration+1
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
         # limit = clf.best_ntree_limit
         predictions = \
             clf.predict(dvisibletrain, ntree_limit=limit)
@@ -420,20 +319,12 @@ def Train():
         print('mcc:', best_mcc)
         print(matthews_corrcoef(train.Response,
                                 y_pred))
-<<<<<<< HEAD
-        if (trainpredictions is None):
-=======
         if(trainpredictions is None):
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
             trainpredictions = predictions
         else:
             trainpredictions += predictions
         predictions = clf.predict(dtest, ntree_limit=limit)
-<<<<<<< HEAD
-        if (testpredictions is None):
-=======
         if(testpredictions is None):
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
             testpredictions = predictions
         else:
             testpredictions += predictions
@@ -441,36 +332,12 @@ def Train():
         print('Importance array: ', imp)
 
     best_proba, best_mcc, y_pred = eval_mcc(train.Response,
-<<<<<<< HEAD
-                                            trainpredictions / folds,
-=======
                                             trainpredictions/folds,
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
                                             True)
     print(matthews_corrcoef(train.Response,
                             y_pred))
 
     submission = pd.DataFrame({"Id": train.Id,
-<<<<<<< HEAD
-                               "Prediction": trainpredictions / folds,
-                               "Response": train.Response})
-    submission[['Id',
-                'Prediction',
-                'Response']].to_csv('rawtrainxgbsubmission' + str(folds) + '.csv',
-                                    index=False)
-
-    submission = pd.DataFrame({"Id": test.Id.values,
-                               "Response": testpredictions / folds})
-    submission[['Id', 'Response']].to_csv('rawxgbsubmission' + str(folds) + '.csv',
-                                          index=False)
-    y_pred = (testpredictions / folds > .08).astype(int)
-    submission = pd.DataFrame({"Id": test.Id.values,
-                               "Response": y_pred})
-    submission[['Id', 'Response']].to_csv('xgbsubmission' + str(folds) + '.csv',
-                                          index=False)
-
-
-=======
                                "Prediction": trainpredictions/folds,
                                "Response": train.Response})
     submission[['Id',
@@ -488,7 +355,6 @@ def Train():
     submission[['Id', 'Response']].to_csv('xgbsubmission'+str(folds)+'.csv',
                                           index=False)
 
->>>>>>> 2b6070dbeac435f25d458c2aa39f5eb71a03e2f5
 if __name__ == "__main__":
     print('Started')
     Train()
