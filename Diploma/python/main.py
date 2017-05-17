@@ -5,11 +5,13 @@ import xgboost as xgb
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.metrics import matthews_corrcoef
 from operator import itemgetter
+import matplotlib.pyplot as plt
+from numba import jit
 
 # per raddar, all date features except for stations 24+25 are identical
 
 def get_date_features():
-    directory = '../input/'
+    directory = '../../../diploma_data/'
     trainfile = 'train_date.csv'
     
     for i, chunk in enumerate(pd.read_csv(directory + trainfile,
@@ -39,7 +41,7 @@ def get_date_features():
 usefuldatefeatures = get_date_features()
 
 def get_mindate():
-    directory = '../input/'
+    directory = '../../../diploma_data/'
     trainfile = 'train_date.csv'
     testfile = 'test_date.csv'
     
@@ -83,17 +85,74 @@ def get_mindate():
     return subset
 
 
-df_mindate = get_mindate()
+def get_maxdate():
+    directory = '../../../diploma_data/'
+    trainfile = 'train_date.csv'
+    testfile = 'test_date.csv'
 
-df_mindate.sort_values(by=['mindate', 'Id'], inplace=True)
+    features = None
+    subset = None
 
-df_mindate['mindate_id_diff'] = df_mindate.Id.diff()
+    for i, chunk in enumerate(pd.read_csv(directory + trainfile,
+                                          usecols=usefuldatefeatures,
+                                          chunksize=50000,
+                                          low_memory=False)):
+        print(i)
 
-midr = np.full_like(df_mindate.mindate_id_diff.values, np.nan)
-midr[0:-1] = -df_mindate.mindate_id_diff.values[1:]
+        if features is None:
+            features = list(chunk.columns)
+            features.remove('Id')
 
-df_mindate['mindate_id_diff_reverse'] = midr
+        df_maxdate_chunk = chunk[['Id']].copy()
+        df_maxdate_chunk['maxdate'] = chunk[features].max(axis=1).values
 
+        if subset is None:
+            subset = df_maxdate_chunk.copy()
+        else:
+            subset = pd.concat([subset, df_maxdate_chunk])
+
+        del chunk
+        gc.collect()
+
+    for i, chunk in enumerate(pd.read_csv(directory + testfile,
+                                          usecols=usefuldatefeatures,
+                                          chunksize=50000,
+                                          low_memory=False)):
+        print(i)
+
+        df_maxdate_chunk = chunk[['Id']].copy()
+        df_maxdate_chunk['maxdate'] = chunk[features].min(axis=1).values
+        subset = pd.concat([subset, df_maxdate_chunk])
+
+        del chunk
+        gc.collect()
+
+    return subset
+
+
+def get_min_max_date_df():
+
+    df_mindt = get_mindate()
+
+    df_mindt.sort_values(by=['mindate', 'Id'], inplace=True)
+    df_mindt['mindate_id_diff'] = df_mindt.Id.diff()
+    midr = np.full_like(df_mindt.mindate_id_diff.values, np.nan)
+    midr[0:-1] = -df_mindt.mindate_id_diff.values[1:]
+    df_mindt['mindate_id_diff_reverse'] = midr
+
+    df_maxdt = get_maxdate()
+
+    df_maxdt.sort_values(by=['maxdate', 'Id'], inplace=True)
+    df_maxdt['maxdate_id_diff'] = df_maxdt.Id.diff()
+    midr = np.full_like(df_maxdt.mindate_id_diff.values, np.nan)
+    midr[0:-1] = -df_maxdt.mindate_id_diff.values[1:]
+    df_maxdt['maxdate_id_diff_reverse'] = midr
+
+    return df_mindt, df_maxdt
+
+df_mindate, df_maxdate = get_min_max_date_df()
+
+@jit
 def mcc(tp, tn, fp, fn):
     sup = tp * tn - fp * fn
     inf = (tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)
@@ -102,7 +161,7 @@ def mcc(tp, tn, fp, fn):
     else:
         return sup / np.sqrt(inf)
 
-
+@jit
 def eval_mcc(y_true, y_prob, show=False):
     idx = np.argsort(y_prob)
     y_true_sort = y_true[idx]
@@ -131,6 +190,8 @@ def eval_mcc(y_true, y_prob, show=False):
     if show:
         best_proba = y_prob[idx[best_id]]
         y_pred = (y_prob > best_proba).astype(int)
+        #plt.interactive(True)
+        plt.plot(mccs)
         return best_proba, best_mcc, y_pred
     else:
         return best_mcc
@@ -176,7 +237,7 @@ def LeaveOneOut(data1, data2, columnName, useLOO=False):
 
 
 def GrabData():
-    directory = '../input/'
+    directory = '../../../diploma_data/'
     trainfiles = ['train_categorical.csv',
                   'train_date.csv',
                   'train_numeric.csv']
@@ -246,6 +307,8 @@ def GrabData():
         
     traindata = traindata.merge(df_mindate, on='Id')
     testdata = testdata.merge(df_mindate, on='Id')
+    traindata = traindata.merge(df_maxdate, on='Id')
+    testdata = testdata.merge(df_maxdate, on='Id')
         
     testdata['Response'] = 0  # Add Dummy Value
     visibletraindata = traindata[::2]
@@ -281,19 +344,14 @@ def Train():
     params['colsample_bytree'] = 0.82
     params['min_child_weight'] = 3
     params['base_score'] = 0.005
-    params['silent'] = True
-
+    params['silent'] = 0
+    params['scale_pos_weight'] = 0.06 # test param
     print('Fitting')
     trainpredictions = None
     testpredictions = None
 
-    dvisibletrain = \
-        xgb.DMatrix(train[features],
-                    train.Response,
-                    silent=True)
-    dtest = \
-        xgb.DMatrix(test[features],
-                    silent=True)
+    dvisibletrain = xgb.DMatrix(train[features], train.Response, silent=True)
+    dtest = xgb.DMatrix(test[features], silent=True)
 
     folds = 1
     for i in range(folds):
@@ -334,8 +392,7 @@ def Train():
     best_proba, best_mcc, y_pred = eval_mcc(train.Response,
                                             trainpredictions/folds,
                                             True)
-    print(matthews_corrcoef(train.Response,
-                            y_pred))
+    print(matthews_corrcoef(train.Response, y_pred))
 
     submission = pd.DataFrame({"Id": train.Id,
                                "Prediction": trainpredictions/folds,
@@ -349,7 +406,7 @@ def Train():
                                "Response": testpredictions/folds})
     submission[['Id', 'Response']].to_csv('rawxgbsubmission'+str(folds)+'.csv',
                                           index=False)
-    y_pred = (testpredictions/folds > .08).astype(int)
+    y_pred = (testpredictions/folds > 0.08).astype(int)
     submission = pd.DataFrame({"Id": test.Id.values,
                                "Response": y_pred})
     submission[['Id', 'Response']].to_csv('xgbsubmission'+str(folds)+'.csv',
