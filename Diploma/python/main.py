@@ -7,6 +7,7 @@ from sklearn.metrics import matthews_corrcoef
 from operator import itemgetter
 import matplotlib.pyplot as plt
 from numba import jit
+import datetime
 
 # per raddar, all date features except for stations 24+25 are identical
 
@@ -144,8 +145,8 @@ def get_min_max_date_df():
 
     df_maxdt.sort_values(by=['maxdate', 'Id'], inplace=True)
     df_maxdt['maxdate_id_diff'] = df_maxdt.Id.diff()
-    midr = np.full_like(df_maxdt.mindate_id_diff.values, np.nan)
-    midr[0:-1] = -df_maxdt.mindate_id_diff.values[1:]
+    midr = np.full_like(df_maxdt.maxdate_id_diff.values, np.nan)
+    midr[0:-1] = -df_maxdt.maxdate_id_diff.values[1:]
     df_maxdt['maxdate_id_diff_reverse'] = midr
 
     return df_mindt, df_maxdt
@@ -413,6 +414,6 @@ def Train():
                                           index=False)
 
 if __name__ == "__main__":
-    print('Started')
+    print('Started ' + datetime.datetime.now())
     Train()
-    print('Finished')
+    print('Finished ' + datetime.datetime.now())
