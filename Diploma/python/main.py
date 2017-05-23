@@ -41,6 +41,7 @@ def get_date_features():
         
 usefuldatefeatures = get_date_features()
 
+
 def get_mindate():
     directory = '../../../diploma_data/'
     trainfile = 'train_date.csv'
@@ -56,8 +57,7 @@ def get_mindate():
         print(i)
         
         if features is None:
-            features = list(chunk.columns)
-            features.remove('Id')
+            features = list(chunk.columns).remove('Id')
         
         df_mindate_chunk = chunk[['Id']].copy()
         df_mindate_chunk['mindate'] = chunk[features].min(axis=1).values
@@ -101,8 +101,7 @@ def get_maxdate():
         print(i)
 
         if features is None:
-            features = list(chunk.columns)
-            features.remove('Id')
+            features = list(chunk.columns).remove('Id')
 
         df_maxdate_chunk = chunk[['Id']].copy()
         df_maxdate_chunk['maxdate'] = chunk[features].max(axis=1).values
