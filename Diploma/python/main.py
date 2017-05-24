@@ -2,14 +2,12 @@ import gc
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-from sklearn.cross_validation import StratifiedKFold
 from sklearn.metrics import matthews_corrcoef
 from operator import itemgetter
 import matplotlib.pyplot as plt
 from numba import jit
 import datetime
 
-# per raddar, all date features except for stations 24+25 are identical
 
 def get_date_features():
     directory = '../../../diploma_data/'
@@ -29,7 +27,6 @@ def get_date_features():
             continue
             
         station = int(f.split('_')[1][1:])
-#        print(station)
         
         if seen[station]:
             continue
@@ -345,8 +342,8 @@ def Train():
     params['colsample_bytree'] = 0.82
     params['min_child_weight'] = 3
     params['base_score'] = 0.005
-    params['silent'] = 0
-    params['scale_pos_weight'] = 0.06 # test param
+    params['silent'] = True
+    #params['scale_pos_weight'] = 0.06 # test param
     print('Fitting')
     trainpredictions = None
     testpredictions = None
@@ -373,7 +370,7 @@ def Train():
 
         best_proba, best_mcc, y_pred = eval_mcc(train.Response,
                                                 predictions,
-                                                True)
+                                                False)
         print('tree limit:', limit)
         print('mcc:', best_mcc)
         print(matthews_corrcoef(train.Response,
@@ -407,13 +404,13 @@ def Train():
                                "Response": testpredictions/folds})
     submission[['Id', 'Response']].to_csv('rawxgbsubmission'+str(folds)+'.csv',
                                           index=False)
-    y_pred = (testpredictions/folds > 0.08).astype(int)
+    y_pred = (testpredictions/folds > .08).astype(int)
     submission = pd.DataFrame({"Id": test.Id.values,
                                "Response": y_pred})
     submission[['Id', 'Response']].to_csv('xgbsubmission'+str(folds)+'.csv',
                                           index=False)
 
 if __name__ == "__main__":
-    print('Started ' + datetime.datetime.now())
+    print('Started ' + str(datetime.datetime.now()))
     Train()
-    print('Finished ' + datetime.datetime.now())
+    print('Finished ' + str(datetime.datetime.now()))
