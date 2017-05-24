@@ -311,7 +311,7 @@ def train_model():
                                             train_predictions / folds,
                                             True)
 
-    y_pred = (train_predictions / folds > .08).astype(int)
+    #y_pred = (train_predictions / folds > .08).astype(int)
 
     precision, recall, threshold = precision_recall_curve(train_data.Response, y_pred)
     avg_pres_score = average_precision_score(train_data.Response, y_pred)
