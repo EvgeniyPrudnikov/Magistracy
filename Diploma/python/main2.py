@@ -303,7 +303,7 @@ def train_model():
     best_proba, best_mcc, y_pred = eval_mcc(train_data.Response, train_predictions / folds, True)
 
     print best_proba, best_mcc
-    y_pred = (train_predictions / folds > 0.08).astype(int)
+    y_pred = (train_predictions / folds > 0.386).astype(int)
 
     precision, recall, threshold = precision_recall_curve(train_data.Response, y_pred)
     avg_pres_score = average_precision_score(train_data.Response, y_pred)
