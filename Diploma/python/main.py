@@ -16,7 +16,7 @@ def get_date_features():
     trainfile = 'train_date.csv'
     
     for i, chunk in enumerate(pd.read_csv(directory + trainfile,
-                                          chunksize=1,
+                                          chunksize=50000,
                                           low_memory=False)):
         features = list(chunk.columns)
         break
