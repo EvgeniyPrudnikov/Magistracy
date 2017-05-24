@@ -17,9 +17,7 @@ TRAIN_FILES = ['train_categorical.csv', 'train_date.csv', 'train_numeric.csv']
 def get_date_features():
     train_file = TRAIN_FILES[1]
 
-    for i, chunk in enumerate(pd.read_csv(DIRECTORY + train_file,
-                                          chunksize=1,
-                                          low_memory=False)):
+    for i, chunk in enumerate(pd.read_csv(DIRECTORY + train_file, chunksize=1, low_memory=False)):
         features = list(chunk.columns)
         break
 
@@ -50,9 +48,7 @@ def get_min_max_date():
     features = None
     subset = None
 
-    for i, chunk in enumerate(pd.read_csv(DIRECTORY + train_file,
-                                          usecols=processed_date_features,
-                                          chunksize=50000,
+    for i, chunk in enumerate(pd.read_csv(DIRECTORY + train_file, usecols=processed_date_features, chunksize=50000,
                                           low_memory=False)):
         print i
 
@@ -182,6 +178,8 @@ def leave_one_out(data1, data2, column_name, use_LOO=False):
     grp_outcomes['cnt'] = grp_count.Response
     if (use_LOO):
         grp_outcomes = grp_outcomes[grp_outcomes.cnt > 1]
+    else:
+        grp_outcomes = grp_outcomes[grp_outcomes.cnt >= 10]
     grp_outcomes.drop('cnt', inplace=True, axis=1)
     outcomes = data2['Response'].values
     x = pd.merge(data2[[column_name, 'Response']], grp_outcomes,
@@ -191,7 +189,6 @@ def leave_one_out(data1, data2, column_name, use_LOO=False):
                  left_index=True)['Response']
     if (use_LOO):
         x = ((x * x.shape[0]) - outcomes) / (x.shape[0] - 1)
-        #  x = x + np.random.normal(0, .01, x.shape[0])
     return x.fillna(x.mean())
 
 
@@ -246,9 +243,7 @@ def data_transformation():
     for i in xrange(2):
         for col in cols[i][1:]:
             print col
-            blind_train_data.loc[:, col] = leave_one_out(visible_train_data,
-                                                         blind_train_data,
-                                                         col, False).values
+            blind_train_data.loc[:, col] = leave_one_out(visible_train_data, blind_train_data, col, True).values
     del visible_train_data
     gc.collect()
     return blind_train_data
@@ -293,9 +288,7 @@ def train_model():
 
         predictions = clf.predict(dvisible_train, ntree_limit=limit)
 
-        best_proba, best_mcc, y_pred = eval_mcc(train_data.Response,
-                                                predictions,
-                                                True)
+        best_proba, best_mcc, y_pred = eval_mcc(train_data.Response, predictions, True)
         print 'tree limit:', limit
         print 'mcc:', best_mcc
         print matthews_corrcoef(train_data.Response, y_pred)
@@ -307,11 +300,10 @@ def train_model():
         imp = get_importance(clf, features)
         print 'Importance array: ', imp
 
-    best_proba, best_mcc, y_pred = eval_mcc(train_data.Response,
-                                            train_predictions / folds,
-                                            True)
+    best_proba, best_mcc, y_pred = eval_mcc(train_data.Response, train_predictions / folds, True)
 
-    #y_pred = (train_predictions / folds > .08).astype(int)
+    print best_proba, best_mcc
+    y_pred = (train_predictions / folds > 0.08).astype(int)
 
     precision, recall, threshold = precision_recall_curve(train_data.Response, y_pred)
     avg_pres_score = average_precision_score(train_data.Response, y_pred)
@@ -319,6 +311,6 @@ def train_model():
     print matthews_corrcoef(train_data.Response, y_pred)
 
 
-print 'Started ' + str(datetime.datetime.now())
+print 'started - ' + str(datetime.datetime.now())
 train_model()
-print 'Finished ' + str(datetime.datetime.now())
+print 'finished - ' + str(datetime.datetime.now())
