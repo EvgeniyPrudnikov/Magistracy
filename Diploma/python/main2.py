@@ -5,6 +5,7 @@ import xgboost as xgb
 from sklearn.metrics import matthews_corrcoef
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import average_precision_score
+from sklearn.model_selection import train_test_split
 from operator import itemgetter
 import matplotlib.pyplot as plt
 from numba import jit
@@ -265,7 +266,6 @@ def train_model():
         , 'min_child_weight': 3
         , 'base_score': 0.005
         , 'silent': True
-        # ,'scale_pos_weight': 0.06 - test
     }
     print 'Fitting'
     train_predictions = None
@@ -303,7 +303,7 @@ def train_model():
     best_proba, best_mcc, y_pred = eval_mcc(train_data.Response, train_predictions / folds, True)
 
     print best_proba, best_mcc
-    y_pred = (train_predictions / folds > 0.386).astype(int)
+    y_pred = (train_predictions / folds > 0.29).astype(int)
 
     precision, recall, threshold = precision_recall_curve(train_data.Response, y_pred)
     avg_pres_score = average_precision_score(train_data.Response, y_pred)
