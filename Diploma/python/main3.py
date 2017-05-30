@@ -303,12 +303,13 @@ def train_model():
 
         imp = get_importance(clf, features)
         print 'Importance array: ', imp
-
-    best_proba, best_mcc, y_pred = eval_mcc(y_test, train_predictions / folds, True)
+    
 
     print best_proba, best_mcc
     y_pred = (train_predictions / folds > 0.2365).astype(int)
-
+	
+	best_proba, best_mcc, y_pred = eval_mcc(y_test, train_predictions / folds, True)
+	
     precision, recall, threshold = precision_recall_curve(y_test, y_pred)
     avg_pres_score = average_precision_score(y_test, y_pred)
     plot_precision_recall([(precision, recall, avg_pres_score, 'pr')])
