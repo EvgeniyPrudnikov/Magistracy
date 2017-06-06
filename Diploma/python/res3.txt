@@ -1,0 +1,469 @@
+/usr/bin/python2.7 /home/jonscat/Study/Magistracy/Diploma/python/main3.py
+/usr/local/lib/python2.7/dist-packages/sklearn/cross_validation.py:44: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.
+  "This module will be removed in 0.20.", DeprecationWarning)
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+started - 2017-06-05 00:12:03.951617
+train_categorical.csv
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+train_date.csv
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+train_numeric.csv
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+Index([u'Id', u'L1_S24_F1510', u'L1_S24_F1525', u'L1_S24_F1559',
+       u'L1_S24_F1582', u'L1_S24_F1827', u'L3_S32_F3851', u'L3_S32_F3854',
+       u'L3_S30_D3496', u'L3_S30_D3501', u'L3_S30_D3506', u'L3_S30_D3511',
+       u'L3_S30_D3516', u'L1_S24_F1604', u'L1_S24_F1632', u'L1_S24_F1695',
+       u'L1_S24_F1723', u'L1_S24_F1846', u'L3_S29_F3407', u'L3_S32_F3850',
+       u'L3_S33_F3855', u'L3_S33_F3865', u'L3_S38_F3952', u'Response',
+       u'mindate', u'maxdate', u'mindate_id_diff', u'mindate_id_diff_reverse',
+       u'maxdate_id_diff', u'maxdate_id_diff_reverse'],
+      dtype='object')
+Index([u'Id', u'L1_S24_F1510', u'L1_S24_F1525', u'L1_S24_F1559',
+       u'L1_S24_F1582', u'L1_S24_F1827', u'L3_S32_F3851', u'L3_S32_F3854',
+       u'L3_S30_D3496', u'L3_S30_D3501', u'L3_S30_D3506', u'L3_S30_D3511',
+       u'L3_S30_D3516', u'L1_S24_F1604', u'L1_S24_F1632', u'L1_S24_F1695',
+       u'L1_S24_F1723', u'L1_S24_F1846', u'L3_S29_F3407', u'L3_S32_F3850',
+       u'L3_S33_F3855', u'L3_S33_F3865', u'L3_S38_F3952', u'Response',
+       u'mindate', u'maxdate', u'mindate_id_diff', u'mindate_id_diff_reverse',
+       u'maxdate_id_diff', u'maxdate_id_diff_reverse'],
+      dtype='object')
+L1_S24_F1559
+L3_S32_F3851
+/usr/local/lib/python2.7/dist-packages/pandas/core/indexing.py:477: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+  self.obj[item] = s
+L1_S24_F1827
+L1_S24_F1582
+L3_S32_F3854
+L1_S24_F1510
+L1_S24_F1525
+L3_S30_D3496
+L3_S30_D3506
+L3_S30_D3501
+L3_S30_D3516
+L3_S30_D3511
+train size: (591873, 30)
+Fitting
+Fold: 0
+[0]	train-MCC:0.83342	val-MCC:0.827801
+Multiple eval metrics have been passed: 'val-MCC' will be used for early stopping.
+
+Will train until val-MCC hasn't improved in 20 rounds.
+[1]	train-MCC:0.850689	val-MCC:0.847308
+[2]	train-MCC:0.849373	val-MCC:0.842725
+[3]	train-MCC:0.851159	val-MCC:0.847109
+[4]	train-MCC:0.851136	val-MCC:0.847008
+[5]	train-MCC:0.86367	val-MCC:0.860825
+[6]	train-MCC:0.869875	val-MCC:0.867265
+[7]	train-MCC:0.875211	val-MCC:0.872009
+[8]	train-MCC:0.883662	val-MCC:0.875088
+[9]	train-MCC:0.886613	val-MCC:0.876027
+[10]	train-MCC:0.890471	val-MCC:0.879072
+[11]	train-MCC:0.890908	val-MCC:0.879561
+[12]	train-MCC:0.892437	val-MCC:0.880052
+[13]	train-MCC:0.894355	val-MCC:0.880543
+[14]	train-MCC:0.894073	val-MCC:0.880543
+[15]	train-MCC:0.894779	val-MCC:0.880991
+[16]	train-MCC:0.894819	val-MCC:0.881488
+[17]	train-MCC:0.89526	val-MCC:0.881048
+[18]	train-MCC:0.89567	val-MCC:0.88154
+[19]	train-MCC:0.89567	val-MCC:0.88154
+[20]	train-MCC:0.895892	val-MCC:0.88154
+[21]	train-MCC:0.896369	val-MCC:0.881584
+[22]	train-MCC:0.896891	val-MCC:0.881584
+[23]	train-MCC:0.896881	val-MCC:0.881584
+[24]	train-MCC:0.897126	val-MCC:0.882001
+[25]	train-MCC:0.897126	val-MCC:0.882011
+[26]	train-MCC:0.896908	val-MCC:0.882059
+[27]	train-MCC:0.897116	val-MCC:0.882506
+[28]	train-MCC:0.897116	val-MCC:0.882506
+[29]	train-MCC:0.897116	val-MCC:0.882059
+[30]	train-MCC:0.897343	val-MCC:0.88255
+[31]	train-MCC:0.897347	val-MCC:0.88255
+[32]	train-MCC:0.897583	val-MCC:0.882985
+[33]	train-MCC:0.897809	val-MCC:0.883993
+[34]	train-MCC:0.898048	val-MCC:0.883993
+[35]	train-MCC:0.898048	val-MCC:0.883993
+[36]	train-MCC:0.898288	val-MCC:0.883993
+[37]	train-MCC:0.898288	val-MCC:0.883993
+[38]	train-MCC:0.898288	val-MCC:0.883998
+[39]	train-MCC:0.898288	val-MCC:0.883998
+[40]	train-MCC:0.898288	val-MCC:0.883998
+[41]	train-MCC:0.898288	val-MCC:0.884497
+[42]	train-MCC:0.898288	val-MCC:0.884497
+[43]	train-MCC:0.898522	val-MCC:0.884515
+[44]	train-MCC:0.898522	val-MCC:0.885011
+[45]	train-MCC:0.898522	val-MCC:0.885509
+[46]	train-MCC:0.898522	val-MCC:0.885509
+[47]	train-MCC:0.898522	val-MCC:0.885509
+[48]	train-MCC:0.898522	val-MCC:0.886007
+[49]	train-MCC:0.89876	val-MCC:0.885509
+tree limit: 49
+mcc: 28.123821952
+Importance array:  [('L3_S30_D3496', 128), ('mindate_id_diff_reverse', 105), ('maxdate_id_diff_reverse', 88), ('L1_S24_F1827', 79), ('mindate_id_diff', 58), ('maxdate_id_diff', 52), ('L3_S32_F3851', 51), ('maxdate', 45), ('mindate', 33), ('L3_S30_D3506', 27), ('L3_S33_F3855', 23), ('L3_S30_D3501', 20), ('L3_S33_F3865', 17), ('L3_S29_F3407', 11), ('L1_S24_F1559', 11), ('L3_S38_F3952', 7), ('L3_S30_D3511', 6), ('L3_S32_F3854', 6), ('L1_S24_F1846', 4), ('L1_S24_F1510', 4), ('L3_S32_F3850', 3), ('L1_S24_F1525', 2)]
+Fold: 1
+[0]	train-MCC:0.83342	val-MCC:0.827801
+Multiple eval metrics have been passed: 'val-MCC' will be used for early stopping.
+
+Will train until val-MCC hasn't improved in 20 rounds.
+[1]	train-MCC:0.833936	val-MCC:0.827801
+[2]	train-MCC:0.839651	val-MCC:0.833788
+[3]	train-MCC:0.850424	val-MCC:0.844123
+[4]	train-MCC:0.853926	val-MCC:0.845858
+[5]	train-MCC:0.865227	val-MCC:0.861737
+[6]	train-MCC:0.87049	val-MCC:0.868449
+[7]	train-MCC:0.876755	val-MCC:0.870435
+[8]	train-MCC:0.886927	val-MCC:0.874028
+[9]	train-MCC:0.888406	val-MCC:0.876064
+[10]	train-MCC:0.893583	val-MCC:0.879615
+[11]	train-MCC:0.893783	val-MCC:0.880084
+[12]	train-MCC:0.894482	val-MCC:0.880102
+[13]	train-MCC:0.895658	val-MCC:0.881048
+[14]	train-MCC:0.896139	val-MCC:0.881048
+[15]	train-MCC:0.896366	val-MCC:0.881528
+[16]	train-MCC:0.896846	val-MCC:0.881528
+[17]	train-MCC:0.896846	val-MCC:0.881601
+[18]	train-MCC:0.896846	val-MCC:0.881601
+[19]	train-MCC:0.896846	val-MCC:0.881528
+[20]	train-MCC:0.896846	val-MCC:0.881528
+[21]	train-MCC:0.896859	val-MCC:0.881528
+[22]	train-MCC:0.897099	val-MCC:0.882506
+[23]	train-MCC:0.897099	val-MCC:0.883011
+[24]	train-MCC:0.897099	val-MCC:0.883011
+[25]	train-MCC:0.897086	val-MCC:0.883011
+[26]	train-MCC:0.897361	val-MCC:0.883011
+[27]	train-MCC:0.897596	val-MCC:0.883489
+[28]	train-MCC:0.897361	val-MCC:0.883494
+[29]	train-MCC:0.897361	val-MCC:0.883985
+[30]	train-MCC:0.897361	val-MCC:0.884004
+[31]	train-MCC:0.897361	val-MCC:0.884004
+[32]	train-MCC:0.897831	val-MCC:0.884004
+[33]	train-MCC:0.897591	val-MCC:0.884004
+[34]	train-MCC:0.897596	val-MCC:0.884004
+[35]	train-MCC:0.897831	val-MCC:0.884497
+[36]	train-MCC:0.897831	val-MCC:0.884997
+[37]	train-MCC:0.897831	val-MCC:0.884997
+[38]	train-MCC:0.897831	val-MCC:0.885497
+[39]	train-MCC:0.898071	val-MCC:0.885497
+[40]	train-MCC:0.898071	val-MCC:0.884997
+[41]	train-MCC:0.898071	val-MCC:0.885
+[42]	train-MCC:0.898071	val-MCC:0.884502
+[43]	train-MCC:0.898071	val-MCC:0.884502
+[44]	train-MCC:0.898276	val-MCC:0.884997
+[45]	train-MCC:0.898306	val-MCC:0.885
+[46]	train-MCC:0.89828	val-MCC:0.884997
+[47]	train-MCC:0.898518	val-MCC:0.885
+[48]	train-MCC:0.898518	val-MCC:0.885
+[49]	train-MCC:0.898518	val-MCC:0.884497
+tree limit: 39
+mcc: 28.123821952
+Importance array:  [('L3_S30_D3496', 127), ('mindate_id_diff_reverse', 122), ('L1_S24_F1827', 89), ('mindate_id_diff', 59), ('maxdate_id_diff_reverse', 59), ('maxdate_id_diff', 55), ('L3_S32_F3851', 44), ('maxdate', 42), ('mindate', 36), ('L3_S30_D3506', 27), ('L3_S33_F3855', 27), ('L3_S30_D3501', 26), ('L3_S33_F3865', 15), ('L3_S38_F3952', 12), ('L1_S24_F1559', 12), ('L3_S32_F3854', 6), ('L3_S29_F3407', 6), ('L1_S24_F1846', 5), ('L1_S24_F1525', 4), ('L3_S30_D3511', 3), ('L1_S24_F1510', 2), ('L3_S30_D3516', 1), ('L3_S32_F3850', 1)]
+Fold: 2
+[0]	train-MCC:0.83342	val-MCC:0.828346
+Multiple eval metrics have been passed: 'val-MCC' will be used for early stopping.
+
+Will train until val-MCC hasn't improved in 20 rounds.
+[1]	train-MCC:0.83342	val-MCC:0.828339
+[2]	train-MCC:0.839221	val-MCC:0.831041
+[3]	train-MCC:0.85041	val-MCC:0.840892
+[4]	train-MCC:0.853308	val-MCC:0.843625
+[5]	train-MCC:0.865037	val-MCC:0.860256
+[6]	train-MCC:0.868758	val-MCC:0.86544
+[7]	train-MCC:0.871231	val-MCC:0.869431
+[8]	train-MCC:0.878159	val-MCC:0.871643
+[9]	train-MCC:0.883724	val-MCC:0.875067
+[10]	train-MCC:0.885865	val-MCC:0.876518
+[11]	train-MCC:0.892245	val-MCC:0.876518
+[12]	train-MCC:0.89308	val-MCC:0.879072
+[13]	train-MCC:0.892386	val-MCC:0.879109
+[14]	train-MCC:0.893783	val-MCC:0.879561
+[15]	train-MCC:0.894718	val-MCC:0.879561
+[16]	train-MCC:0.894718	val-MCC:0.879545
+[17]	train-MCC:0.895181	val-MCC:0.880052
+[18]	train-MCC:0.895414	val-MCC:0.880052
+[19]	train-MCC:0.895714	val-MCC:0.880558
+[20]	train-MCC:0.896147	val-MCC:0.880573
+[21]	train-MCC:0.896859	val-MCC:0.881481
+[22]	train-MCC:0.897099	val-MCC:0.881481
+[23]	train-MCC:0.896867	val-MCC:0.881986
+[24]	train-MCC:0.896867	val-MCC:0.88248
+[25]	train-MCC:0.897103	val-MCC:0.882491
+[26]	train-MCC:0.897103	val-MCC:0.882491
+[27]	train-MCC:0.897107	val-MCC:0.882989
+[28]	train-MCC:0.897343	val-MCC:0.882491
+[29]	train-MCC:0.897111	val-MCC:0.882491
+[30]	train-MCC:0.897339	val-MCC:0.882985
+[31]	train-MCC:0.897559	val-MCC:0.882985
+[32]	train-MCC:0.898037	val-MCC:0.883485
+[33]	train-MCC:0.898037	val-MCC:0.883485
+[34]	train-MCC:0.898035	val-MCC:0.883485
+[35]	train-MCC:0.897795	val-MCC:0.882996
+[36]	train-MCC:0.898071	val-MCC:0.883494
+[37]	train-MCC:0.898071	val-MCC:0.883494
+[38]	train-MCC:0.898071	val-MCC:0.883494
+[39]	train-MCC:0.898306	val-MCC:0.883989
+[40]	train-MCC:0.898306	val-MCC:0.883989
+[41]	train-MCC:0.898306	val-MCC:0.883989
+[42]	train-MCC:0.898306	val-MCC:0.883989
+[43]	train-MCC:0.898546	val-MCC:0.883603
+[44]	train-MCC:0.898546	val-MCC:0.883489
+[45]	train-MCC:0.898785	val-MCC:0.883989
+[46]	train-MCC:0.898785	val-MCC:0.883986
+[47]	train-MCC:0.898785	val-MCC:0.883989
+[48]	train-MCC:0.898785	val-MCC:0.883489
+[49]	train-MCC:0.898785	val-MCC:0.883989
+tree limit: 40
+mcc: 28.123821952
+Importance array:  [('mindate_id_diff_reverse', 122), ('L3_S30_D3496', 109), ('L1_S24_F1827', 75), ('mindate_id_diff', 62), ('maxdate_id_diff_reverse', 60), ('L3_S32_F3851', 52), ('maxdate', 48), ('L3_S30_D3501', 41), ('maxdate_id_diff', 39), ('mindate', 33), ('L3_S30_D3506', 29), ('L3_S33_F3855', 21), ('L3_S33_F3865', 16), ('L1_S24_F1846', 14), ('L1_S24_F1559', 14), ('L3_S38_F3952', 7), ('L3_S29_F3407', 6), ('L3_S30_D3511', 5), ('L3_S32_F3854', 2), ('L1_S24_F1525', 2), ('L3_S30_D3516', 1), ('L3_S32_F3850', 1), ('L1_S24_F1510', 1)]
+Fold: 3
+[0]	train-MCC:0.83342	val-MCC:0.827801
+Multiple eval metrics have been passed: 'val-MCC' will be used for early stopping.
+
+Will train until val-MCC hasn't improved in 20 rounds.
+[1]	train-MCC:0.83342	val-MCC:0.827801
+[2]	train-MCC:0.840436	val-MCC:0.833827
+[3]	train-MCC:0.844993	val-MCC:0.834475
+[4]	train-MCC:0.852106	val-MCC:0.844439
+[5]	train-MCC:0.865878	val-MCC:0.857901
+[6]	train-MCC:0.871805	val-MCC:0.868881
+[7]	train-MCC:0.872802	val-MCC:0.87088
+[8]	train-MCC:0.881564	val-MCC:0.874009
+[9]	train-MCC:0.893101	val-MCC:0.878583
+[10]	train-MCC:0.894258	val-MCC:0.879578
+[11]	train-MCC:0.895181	val-MCC:0.880052
+[12]	train-MCC:0.895422	val-MCC:0.880573
+[13]	train-MCC:0.896165	val-MCC:0.880573
+[14]	train-MCC:0.896619	val-MCC:0.881048
+[15]	train-MCC:0.897343	val-MCC:0.881496
+[16]	train-MCC:0.897343	val-MCC:0.881488
+[17]	train-MCC:0.897107	val-MCC:0.88198
+[18]	train-MCC:0.897096	val-MCC:0.88198
+[19]	train-MCC:0.897107	val-MCC:0.882981
+[20]	train-MCC:0.897575	val-MCC:0.882981
+[21]	train-MCC:0.897575	val-MCC:0.882981
+[22]	train-MCC:0.897579	val-MCC:0.882989
+[23]	train-MCC:0.897347	val-MCC:0.883485
+[24]	train-MCC:0.897819	val-MCC:0.883993
+[25]	train-MCC:0.897641	val-MCC:0.883494
+[26]	train-MCC:0.897874	val-MCC:0.883993
+[27]	train-MCC:0.898058	val-MCC:0.883494
+[28]	train-MCC:0.898071	val-MCC:0.883989
+[29]	train-MCC:0.89831	val-MCC:0.883993
+[30]	train-MCC:0.89831	val-MCC:0.8835
+[31]	train-MCC:0.898546	val-MCC:0.883998
+[32]	train-MCC:0.898781	val-MCC:0.883998
+[33]	train-MCC:0.899017	val-MCC:0.884493
+[34]	train-MCC:0.899017	val-MCC:0.884493
+[35]	train-MCC:0.898781	val-MCC:0.884493
+[36]	train-MCC:0.898781	val-MCC:0.884497
+[37]	train-MCC:0.898781	val-MCC:0.884493
+[38]	train-MCC:0.899017	val-MCC:0.884493
+[39]	train-MCC:0.898826	val-MCC:0.884497
+[40]	train-MCC:0.899017	val-MCC:0.884493
+[41]	train-MCC:0.898781	val-MCC:0.884493
+[42]	train-MCC:0.899017	val-MCC:0.884497
+[43]	train-MCC:0.899017	val-MCC:0.884497
+[44]	train-MCC:0.89906	val-MCC:0.884497
+[45]	train-MCC:0.899017	val-MCC:0.884493
+[46]	train-MCC:0.899017	val-MCC:0.884997
+[47]	train-MCC:0.899017	val-MCC:0.884997
+[48]	train-MCC:0.899256	val-MCC:0.884493
+[49]	train-MCC:0.899256	val-MCC:0.884497
+tree limit: 47
+mcc: 28.123821952
+Importance array:  [('L3_S30_D3496', 129), ('mindate_id_diff_reverse', 115), ('L1_S24_F1827', 74), ('maxdate_id_diff_reverse', 58), ('mindate_id_diff', 54), ('maxdate', 49), ('maxdate_id_diff', 47), ('L3_S32_F3851', 43), ('mindate', 35), ('L3_S30_D3506', 34), ('L3_S30_D3501', 24), ('L3_S33_F3855', 22), ('L3_S33_F3865', 17), ('L1_S24_F1559', 15), ('L3_S38_F3952', 11), ('L1_S24_F1846', 8), ('L3_S29_F3407', 7), ('L3_S30_D3511', 6), ('L3_S32_F3854', 5), ('L1_S24_F1510', 3), ('L1_S24_F1525', 2), ('L3_S32_F3850', 2)]
+Fold: 4
+[0]	train-MCC:0.833678	val-MCC:0.827801
+Multiple eval metrics have been passed: 'val-MCC' will be used for early stopping.
+
+Will train until val-MCC hasn't improved in 20 rounds.
+[1]	train-MCC:0.860298	val-MCC:0.862815
+[2]	train-MCC:0.863942	val-MCC:0.860336
+[3]	train-MCC:0.864281	val-MCC:0.866521
+[4]	train-MCC:0.87005	val-MCC:0.867361
+[5]	train-MCC:0.881728	val-MCC:0.87407
+[6]	train-MCC:0.884086	val-MCC:0.87458
+[7]	train-MCC:0.891482	val-MCC:0.879129
+[8]	train-MCC:0.891196	val-MCC:0.878565
+[9]	train-MCC:0.892825	val-MCC:0.879531
+[10]	train-MCC:0.894468	val-MCC:0.880037
+[11]	train-MCC:0.895405	val-MCC:0.880037
+[12]	train-MCC:0.895898	val-MCC:0.880037
+[13]	train-MCC:0.896606	val-MCC:0.880037
+[14]	train-MCC:0.896846	val-MCC:0.880516
+[15]	train-MCC:0.896846	val-MCC:0.880037
+[16]	train-MCC:0.896606	val-MCC:0.880037
+[17]	train-MCC:0.896606	val-MCC:0.880037
+[18]	train-MCC:0.896609	val-MCC:0.880463
+[19]	train-MCC:0.896606	val-MCC:0.880516
+[20]	train-MCC:0.896609	val-MCC:0.880084
+[21]	train-MCC:0.896609	val-MCC:0.880454
+[22]	train-MCC:0.896846	val-MCC:0.88198
+[23]	train-MCC:0.896609	val-MCC:0.882476
+[24]	train-MCC:0.896606	val-MCC:0.881986
+[25]	train-MCC:0.896609	val-MCC:0.88198
+[26]	train-MCC:0.896846	val-MCC:0.881975
+[27]	train-MCC:0.896846	val-MCC:0.882985
+[28]	train-MCC:0.896846	val-MCC:0.882985
+[29]	train-MCC:0.896846	val-MCC:0.882985
+[30]	train-MCC:0.896846	val-MCC:0.882985
+[31]	train-MCC:0.896846	val-MCC:0.882985
+[32]	train-MCC:0.896846	val-MCC:0.882985
+[33]	train-MCC:0.896863	val-MCC:0.883485
+[34]	train-MCC:0.896863	val-MCC:0.882985
+[35]	train-MCC:0.896867	val-MCC:0.883485
+[36]	train-MCC:0.897086	val-MCC:0.882985
+[37]	train-MCC:0.897086	val-MCC:0.883485
+[38]	train-MCC:0.897103	val-MCC:0.882985
+[39]	train-MCC:0.897111	val-MCC:0.882985
+[40]	train-MCC:0.897347	val-MCC:0.882985
+[41]	train-MCC:0.897351	val-MCC:0.882985
+[42]	train-MCC:0.897583	val-MCC:0.882985
+[43]	train-MCC:0.897596	val-MCC:0.882985
+[44]	train-MCC:0.897831	val-MCC:0.882985
+[45]	train-MCC:0.897831	val-MCC:0.882996
+[46]	train-MCC:0.897831	val-MCC:0.882996
+[47]	train-MCC:0.898062	val-MCC:0.882996
+[48]	train-MCC:0.898302	val-MCC:0.882996
+[49]	train-MCC:0.898302	val-MCC:0.882996
+tree limit: 34
+mcc: 28.123821952
+Importance array:  [('mindate_id_diff_reverse', 129), ('L3_S30_D3496', 114), ('L1_S24_F1827', 76), ('maxdate_id_diff_reverse', 74), ('mindate_id_diff', 55), ('L3_S32_F3851', 47), ('maxdate', 44), ('maxdate_id_diff', 43), ('mindate', 38), ('L3_S30_D3506', 36), ('L3_S30_D3501', 27), ('L1_S24_F1559', 25), ('L3_S33_F3855', 25), ('L3_S33_F3865', 18), ('L3_S29_F3407', 12), ('L3_S38_F3952', 9), ('L1_S24_F1510', 7), ('L1_S24_F1846', 6), ('L1_S24_F1525', 6), ('L3_S30_D3511', 5), ('L3_S30_D3516', 1), ('L3_S32_F3854', 1)]
+0.709374 28.123821952
+0.880542790287
+Fitting
+Fold: 0
+score:  0.899913768817
+[0] train-MCC:0.89197976973
+[1] train-MCC:0.907291693387
+[2] train-MCC:0.874731245994
+[3] train-MCC:0.896545643685
+[4] train-MCC:0.913475738537
+Fold: 1
+score:  0.899434969045
+[0] train-MCC:0.89197976973
+[1] train-MCC:0.907291693387
+[2] train-MCC:0.875934173394
+[3] train-MCC:0.896545643685
+[4] train-MCC:0.914602263068
+Fold: 2
+score:  0.900153075032
+[0] train-MCC:0.89197976973
+[1] train-MCC:0.907291693387
+[2] train-MCC:0.875960788261
+[3] train-MCC:0.896545643685
+[4] train-MCC:0.913475738537
+Fold: 3
+score:  0.899434969045
+[0] train-MCC:0.89197976973
+[1] train-MCC:0.907291693387
+[2] train-MCC:0.875934173394
+[3] train-MCC:0.896545643685
+[4] train-MCC:0.913475738537
+Fold: 4
+score:  0.900153075032
+[0] train-MCC:0.89197976973
+[1] train-MCC:0.907291693387
+[2] train-MCC:0.875934173394
+[3] train-MCC:0.896545643685
+[4] train-MCC:0.913475738537
+best_proba, best_mcc :  1 28.123821952
+0.883546612578
+finished - 2017-06-05 02:59:10.503788
+
+Process finished with exit code 0
