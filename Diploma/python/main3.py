@@ -371,7 +371,7 @@ features, X_train, X_test, y_train, y_test = get_train_test_data()
 
 train_xgb_model(features, X_train, X_test, y_train, y_test)
 gc.collect()
-#train_rnf_model(features, X_train, X_test, y_train, y_test)
-#gc.collect()
+train_rnf_model(features, X_train, X_test, y_train, y_test)
+gc.collect()
 
 print 'finished - ' + str(datetime.datetime.now())
